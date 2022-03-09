@@ -92,9 +92,7 @@ func get_pixel*(img : HdrImage; x, y : int) : Color =
 # set_pixel
 func set_pixel*(img : var HdrImage; x, y : int; new_col : Color) =
     assert valid_coordinates(img, x, y)
-    img.pixels[pixel_offset(img, x, y)].r = new_col.r
-    img.pixels[pixel_offset(img, x, y)].g = new_col.g
-    img.pixels[pixel_offset(img, x, y)].b = new_col.b
+    img.pixels[pixel_offset(img, x, y)] = new_col
 
 func test_get_set_pixel*() =
     var 
