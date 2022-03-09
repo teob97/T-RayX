@@ -4,3 +4,4 @@ tools
 *~
 *.o
 build/
+progetto.nimble
