@@ -36,6 +36,16 @@ func newHdrImage*(width, height : int) : HdrImage =
 func pixel_offset*(img : HdrImage; x, y : int) : int =
     return y * img.width + x
 
+# get_pixel
+func get_pixel(img : HdrImage; x, y : int) : Color =
+    assert valid_coordinates(img, x, y)
+    return img.pixels[y * img.width + x]
+
+# set_pixel
+func set_pixel(img : HdrImage; x, y : int; new_col : Color) =
+    assert valid_coordinates(img, x, y)
+    img.pixels[y * img.width + x] = new_col
+
 #OPERATOR OVERLOAD
 
 func `+` *(c1 : Color, c2 : Color): Color =
