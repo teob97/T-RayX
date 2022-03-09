@@ -18,13 +18,18 @@ func newColor*(r : float32 = 0.0; g : float32 = 0.0; b : float32 = 0.0) : Color 
     return C
 
 func newHdrImage*(width, height : int) : HdrImage =
-    var Hdr : HdrImage
+    var img : HdrImage
     var C : Color = newColor(0.0, 0.0, 0.0)
-    Hdr.width = width
-    Hdr.height = height
-    Hdr.pixels = newSeq[Color](width*height)
-    for i in 0..width*height:
-        Hdr.pixels[i] = C
+    img.width = width
+    img.height = height
+    img.pixels = newSeq[Color](width*height)
+    for i in 0..<width*height:
+        img.pixels[i] = C
+
+#FUNCTIONS
+
+func pixel_offset(img : HdrImage; x, y : int) : int =
+    return y * img.width + x
 
 #OPERATOR OVERLOAD
 
