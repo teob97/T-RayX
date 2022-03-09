@@ -10,14 +10,14 @@ func test_image_creation() =
     assert img.width == 7
     assert img.height == 4
 
-func test_coordinates() =
+#[ func test_coordinates() =
     var img = newHdrImage(7, 4)
     assert valid_coordinates(img, 0, 0)
     assert valid_coordinates(img, 6, 3)
     assert not valid_coordinates(img, -1, 0)
     assert not valid_coordinates(img, 0, -1)
     assert not valid_coordinates(img, 7, 0)
-    assert not valid_coordinates(img, 0, 4)
+    assert not valid_coordinates(img, 0, 4) ]#
 
 #[ func test_pixel_offset() =
     var img = newHdrImage(7, 4)
@@ -43,8 +43,8 @@ when isMainModule:
     assert 3.0 * newColor(1.0, 2.0, 3.0) == newColor(3.0, 6.0, 9.0)
     assert newColor(1.0, 2.0, 3.0) * 3.0 == newColor(3.0, 6.0, 9.0)
     assert are_close(newColor(1.11113, 2.0, 3.0), newColor(1.11113, 2.0, 3.0)) == true
-
-    test_coordinates()
-    #test_get_set_pixel()
+    
     test_image_creation()
+    #test_coordinates()
+    #test_get_set_pixel()
     #test_pixel_offset()

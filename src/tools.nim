@@ -18,13 +18,18 @@ func newColor*(r : float32 = 0.0; g : float32 = 0.0; b : float32 = 0.0) : Color 
     return C
 
 func newHdrImage*(width, height : int) : HdrImage =
+    
     var img : HdrImage
     var C : Color = newColor(0.0, 0.0, 0.0)
+
     img.width = width
     img.height = height
     img.pixels = newSeq[Color](width*height)
+    
     for i in 0..<width*height:
         img.pixels[i] = C
+    
+    return img
 
 #FUNCTIONS
 
