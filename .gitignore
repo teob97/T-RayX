@@ -1,0 +1,6 @@
+main
+tools
+.DS_Store
+*~
+*.o
+build/
