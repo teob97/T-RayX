@@ -33,7 +33,7 @@ func newHdrImage*(width, height : int) : HdrImage =
 
 #FUNCTIONS
 
-func pixel_offset(img : HdrImage; x, y : int) : int =
+func pixel_offset*(img : HdrImage; x, y : int) : int =
     return y * img.width + x
 
 #OPERATOR OVERLOAD
