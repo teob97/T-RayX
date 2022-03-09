@@ -84,12 +84,12 @@ func test_pixel_offset*() =
     assert pixel_offset(img, 6, 3) == 7 * 4 - 1
 
 
-# get_pixel
+#PIXEL ACCESS AND MODIFICATION
+
 func get_pixel*(img : HdrImage; x, y : int) : Color =
     assert valid_coordinates(img, x, y)
     return img.pixels[y * img.width + x]
 
-# set_pixel
 func set_pixel*(img : var HdrImage; x, y : int; new_col : Color) =
     assert valid_coordinates(img, x, y)
     img.pixels[pixel_offset(img, x, y)] = new_col
