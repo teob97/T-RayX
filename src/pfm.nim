@@ -13,7 +13,7 @@ proc readFloat*(stream: Stream, endianness: float) : float32 =
 var prova = newFileStream("reference_le.pfm")
 setPosition(prova, 0)
 while prova.atEnd != true:
-    echo prova.readFloat32
+    echo prova.readFloat(prova, -1)
 
 #[ var l = ""
 while prova.readLine(l):
