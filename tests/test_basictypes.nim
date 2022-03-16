@@ -1,4 +1,4 @@
-import ../src/tools
+import ../src/basictypes
 
 #TESTS
 
