@@ -2,7 +2,7 @@ import std/endians
 import std/streams
 
 proc readFloat*(stream: Stream, endianness: float) : float32 =
-
+    
     var num: float32
     var x = stream.readUint32()
 
