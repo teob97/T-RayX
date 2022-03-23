@@ -4,9 +4,10 @@ import std/strutils
 import basictypes
 
 type
-    InvalidPfmFileFormat = object of CatchableError
+    InvalidPfmFileFormat* = object of CatchableError
 
 proc readFloat*(stream: Stream, endianness: float) : float32 =
+    ## Read a binary value and convert it to float32 value using the correct endianness
     var num: float32
     var x = stream.readUint32()
     if endianness > 0:
@@ -16,6 +17,7 @@ proc readFloat*(stream: Stream, endianness: float) : float32 =
     return num
 
 proc parseImgSize*(line: string): (int,int) =
+    ## Take the string containing width x height and return a tuple of int
     var 
         elements = split(line)
         width : int
@@ -35,6 +37,7 @@ proc parseImgSize*(line: string): (int,int) =
     return (width, height)
 
 proc parseEndianness*(line: string) : float32 =
+    ## Take the srting containing the endianness and return the corresponding float32
     var val : float32
     try:
         val = line.parseFloat()
@@ -46,16 +49,23 @@ proc parseEndianness*(line: string) : float32 =
     else: raise newException(InvalidPfmFileFormat, "invalid endianness specification")
 
 proc readPfmImage*(stream: Stream) : HdrImage =
+
+    #Check if the file is a pfm image reading the first line
     let magic = stream.readLine()
     if magic != "PF":
         raise newException(InvalidPfmFileFormat, "invalid magic in PFM file")
-    let img_size : string = stream.readLine()
-    let (width, height) = parseImgSize(img_size)
-    let endianness_line : string = stream.readLine()
-    let endianness : float32 = parseEndianness(endianness_line)
-    var img : HdrImage = newHdrImage(width=width, height=height)
-    var c : Color
-    var y : int = height - 1
+    
+    #Read the second and third lines of the pfm image and save all the information
+    let 
+        (width, height) = parseImgSize(stream.readLine())
+        endianness : float32 = parseEndianness(stream.readLine())
+
+    #Create the hdr image and the other usefull variables
+    var 
+        img : HdrImage = newHdrImage(width=width, height=height)
+        c : Color
+        y : int = height - 1
+    
     while y >= 0:
         for x in 0 ..< width:
             c.r = readFloat(stream, endianness)
@@ -63,4 +73,6 @@ proc readPfmImage*(stream: Stream) : HdrImage =
             c.b = readFloat(stream, endianness)
             set_pixel(img, x, y, c)
         y = y - 1
+    
+    stream.close()
     return img
