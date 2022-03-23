@@ -55,7 +55,7 @@ func `*` *(c: Color, a: float32) : Color =
 
 func are_close *(c1, c2: Color; epsilon : float32 = 1e-5) : bool =
     var dif : Color = c1 - c2
-    return dif.r < epsilon and dif.g < epsilon and dif.b < epsilon
+    return abs(dif.r) < epsilon and abs(dif.g) < epsilon and abs(dif.b) < epsilon
 
 #FUNCTIONS TEST
 

@@ -38,7 +38,7 @@ proc parseEndianness*(line: string) : float32 =
     ## Take the srting containing the endianness and return the corresponding float32
     var val : float32
     try:
-        val = line.parseFloat()
+        val = line.parseFloat() #native
     except ValueError:
         raise newException(InvalidPfmFileFormat, "missing endianness specification")
     if val > 0: return 1.0
@@ -76,29 +76,36 @@ proc readPfmImage*(stream: Stream) : HdrImage =
 
 #WRITING   
 
-proc writeFloat*(stream : Stream, color : var float32, endianness: float32)=
-    var val : uint32
-    if endianness == 1.0: bigEndian32(addr val, addr color)
-    else: littleEndian32(addr val, addr color)
-    stream.write(val)
+proc writeFloat*(stream : Stream, color : float32, endianness: float32)=
     
+    var val : uint32 = uint32(color)
+
+    if endianness == -1.0: 
+        stream.write(val)
+    else: 
+        var val2 : uint32
+        swapEndian32(addr val2, addr val)
+        stream.write(val2)    
 
 proc writePfmImage*(img: HdrImage, stream: Stream, endianness: float32) =
+    ##Print a PFM image into a stream
     var endianness_string : string
+
     if endianness == -1.0: endianness_string = "-1.0"
     else: endianness_string = "1.0"
-    # vedi differenza tra fmt vs. &
+
     let header : string = fmt"PF\n{img.width} {img.height}\n-1.0\n"
     stream.write(header)
+
     var c : Color
-    var y : int = img.height - 1
-    while y >= 0:
+    var y_height : int = img.height - 1
+
+    for y in y_height .. 0:
         for x in 0 ..< img.width:
             c = get_pixel(img, x, y)
             writeFloat(stream, c.r, endianness)
             writeFloat(stream, c.g, endianness)
             writeFloat(stream, c.b, endianness)
-    stream.close()
 
 
 
