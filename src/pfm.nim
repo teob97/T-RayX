@@ -74,7 +74,7 @@ proc readPfmImage*(stream: Stream) : HdrImage =
     stream.close()
     return img
 
-#WRITING
+#WRITING   
 
 proc writeFloat*(stream : Stream, color : var float32, endianness: float32)=
     var val : uint32
