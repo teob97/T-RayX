@@ -7,7 +7,7 @@ type
     InvalidPfmFileFormat* = object of CatchableError
 
 proc readFloat*(stream: Stream, endianness: float) : float32 =
-    ## Read a binary value and convert it to float32 value using the correct endianness
+    ## Reading 4 byte sequence in a 32 bit floating-point taking endianness into account
     var num: float32
     var x = stream.readUint32()
     if endianness > 0:
@@ -22,10 +22,8 @@ proc parseImgSize*(line: string): (int,int) =
         elements = split(line)
         width : int
         height : int
-
     if len(elements) != 2:
         raise newException(InvalidPfmFileFormat, "Invalid image size specification")
-
     try:
         width = elements[0].parseInt()
         height = elements[1].parseInt()
@@ -33,7 +31,6 @@ proc parseImgSize*(line: string): (int,int) =
             raise newException(ValueError, "")
     except ValueError:
         raise newException(InvalidPfmFileFormat, "Ivalid width/height")
-
     return (width, height)
 
 proc parseEndianness*(line: string) : float32 =
@@ -43,7 +40,6 @@ proc parseEndianness*(line: string) : float32 =
         val = line.parseFloat()
     except ValueError:
         raise newException(InvalidPfmFileFormat, "missing endianness specification")
-
     if val > 0: return 1.0
     elif val < 0: return -1.0
     else: raise newException(InvalidPfmFileFormat, "invalid endianness specification")
@@ -76,3 +72,26 @@ proc readPfmImage*(stream: Stream) : HdrImage =
     
     stream.close()
     return img
+
+
+# ANCORA DA SISTEMAREEEEE
+proc writePfmImage*(img HdrImage, stream: Stream, endianness: float) =
+    let endianness_string : string
+    if endianness == -1.0: endianness_string == "-1.0"
+    else: endianness_string == "1.0"
+    # vedi differenza tra fmt vs. &
+    let header : string = fmt"PF\n{img.width} {self.height}\n-1.0\n"
+    stream.write(header)
+    var c : Color
+    var y : int = height - 1
+    while y >= 0:
+        for x in 0 ..< width:
+            c = get_pixel(img, x, y)
+            #ATTENZIONE MANCA WRITEFLOAT 
+            writeFloat(stream, c.r, endianness)
+            writeFloat(stream, c.g, endianness)
+            writeFloat(stream, c.b, endianness)
+
+
+
+
