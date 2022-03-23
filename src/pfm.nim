@@ -1,6 +1,7 @@
 import std/endians
 import std/streams
 import std/strutils
+import std/strformat
 import basictypes
 
 type
@@ -73,24 +74,31 @@ proc readPfmImage*(stream: Stream) : HdrImage =
     stream.close()
     return img
 
+#WRITING
 
-# ANCORA DA SISTEMAREEEEE
-proc writePfmImage*(img HdrImage, stream: Stream, endianness: float) =
-    let endianness_string : string
-    if endianness == -1.0: endianness_string == "-1.0"
-    else: endianness_string == "1.0"
+proc writeFloat*(stream : Stream, color : var float32, endianness: float32)=
+    var val : uint32
+    if endianness == 1.0: bigEndian32(addr val, addr color)
+    else: littleEndian32(addr val, addr color)
+    stream.write(val)
+    
+
+proc writePfmImage*(img: HdrImage, stream: Stream, endianness: float32) =
+    var endianness_string : string
+    if endianness == -1.0: endianness_string = "-1.0"
+    else: endianness_string = "1.0"
     # vedi differenza tra fmt vs. &
-    let header : string = fmt"PF\n{img.width} {self.height}\n-1.0\n"
+    let header : string = fmt"PF\n{img.width} {img.height}\n-1.0\n"
     stream.write(header)
     var c : Color
-    var y : int = height - 1
+    var y : int = img.height - 1
     while y >= 0:
-        for x in 0 ..< width:
+        for x in 0 ..< img.width:
             c = get_pixel(img, x, y)
-            #ATTENZIONE MANCA WRITEFLOAT 
             writeFloat(stream, c.r, endianness)
             writeFloat(stream, c.g, endianness)
             writeFloat(stream, c.b, endianness)
+    stream.close()
 
 
 
