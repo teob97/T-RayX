@@ -2,8 +2,8 @@
 
 version       = "0.1.0"
 author        = "Baratto M. ; Gatti E."
-description   = "A new awesome nimble package"
-license       = "MIT"
+description   = ""
+license       = ""
 srcDir        = "src"
 bin           = @["progetto"]
 
