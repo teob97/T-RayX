@@ -1,5 +1,5 @@
-import std/streams
+#[ import std/streams
 import basictypes
 import pfm
 
-proc test_read_float()
+proc test_read_float() ]#
