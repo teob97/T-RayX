@@ -77,30 +77,24 @@ proc readPfmImage*(stream: Stream) : HdrImage =
 #WRITING   
 
 proc writeFloat*(stream : Stream, color : float32, endianness: float32)=
-    
-    var val : uint32 = uint32(color)
-
-    if endianness == -1.0: 
-        stream.write(val)
-    else: 
+    if endianness == -1.0:
+        stream.write(color)
+    else:
         var val2 : uint32
-        swapEndian32(addr val2, addr val)
-        stream.write(val2)    
+        var col : float32 = color
+        swapEndian32(addr val2, addr col)
+        stream.write(val2)
 
 proc writePfmImage*(img: HdrImage, stream: Stream, endianness: float32) =
     ##Print a PFM image into a stream
     var endianness_string : string
-
     if endianness == -1.0: endianness_string = "-1.0"
     else: endianness_string = "1.0"
-
-    let header : string = fmt"PF\n{img.width} {img.height}\n-1.0\n"
-    stream.write(header)
-
+    stream.writeLine("PF")
+    stream.writeLine(fmt"{img.width} {img.height}")
+    stream.writeLine(fmt"{endianness_string}")
     var c : Color
-    var y_height : int = img.height - 1
-
-    for y in y_height .. 0:
+    for y in countdown(img.height - 1, 0):
         for x in 0 ..< img.width:
             c = get_pixel(img, x, y)
             writeFloat(stream, c.r, endianness)

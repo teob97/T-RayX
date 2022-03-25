@@ -66,10 +66,9 @@ proc test_readPfmImage_execption() =
 
   expect(InvalidPfmFileFormat):
     let buf = newStringStream("PokoF\n3 2\n-1.0\nstop")
-    var img_2 = readPfmImage(buf)  
+    var img_2 = readPfmImage(buf)
 
 proc test_writePfmImage() =
-  
   var img = newHdrImage(3,2)
   img.set_pixel(0, 0, newColor(1.0e1, 2.0e1, 3.0e1)) 
   img.set_pixel(1, 0, newColor(4.0e1, 5.0e1, 6.0e1)) 
@@ -79,17 +78,11 @@ proc test_writePfmImage() =
   img.set_pixel(2, 1, newColor(7.0e2, 8.0e2, 9.0e2))
 
   var stream = newStringStream("")
-  var buffer = le_ref_bytes
-
-  writePfmImage(img, stream, -1.0)
-
+  var buffer = be_ref_bytes
+  writePfmImage(img, stream, 1.0)
   stream.setPosition(0)
   var buffer2: array[sizeof(buffer), byte]
   var stuff = stream.readData(addr(buffer2), sizeof(buffer2)) 
-
-  echo buffer
-  echo buffer2
-
   assert buffer2 == buffer
 
 
