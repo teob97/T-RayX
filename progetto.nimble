@@ -9,6 +9,5 @@ bin           = @["progetto"]
 
 
 # Dependencies
-requires "simplepng"
 requires "nim >= 1.6.4"
 requires "simplepng"
