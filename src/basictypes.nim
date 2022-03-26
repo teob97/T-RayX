@@ -1,4 +1,4 @@
-#CLASS
+# CLASS
 
 type
     Color* = object
@@ -8,7 +8,7 @@ type
         width*, height*: int
         pixels* : seq[Color]
         
-#CONSTRUCTORS
+# CONSTRUCTORS
 
 func newColor*(r : float32 = 0.0; g : float32 = 0.0; b : float32 = 0.0) : Color =
     var C : Color
@@ -18,25 +18,21 @@ func newColor*(r : float32 = 0.0; g : float32 = 0.0; b : float32 = 0.0) : Color 
     return C
 
 func newHdrImage*(width, height : int) : HdrImage =
-    
     var img : HdrImage
     var C : Color = newColor(0.0, 0.0, 0.0)
-
     img.width = width
     img.height = height
     img.pixels = newSeq[Color](width*height)
-    
     for i in 0..<width*height:
         img.pixels[i] = C
-    
     return img
 
-#FUNCTIONS
+# FUNCTIONS
 
 func pixel_offset*(img : HdrImage; x, y : int) : int =
     return y * img.width + x
 
-#OPERATOR OVERLOAD
+# OPERATOR OVERLOAD
 
 func `+` *(c1 : Color, c2 : Color): Color =
     return newColor(c1.r + c2.r, c1.g + c2.g, c1.b + c2.b)
@@ -57,12 +53,12 @@ func are_close *(c1, c2: Color; epsilon : float32 = 1e-5) : bool =
     var dif : Color = c1 - c2
     return abs(dif.r) < epsilon and abs(dif.g) < epsilon and abs(dif.b) < epsilon
 
-#FUNCTIONS TEST
+# FUNCTIONS TEST
 
 func test_valid_coordinates*(img : HdrImage; width, height : int) : bool =
     return width >= 0 and width < img.width and height >= 0 and height < img.height 
 
-#PIXEL ACCESS AND MODIFICATION
+# PIXEL ACCESS AND MODIFICATION
 
 func get_pixel*(img : HdrImage; x, y : int) : Color =
     if test_valid_coordinates(img, x ,y)==false:

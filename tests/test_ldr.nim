@@ -10,18 +10,18 @@ proc test_luminosity() =
 
 proc test_average_luminosity() =
     var img : HdrImage = newHdrImage(2, 1)
-    set_pixel(img, 0, 0, newColor(5.0, 10.0, 15.0)) # Luminosity: 10.0
-    set_pixel(img, 1, 0, newColor(500.0, 1000.0, 1500.0)) # Luminosity: 1000.0
+    set_pixel(img, 0, 0, newColor(5.0, 10.0, 15.0))
+    set_pixel(img, 1, 0, newColor(500.0, 1000.0, 1500.0))
     assert average_luminosity(img, delta=0.0) == 100.0
 
 proc test_normalize_image() =
     var img : HdrImage = newHdrImage(2, 1)
     set_pixel(img, 0, 0, newColor(5.0, 10.0, 15.0))
     set_pixel(img, 1, 0, newColor(500.0, 1000.0, 1500.0))
-    normalize_image(img, a=1000.0, luminosity=some(100.0))
+    normalize_image(img, factor=1000.0, luminosity=some(100.0))
     assert are_close(get_pixel(img, 0, 0), newColor(0.5e2, 1.0e2, 1.5e2))
     assert are_close(get_pixel(img, 1, 0), newColor(0.5e4, 1.0e4, 1.5e4))
-
+    
 proc test_clamp_image() =
     var img : HdrImage = newHdrImage(2, 1)
     set_pixel(img, 0, 0, newColor(0.5e1, 1.0e1, 1.5e1))
