@@ -72,13 +72,17 @@ define_are_close(Point)
 define_are_close(Normal) 
 
 #Product between a scalar and an object
-template define_product(t: typedesc) =
+template define_product*(t: typedesc) =
   proc `*`*(arg1 : float, arg2 : t) : t =
     result.x = arg1 * arg2.x
     result.y = arg1 * arg2.y
     result.z = arg1 * arg2.z
-    
 
+  proc `*`*(arg2 : t, arg1 : float) : t =
+    result.x = arg1 * arg2.x
+    result.y = arg1 * arg2.y
+    result.z = arg1 * arg2.z
+    
 define_product(Vec)
 define_product(Point)
 define_product(Normal)
@@ -120,7 +124,7 @@ define_3dop(`-`, Normal, Normal, Normal)
 
 #Scalar product between Vector and/or Normal
 template define_dot*(type1: typedesc, type2: typedesc) =
-  proc `*`*(a: type1, b: type2): float =
+  proc dot*(a: type1, b: type2): float =
     return a.x * b.x +  a.y * b.y +  a.z * b.z
 
 define_dot(Vec, Vec)
