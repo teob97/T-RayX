@@ -16,6 +16,6 @@
     <img src="https://img.shields.io/github/license/teob97/T-RayX?color=blue&style=flat-square" alt="License">
   </a>
   <a href="https://www.paypal.me/EGatti619">
-    <img src="https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&amp;style=flat">
+    <img src="https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&amp;style=flat-square">
   </a>
 </p>
