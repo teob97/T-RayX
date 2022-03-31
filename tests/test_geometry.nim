@@ -13,7 +13,7 @@ suite "Test geometry.nim":
       a.are_close(b) == false
   test "Test vector operations":
     check:
-      (a.neg).are_close(newVec(-1.0, -2.0, -3.0))
+      (-a).are_close(newVec(-1.0, -2.0, -3.0))
       (a+b).are_close(newVec(5.0, 8.0, 11.0))
       (b-a).are_close(newVec(3.0, 4.0, 5.0))
       are_close(2*a, newVec(2.0, 4.0, 6.0))

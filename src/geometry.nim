@@ -89,7 +89,7 @@ define_product(Normal)
 
 #Negation: return the reversed vector
 template define_neg(t: typedesc) =
-  proc neg*(arg : t): t =
+  proc `-`*(arg : t): t =
     result = -1.0 * arg 
 
 define_neg(Vec)
