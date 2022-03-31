@@ -121,6 +121,7 @@ define_3dop(`+`, Point, Vec, Point)
 define_3dop(`-`, Point, Vec, Point)
 define_3dop(`+`, Normal, Normal, Normal)
 define_3dop(`-`, Normal, Normal, Normal)
+define_3dop(`-`, Point, Point, Vec)
 
 #Scalar product between Vector and/or Normal
 template define_dot*(type1: typedesc, type2: typedesc) =
