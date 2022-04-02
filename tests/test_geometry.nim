@@ -33,8 +33,3 @@ suite "Test geometry.nim":
       are_close(p1+b, newPoint(5.0, 8.0, 11.0))
       are_close(p2-p1, newVec(3.0, 4.0, 5.0))
       are_close(p1-b, newPoint(-3.0, -4.0, -5.0)) 
-
-
-
-
-
