@@ -35,7 +35,6 @@ suite "Test geometry.nim":
       are_close(p2-p1, newVec(3.0, 4.0, 5.0))
       are_close(p1-b, newPoint(-3.0, -4.0, -5.0)) 
 
-
 suite "Test transformation.nim":
   setup:
     var m1 : Transformation = newTransformation(
@@ -95,7 +94,6 @@ suite "Test transformation.nim":
     var s1 : Transformation = scaling(newVec(2.0, 5.0, 10.0))
     var s2 : Transformation = scaling(newVec(3.0, 2.0, 4.0))
     var ex_s : Transformation = scaling(newVec(6.0, 10.0, 40.0))
-
   test "Test isClose":
     check:
       m1.isConsistent() == true
