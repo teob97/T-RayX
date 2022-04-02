@@ -1,4 +1,5 @@
 import ../src/geometry
+import ../src/transformation
 import std/unittest
 
 suite "Test geometry.nim":
@@ -33,3 +34,39 @@ suite "Test geometry.nim":
       are_close(p1+b, newPoint(5.0, 8.0, 11.0))
       are_close(p2-p1, newVec(3.0, 4.0, 5.0))
       are_close(p1-b, newPoint(-3.0, -4.0, -5.0)) 
+
+
+suite "Test transformation.nim":
+  setup:
+    var m1 : Transformation = newTransformation(
+                              m = [1.0, 2.0, 3.0, 4.0,
+                                   5.0, 6.0, 7.0, 8.0,
+                                   9.0, 9.0, 8.0, 7.0,
+                                   6.0, 5.0, 4.0, 1.0],
+                              invm = [-3.75, 2.75, -1, 0,
+                                      4.375, -3.875, 2.0, -0.5,
+                                      0.5, 0.5, -1.0, 1.0,
+                                      -1.375, 0.875, 0.0, -0.5])
+    var m2 : Transformation = newTransformation(
+                              m = [1.0, 2.0, 3.0, 4.0,
+                                   5.0, 6.0, 7.0, 8.0,
+                                   9.0, 9.0, 8.0, 7.0,
+                                   6.0, 5.0, 4.0, 1.0],
+                              invm = [-3.75, 2.75, -1, 0,
+                                      4.375, -3.875, 2.0, -0.5,
+                                      0.5, 0.5, -1.0, 1.0,
+                                      -1.375, 0.875, 0.0, -0.5])
+    var m3 : Transformation = newTransformation(
+                              m = [1.0, 2.0, 3.0, 4.0,
+                                   5.0, 6.0, 7.0, 8.0,
+                                   9.0, 9.0, 9.0, 7.0, # +1 in (2,2) coord
+                                   6.0, 5.0, 4.0, 1.0],
+                              invm = [-3.75, 2.75, -1, 0,
+                                      4.375, -3.875, 2.0, -0.5,
+                                      0.5, 0.5, -1.0, 1.0,
+                                      -1.375, 0.875, 0.0, -0.5])
+  test "Test cons":
+    check:
+      m1.isConsistent() == true
+      m1.isClose(m2) == true
+      m1.isClose(m3) == true # NON VA BENE, DEVE ESSERE FALSE
