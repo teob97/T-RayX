@@ -1,0 +1,20 @@
+name: Test
+
+on: [push]
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macOS-latest
+        version:
+          - 1.6.x
+    steps:
+      - name: Setup Nim environment
+        uses: jiro4989/setup-nim-action@v1.1.4
+      - name: Running test
+        run: nimble test
