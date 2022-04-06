@@ -11,12 +11,12 @@ jobs:
           - ubuntu-latest
           - windows-latest
           - macOS-latest
-        version:
+        nim-version:
           - 1.6.x
     steps:
-      - name: non so cosa faccia
-        uses: action/checkout@v2
       - name: Setup Nim environment
         uses: jiro4989/setup-nim-action@v1.1.4
+        with:
+          nim-version: "${{ matrix.nim-version }}"
       - name: Running test
         run: nimble test -Y
