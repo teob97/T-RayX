@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="https://github.com/teob97/T-RayX/"><img src="img/T-RayX.png" alt="T-RayX" width="300" height="300"></a>
+  <a href="https://github.com/teob97/T-RayX/"><img src="logo/T-RayX.png" alt="T-RayX" width="300" height="300"></a>
   <br>
   T-RayX
   <br>
