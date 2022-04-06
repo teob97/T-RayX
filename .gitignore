@@ -1,12 +1,7 @@
-src/main
-src/basictypes
-src/ldr
-src/pfm
-tests/img
-tests/test_basictypes
-tests/test_pfm
-tests/test_ldr
-tools
+*
+!**/
+!*.*
+
 .DS_Store
 *~
 *.o

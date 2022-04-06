@@ -5,7 +5,7 @@ author        = "Baratto M. ; Gatti E."
 description   = "Ray tracing"
 license       = "GPL3"
 srcDir        = "src"
-bin           = @["progetto"]
+bin           = @["main"]
 
 
 # Dependencies
