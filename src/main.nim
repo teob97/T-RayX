@@ -15,7 +15,7 @@ type
         output_png_file_name : string
 
 # Read parameters form command line
-proc parse_command_line*(param : var Parameters) =
+proc parseCommandLine*(param : var Parameters) =
     var args = commandLineParams()
     if len(args) != 4:
         raise newException(IOError, "Usage: main.nim INPUT_PFM_FILE FACTOR GAMMA OUTPUT_PNG_FILE")
@@ -33,7 +33,7 @@ proc parse_command_line*(param : var Parameters) =
 proc main() =
     var param : Parameters
     try:
-        parse_command_line(param):
+        parseCommandLine(param):
     except IOError as err:
         echo ("Error: ", err)
         return

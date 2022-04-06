@@ -67,7 +67,7 @@ proc readPfmImage*(stream: Stream) : HdrImage =
             c.r = readFloat(stream, endianness)
             c.g = readFloat(stream, endianness)
             c.b = readFloat(stream, endianness)
-            set_pixel(img, x, y, c)
+            setPixel(img, x, y, c)
         y = y - 1
     stream.close()
     return img
@@ -95,7 +95,7 @@ proc writePfmImage*(img: HdrImage, stream: Stream, endianness: float32) =
     var c : Color
     for y in countdown(img.height - 1, 0):
         for x in 0 ..< img.width:
-            c = get_pixel(img, x, y)
+            c = getPixel(img, x, y)
             writeFloat(stream, c.r, endianness)
             writeFloat(stream, c.g, endianness)
             writeFloat(stream, c.b, endianness)

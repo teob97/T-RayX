@@ -10,7 +10,7 @@ proc luminosity*(c : Color) : float32 =
     ## Return the luminosity of a pixel
     return (max(max(c.r, c.g), c.b) + min(min(c.r, c.g), c.b)) / 2
 
-proc average_luminosity*(img : HdrImage, delta : float32 = 1e-10) : float32 =
+proc averageLuminosity*(img : HdrImage, delta : float32 = 1e-10) : float32 =
     ## Return the average luminosity of a HdrImage
     var cumsum : float32 = 0.0
     for pixel in img.pixels:
@@ -18,10 +18,10 @@ proc average_luminosity*(img : HdrImage, delta : float32 = 1e-10) : float32 =
     return pow(10.0, cumsum / float(len(img.pixels)))
 
 # Normalization
-proc normalize_image*(img : var HdrImage, factor : float, luminosity : Option[float] = none(float)) =
+proc normalizeImage*(img : var HdrImage, factor : float, luminosity : Option[float] = none(float)) =
     ## Normalize a HdrImage
     if luminosity.isNone:
-        var luminosity : float32 = average_luminosity(img)
+        var luminosity : float32 = averageLuminosity(img)
         for i in 0..<len(img.pixels):
             img.pixels[i] = img.pixels[i] * (factor / luminosity)
     else:
@@ -32,7 +32,7 @@ proc normalize_image*(img : var HdrImage, factor : float, luminosity : Option[fl
 proc clamp*(x : float32) : float32 =
     return x / (1 + x)
 
-proc clamp_image*(img : var HdrImage) =
+proc clampImage*(img : var HdrImage) =
     for i in 0..<len(img.pixels):
         img.pixels[i].r = clamp(img.pixels[i].r)
         img.pixels[i].g = clamp(img.pixels[i].g)
@@ -40,7 +40,7 @@ proc clamp_image*(img : var HdrImage) =
 
 # WRITING
 
-proc write_ldr_image*(img : HdrImage, name : string, gamma : float = 1.0) =
+proc writeLdrImage*(img : HdrImage, name : string, gamma : float = 1.0) =
     ## Write a HdrImage in a png image
     var p = initPixels(img.width, img.height)
     var c : Color

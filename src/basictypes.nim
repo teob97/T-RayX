@@ -29,7 +29,7 @@ func newHdrImage*(width, height : int) : HdrImage =
 
 # FUNCTIONS
 
-func pixel_offset*(img : HdrImage; x, y : int) : int =
+func pixelOffset*(img : HdrImage; x, y : int) : int =
     return y * img.width + x
 
 # OPERATOR OVERLOAD
@@ -49,7 +49,7 @@ func `*` *(a: float32, c: Color) : Color =
 func `*` *(c: Color, a: float32) : Color =
     return newColor(c.r * a, c.g * a, c.b * a)
 
-func are_close *(c1, c2: Color; epsilon : float32 = 1e-5) : bool =
+func areClose *(c1, c2: Color; epsilon : float32 = 1e-5) : bool =
     var dif : Color = c1 - c2
     return abs(dif.r) < epsilon and abs(dif.g) < epsilon and abs(dif.b) < epsilon
 
@@ -60,12 +60,12 @@ func test_valid_coordinates*(img : HdrImage; width, height : int) : bool =
 
 # PIXEL ACCESS AND MODIFICATION
 
-func get_pixel*(img : HdrImage; x, y : int) : Color =
+func getPixel*(img : HdrImage; x, y : int) : Color =
     if test_valid_coordinates(img, x ,y)==false:
-        raise newException(IOError, "Invalid coordinates in get_pixel function.")
+        raise newException(IOError, "Invalid coordinates in getPixel function.")
     return img.pixels[y * img.width + x]
 
-func set_pixel*(img : var HdrImage; x, y : int; new_col : Color) =
+func setPixel*(img : var HdrImage; x, y : int; new_col : Color) =
     if test_valid_coordinates(img, x, y) == false:
-        raise newException(IOError, "Invalid coordinates in set_pixel function.")
-    img.pixels[pixel_offset(img, x, y)] = new_col
+        raise newException(IOError, "Invalid coordinates in setPixel function.")
+    img.pixels[pixelOffset(img, x, y)] = new_col
