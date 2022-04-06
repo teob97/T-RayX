@@ -19,4 +19,4 @@ jobs:
         with:
           nim-version: "${{ matrix.nim-version }}"
       - name: Running test
-        run: nimble ../../test -Y
+        run: nimble test -Y
