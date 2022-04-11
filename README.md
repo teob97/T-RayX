@@ -30,14 +30,15 @@
 
 ---
 
-## :t-rex: Overview
+## :t-rex:  Overview
 T-RayX is a Nim package aimed to generate a photorealistic image.
 
-## :desktop_computer: System Requirements
+## :desktop_computer:  System Requirements
 T-RayX works on Windows, Linux and MacOSX machine.
+
 Nim version required: 1.6.4
 
-## :rocket: Example
+## :rocket:  Example
 Convert pfm file in png image using syntax:
 
 ```bash
@@ -47,9 +48,16 @@ nim r main.nim file.pfm alpha gamma output.png
 In `src` directory run:
 
 ```bash
-nim r main.nim ../tests/img/memorial.pbm 0.6 1.45 memorial_a0.6-gamma1.45.png
+nim r main.nim ../tests/img/lawn.pbm 0.6 1.45 lawn_a0.6-gamma1.45.png
 ```
 
 in order to create the following image:
 
-![](output/memorial_a0.6-gamma1.45.png)
+![](output/lawn_a0.6-gamma1.45.png)
+
+It is possible to change the parameters alpha and gamma.
+<p float="left">
+  <img src="output/lawn_a0.3-gamma1.45.png" width="100" />
+  <img src="output/lawn_a0.6-gamma1.45.png" width="100" /> 
+  <img src="output/lawn_a0.9-gamma1.45.png" width="100" />
+</p>
