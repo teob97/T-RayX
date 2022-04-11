@@ -57,7 +57,7 @@ in order to create the following image:
 
 It is possible to change the parameters alpha and gamma.
 <p float="left">
-  <img src="output/lawn_a0.3-gamma1.45.png" width="300" />
-  <img src="output/lawn_a0.6-gamma1.45.png" width="300" /> 
-  <img src="output/lawn_a0.9-gamma1.45.png" width="300" />
+  <img src="output/lawn_a0.3-gamma1.45.png" width="270" />
+  <img src="output/lawn_a0.6-gamma1.45.png" width="270" /> 
+  <img src="output/lawn_a0.9-gamma1.45.png" width="270" />
 </p>
