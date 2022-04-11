@@ -1,5 +1,6 @@
 import std/math
 import std/options
+import std/strformat
 import simplepng
 import basictypes
 
@@ -53,4 +54,4 @@ proc writeLdrImage*(img : HdrImage, name : string, gamma : float = 1.0) =
                      int(255 * pow(c.g, 1 / gamma)),
                      int(255 * pow(c.b, 1 / gamma)), 255)
             i += 1
-    simplePNG(name, p)
+    simplePNG(fmt"../output/{name}", p)

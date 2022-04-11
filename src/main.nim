@@ -1,7 +1,6 @@
 import basictypes
 import pfm
 import ldr
-import std/sequtils
 import std/strutils
 import std/strformat
 import std/streams
