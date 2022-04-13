@@ -313,6 +313,11 @@ suite "Test cameras.nim":
       ray2 = newRay(origin = newPoint(1.0, 2.0, 3.0), dir = newVec(5.0, 4.0, -1.0))
       ray3 = newRay(origin = newPoint(5.0, 1.0, 4.0), dir = newVec(3.0, 9.0, 4.0))
       ray4 = newRay(origin = newPoint(1.0, 2.0, 4.0), dir = newVec(4.0, 2.0, 1.0))
+      image : HdrImage = newHdrImage(width=4, height=2)
+      camera : Camera = newPerspectiveCamera(aspect_ratio=2)
+      tracer : ImageTracer = newImageTracer(image=image, camera=camera)
+      ray1a : Ray = tracer.fire_ray(0, 0, u_pixel=2.5, v_pixel=1.5)
+      ray2a : Ray = tracer.fire_ray(2, 1, u_pixel=0.5, v_pixel=0.5)
   test "Test Ray":
     check:
       are_close(ray1, ray2) == true
@@ -320,3 +325,8 @@ suite "Test cameras.nim":
       are_close(ray4.at(0.0), ray4.origin)
       are_close(ray4.at(1.0), newPoint(5.0, 4.0, 5.0))
       are_close(ray4.at(2.0), newPoint(9.0, 6.0, 6.0))
+
+
+  test "Test ImageTracer":
+    check:
+      areClose(ray1a, ray2a)
