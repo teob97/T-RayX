@@ -62,14 +62,14 @@ define_string_conversion(Vec)
 define_string_conversion(Point)
 define_string_conversion(Normal)
 
-template define_are_close(t: typedesc) =
+template define_areClose(t: typedesc) =
   ## Compare the object with a precision of e=1e-5
-  proc are_close*(arg1, arg2 : t; e = 1e-5): bool =
+  proc areClose*(arg1, arg2 : t; e = 1e-5): bool =
     return abs(arg1.x-arg2.x)<e and abs(arg1.y-arg2.y)<e and abs(arg1.z-arg2.z)<e
 
-define_are_close(Vec)
-define_are_close(Point)
-define_are_close(Normal) 
+define_areClose(Vec)
+define_areClose(Point)
+define_areClose(Normal) 
 
 # Product between a scalar and an object
 template define_product*(t: typedesc) =
