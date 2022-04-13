@@ -1,8 +1,7 @@
 import std/math
 
-###############
-#VECTOR OBJECT#
-###############
+
+#VECTOR OBJECT
 
 type 
   Vec* = object
@@ -18,9 +17,8 @@ const VEC_X* : Vec = newVec(1.0, 0.0, 0.0)
 const VEC_Y* : Vec = newVec(0.0, 1.0, 0.0)
 const VEC_Z* : Vec = newVec(0.0, 0.0, 1.0)
 
-##############
-#POINT OBJECT#
-##############
+
+#POINT OBJECT
 
 type 
   Point* = object
@@ -31,9 +29,8 @@ proc newPoint*(x, y, z : float) : Point =
   result.y = y
   result.z = z
 
-###############
-#NORMAL OBJECT#
-###############
+
+#NORMAL OBJECT
 
 type 
   Normal* = object
@@ -44,9 +41,7 @@ proc newNormal*(x, y, z : float) : Normal =
   result.y = y
   result.z = z
 
-###########
-#TEMPLATES#
-###########
+#TEMPLATES
 
 template define_print_string(t: typedesc) = 
   ## Print the object in the format Obj.type(Obj.x, Obj.y, Obj.z)

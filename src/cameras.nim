@@ -1,4 +1,5 @@
 import ../src/geometry
+import ../src/transformation
 
 type
   Ray* = object

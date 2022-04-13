@@ -28,9 +28,7 @@ proc areMatrClose*(m1, m2: array[16, float], epsilon : float = 1e-5) : bool =
 proc diffOfProduct*(m1, m2, m3, m4: float) : float =
   return m1*m2-m3*m4
 
-#######################
-#TRANSFORMATION OBJECT#
-#######################
+#TRANSFORMATION OBJECT
 
 type
   ## Affine transformation.
