@@ -306,17 +306,45 @@ suite "Test transformation.nim":
 #TEST CAMERAS#
 ##############
 
+proc areClose(a,b : float): bool = 
+  return abs(a-b)<1e-5
+
 suite "Test cameras.nim":
   setup:
     var
-      ray1 = newRay(origin = newPoint(1.0, 2.0, 3.0), dir = newVec(5.0, 4.0, -1.0))
-      ray2 = newRay(origin = newPoint(1.0, 2.0, 3.0), dir = newVec(5.0, 4.0, -1.0))
-      ray3 = newRay(origin = newPoint(5.0, 1.0, 4.0), dir = newVec(3.0, 9.0, 4.0))
-      ray4 = newRay(origin = newPoint(1.0, 2.0, 4.0), dir = newVec(4.0, 2.0, 1.0))
+      ray1 : Ray = newRay(origin = newPoint(1.0, 2.0, 3.0), dir = newVec(5.0, 4.0, -1.0))
+      ray2 : Ray = newRay(origin = newPoint(1.0, 2.0, 3.0), dir = newVec(5.0, 4.0, -1.0))
+      ray3 : Ray = newRay(origin = newPoint(5.0, 1.0, 4.0), dir = newVec(3.0, 9.0, 4.0))
+
+      ray4 : Ray = newRay(origin = newPoint(1.0, 2.0, 4.0), dir = newVec(4.0, 2.0, 1.0))
+
+      ray5 : Ray = newRay(origin = newPoint(1.0, 2.0, 3.0), dir = newVec(6.0, 5.0, 4.0))
+      transformation = translation(newVec(10.0, 11.0, 12.0)) * rotation_x(90.0)
+      transformed = ray5 * transformation
+
+      cam = newOrthogonalCamera(aspect_ratio = 2.0)
+      ray1f = cam.fireRay(0.0, 0.0)
+      ray2f = cam.fireRay(1.0, 0.0)
+      ray3f = cam.fireRay(0.0, 1.0)
+      ray4f = cam.fireRay(1.0, 1.0)
   test "Test Ray":
     check:
-      are_close(ray1, ray2) == true
-      are_close(ray1, ray3) == false
-      are_close(ray4.at(0.0), ray4.origin)
-      are_close(ray4.at(1.0), newPoint(5.0, 4.0, 5.0))
-      are_close(ray4.at(2.0), newPoint(9.0, 6.0, 6.0))
+      areClose(ray1, ray2)
+      areClose(ray1, ray3) == false 
+      areClose(ray4.at(0.0), ray4.origin)
+      areClose(ray4.at(1.0), newPoint(5.0, 4.0, 5.0))
+      areClose(ray4.at(2.0), newPoint(9.0, 6.0, 6.0))
+      areClose(transformed.origin, newPoint(11.0, 8.0, 14.0))
+      areClose(transformed.dir, newVec(6.0, -4.0, 5.0))
+  test "Test OrthogonalCamera":
+    check:
+      #verify that the rays are parallel
+      areClose(0.0, ray1f.dir.cross(ray2f.dir).squared_norm())
+      areClose(0.0, ray1f.dir.cross(ray3f.dir).squared_norm())
+      areClose(0.0, ray1f.dir.cross(ray4f.dir).squared_norm())
+      #verify that the ray hitting the corners have the right coordinates
+      areClose(ray1f.at(1.0), newPoint(0.0, 2.0, -1.0))
+      areClose(ray2f.at(1.0), newPoint(0.0, -2.0, -1.0))
+      areClose(ray3f.at(1.0), newPoint(0.0, 2.0, 1.0))
+      areClose(ray4f.at(1.0), newPoint(0.0, -2.0, 1.0))
+
