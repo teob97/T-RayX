@@ -1,6 +1,0 @@
-luminosity	ldr.html#luminosity,Color	ldr: luminosity(c: Color): float32	
-averageLuminosity	ldr.html#averageLuminosity,HdrImage,float32	ldr: averageLuminosity(img: HdrImage; delta: float32 = 1e-10): float32	
-normalizeImage	ldr.html#normalizeImage,HdrImage,float,Option[float]	ldr: normalizeImage(img: var HdrImage; factor: float;\n               luminosity: Option[float] = none(float))	
-clamp	ldr.html#clamp,float32	ldr: clamp(x: float32): float32	
-clampImage	ldr.html#clampImage,HdrImage	ldr: clampImage(img: var HdrImage)	
-writeLdrImage	ldr.html#writeLdrImage,HdrImage,string,float	ldr: writeLdrImage(img: HdrImage; name: string; gamma: float = 1.0)	
