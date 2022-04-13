@@ -324,7 +324,7 @@ suite "Test cameras.nim":
       ray3f : Ray = cam.fireRay(0.0, 1.0)
       ray4f : Ray = cam.fireRay(1.0, 1.0)
       image : HdrImage = newHdrImage(width = 4, height = 2)
-      tracer : ImageTracer = newImageTracer(image = image, camera = cam)
+      tracer : ImageTracer = newImageTracer(image, cam)
       ray1t : Ray = tracer.fire_ray(0, 0, u_pixel = 2.5, v_pixel = 1.5)
       ray2t : Ray = tracer.fire_ray(2, 1, u_pixel = 0.5, v_pixel = 0.5)
   test "Test Ray":

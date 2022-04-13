@@ -61,13 +61,9 @@ type
     image* : HdrImage
     camera* : Camera
 
-proc newImageTracer*(image : HdrImage, camera : Camera): ImageTracer {.base.} =
-  quit "to override"
-
 proc newImageTracer*(image : HdrImage, camera : OrthogonalCamera): ImageTracer =
   result.image = image
   result.camera = camera
-# c'è un problema: camera è tipo Camera ma devo dirgli in un caso e nell'altro cosa fare (?)
 
 proc fireRay*(imageT : ImageTracer, col : int, row : int, u_pixel = 0.5, v_pixel = 0.5): Ray =
   var u : float = (col.float + u_pixel) / (imageT.image.width - 1).float
