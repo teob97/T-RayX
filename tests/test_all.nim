@@ -3,6 +3,8 @@ import ../src/pfm
 import ../src/ldr
 import ../src/geometry
 import ../src/transformation
+import ../src/cameras
+
 import std/options
 import std/unittest
 import std/streams
@@ -299,3 +301,22 @@ suite "Test transformation.nim":
       areClose(r2_x*VEC_Y, VEC_Z) == true
       areClose(r2_y*VEC_Z, VEC_X) == true
       areClose(r2_z*VEC_X, VEC_Y) == true
+
+##############
+#TEST CAMERAS#
+##############
+
+suite "Test cameras.nim":
+  setup:
+    var
+      ray1 = newRay(origin = newPoint(1.0, 2.0, 3.0), dir = newVec(5.0, 4.0, -1.0))
+      ray2 = newRay(origin = newPoint(1.0, 2.0, 3.0), dir = newVec(5.0, 4.0, -1.0))
+      ray3 = newRay(origin = newPoint(5.0, 1.0, 4.0), dir = newVec(3.0, 9.0, 4.0))
+      ray4 = newRay(origin = newPoint(1.0, 2.0, 4.0), dir = newVec(4.0, 2.0, 1.0))
+  test "Test Ray":
+    check:
+      are_close(ray1, ray2) == true
+      are_close(ray1, ray3) == false
+      are_close(ray4.at(0.0), ray4.origin)
+      are_close(ray4.at(1.0), newPoint(5.0, 4.0, 5.0))
+      are_close(ray4.at(2.0), newPoint(9.0, 6.0, 6.0))

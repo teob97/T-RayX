@@ -48,8 +48,8 @@ proc newNormal*(x, y, z : float) : Normal =
 #TEMPLATES#
 ###########
 
-# Print the object in the format Obj.type(Obj.x, Obj.y, Obj.z)
 template define_print_string(t: typedesc) = 
+  ## Print the object in the format Obj.type(Obj.x, Obj.y, Obj.z)
   proc print_string*(arg : t) =
     echo $t & $arg
 
@@ -57,8 +57,8 @@ define_print_string(Vec)
 define_print_string(Point)
 define_print_string(Normal)
 
-# Return a string in the format Obj.type(Obj.x, Obj.y, Obj.z)
 template define_string_conversion(t: typedesc) = 
+  ## Return a string in the format Obj.type(Obj.x, Obj.y, Obj.z)
   proc `$`*(arg : t): string =
     var buffer : string = $t & "(" & $arg.x & ", " & $arg.y & ", " & $arg.z & ")"
     return buffer
@@ -67,8 +67,8 @@ define_string_conversion(Vec)
 define_string_conversion(Point)
 define_string_conversion(Normal)
 
-# Compare the object with a precision of e=1e-5
 template define_are_close(t: typedesc) =
+  ## Compare the object with a precision of e=1e-5
   proc are_close*(arg1, arg2 : t; e = 1e-5): bool =
     return abs(arg1.x-arg2.x)<e and abs(arg1.y-arg2.y)<e and abs(arg1.z-arg2.z)<e
 
