@@ -1,0 +1,55 @@
+Vec	geometry.html#Vec	geometry: Vec	
+newVec	geometry.html#newVec,float,float,float	geometry: newVec(x, y, z: float): Vec	
+VEC_X	geometry.html#VEC_X	geometry: VEC_X	
+VEC_Y	geometry.html#VEC_Y	geometry: VEC_Y	
+VEC_Z	geometry.html#VEC_Z	geometry: VEC_Z	
+Point	geometry.html#Point	geometry: Point	
+newPoint	geometry.html#newPoint,float,float,float	geometry: newPoint(x, y, z: float): Point	
+Normal	geometry.html#Normal	geometry: Normal	
+newNormal	geometry.html#newNormal,float,float,float	geometry: newNormal(x, y, z: float): Normal	
+print_string	geometry.html#print_string,Vec	geometry: print_string(arg`gensym0: Vec)	
+print_string	geometry.html#print_string,Point	geometry: print_string(arg`gensym1: Point)	
+print_string	geometry.html#print_string,Normal	geometry: print_string(arg`gensym2: Normal)	
+`$`	geometry.html#$,Vec	geometry: `$`(arg`gensym3: Vec): string	
+`$`	geometry.html#$,Point	geometry: `$`(arg`gensym4: Point): string	
+`$`	geometry.html#$,Normal	geometry: `$`(arg`gensym5: Normal): string	
+areClose	geometry.html#areClose,Vec,Vec,float	geometry: areClose(arg1`gensym6, arg2`gensym6: Vec; e`gensym6 = 0.00001): bool	
+areClose	geometry.html#areClose,Point,Point,float	geometry: areClose(arg1`gensym7, arg2`gensym7: Point; e`gensym7 = 0.00001): bool	
+areClose	geometry.html#areClose,Normal,Normal,float	geometry: areClose(arg1`gensym8, arg2`gensym8: Normal; e`gensym8 = 0.00001): bool	
+define_product	geometry.html#define_product.t,typedesc	geometry: define_product(t: typedesc)	
+`*`	geometry.html#*,float,Vec	geometry: `*`(arg1`gensym9: float; arg2`gensym9: Vec): Vec	
+`*`	geometry.html#*,Vec,float	geometry: `*`(arg2`gensym9: Vec; arg1`gensym9: float): Vec	
+`*`	geometry.html#*,float,Point	geometry: `*`(arg1`gensym10: float; arg2`gensym10: Point): Point	
+`*`	geometry.html#*,Point,float	geometry: `*`(arg2`gensym10: Point; arg1`gensym10: float): Point	
+`*`	geometry.html#*,float,Normal	geometry: `*`(arg1`gensym11: float; arg2`gensym11: Normal): Normal	
+`*`	geometry.html#*,Normal,float	geometry: `*`(arg2`gensym11: Normal; arg1`gensym11: float): Normal	
+`-`	geometry.html#-,Vec	geometry: `-`(arg`gensym12: Vec): Vec	
+`-`	geometry.html#-,Normal	geometry: `-`(arg`gensym13: Normal): Normal	
+cross	geometry.html#cross,Vec,Normal	geometry: cross(arg1`gensym14: Vec; arg2`gensym14: Normal): Vec	
+cross	geometry.html#cross,Normal,Vec	geometry: cross(arg1`gensym15: Normal; arg2`gensym15: Vec): Vec	
+cross	geometry.html#cross,Vec,Vec	geometry: cross(arg1`gensym16: Vec; arg2`gensym16: Vec): Vec	
+cross	geometry.html#cross,Normal,Normal	geometry: cross(arg1`gensym17: Normal; arg2`gensym17: Normal): Vec	
+define_3dop	geometry.html#define_3dop.t,untyped,typedesc,typedesc,typedesc	geometry: define_3dop(fname: untyped; type1: typedesc; type2: typedesc; rettype: typedesc)	
+`+`	geometry.html#+,Vec,Vec	geometry: `+`(a`gensym18: Vec; b`gensym18: Vec): Vec	
+`-`	geometry.html#-,Vec,Vec	geometry: `-`(a`gensym19: Vec; b`gensym19: Vec): Vec	
+`+`	geometry.html#+,Vec,Point	geometry: `+`(a`gensym20: Vec; b`gensym20: Point): Point	
+`+`	geometry.html#+,Point,Vec	geometry: `+`(a`gensym21: Point; b`gensym21: Vec): Point	
+`-`	geometry.html#-,Point,Vec	geometry: `-`(a`gensym22: Point; b`gensym22: Vec): Point	
+`+`	geometry.html#+,Normal,Normal	geometry: `+`(a`gensym23: Normal; b`gensym23: Normal): Normal	
+`-`	geometry.html#-,Normal,Normal	geometry: `-`(a`gensym24: Normal; b`gensym24: Normal): Normal	
+`-`	geometry.html#-,Point,Point	geometry: `-`(a`gensym25: Point; b`gensym25: Point): Vec	
+define_dot	geometry.html#define_dot.t,typedesc,typedesc	geometry: define_dot(type1: typedesc; type2: typedesc)	
+dot	geometry.html#dot,Vec,Vec	geometry: dot(a`gensym26: Vec; b`gensym26: Vec): float	
+dot	geometry.html#dot,Vec,Normal	geometry: dot(a`gensym27: Vec; b`gensym27: Normal): float	
+dot	geometry.html#dot,Normal,Vec	geometry: dot(a`gensym28: Normal; b`gensym28: Vec): float	
+define_squared_norm	geometry.html#define_squared_norm.t,typedesc	geometry: define_squared_norm(t: typedesc)	
+squared_norm	geometry.html#squared_norm,Vec	geometry: squared_norm(a`gensym29: Vec): float	
+squared_norm	geometry.html#squared_norm,Normal	geometry: squared_norm(a`gensym30: Normal): float	
+define_norm	geometry.html#define_norm.t,typedesc	geometry: define_norm(t: typedesc)	
+norm	geometry.html#norm,Vec	geometry: norm(a`gensym31: Vec): float	
+norm	geometry.html#norm,Normal	geometry: norm(a`gensym32: Normal): float	
+define_normalization	geometry.html#define_normalization.t,typedesc	geometry: define_normalization(t: typedesc)	
+normalization	geometry.html#normalization,Vec	geometry: normalization(a`gensym33: Vec): Vec	
+normalization	geometry.html#normalization,Normal	geometry: normalization(a`gensym34: Normal): Normal	
+VecToNormal	geometry.html#VecToNormal,Vec	geometry: VecToNormal(v: Vec): Normal	
+PointToVec	geometry.html#PointToVec,Point	geometry: PointToVec(p: Point): Vec	

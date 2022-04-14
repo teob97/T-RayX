@@ -2,7 +2,6 @@
 !**/
 !*.*
 
-htmldocs
 .DS_Store
 *~
 *.o
