@@ -318,24 +318,22 @@ suite "Test cameras.nim":
       ray5 : Ray = newRay(origin = newPoint(1.0, 2.0, 3.0), dir = newVec(6.0, 5.0, 4.0))
       transformation : Transformation = translation(newVec(10.0, 11.0, 12.0)) * rotation_x(90.0)
       transformed : Ray = ray5 * transformation
-      cam : OrthogonalCamera = newOrthogonalCamera(aspect_ratio = 2.0)
+      cam = newOrthogonalCamera(aspect_ratio = 2.0)
       ray1f : Ray = cam.fireRay(0.0, 0.0)
       ray2f : Ray = cam.fireRay(1.0, 0.0)
       ray3f : Ray = cam.fireRay(0.0, 1.0)
       ray4f : Ray = cam.fireRay(1.0, 1.0)
-
-      #image : HdrImage = newHdrImage(width = 4, height = 2)
-      #tracer : ImageTracer = newImageTracer(image, cam)
-      #ray1t : Ray = tracer.fire_ray(0, 0, u_pixel = 2.5, v_pixel = 1.5)
-      #ray2t : Ray = tracer.fire_ray(2, 1, u_pixel = 0.5, v_pixel = 0.5)
-      cam2 : OrthogonalCamera = newOrthogonalCamera(aspect_ratio = 2.0, transformation = translation(- VEC_Y * 2.0) * rotation_z(90.0))
+      cam2 = newOrthogonalCamera(aspect_ratio = 2.0, transformation = translation(- VEC_Y * 2.0) * rotation_z(90.0))
       ray5f = cam2.fireRay(0.5, 0.5)
-
-      cam_persp : PerspectiveCamera = newPerspectiveCamera(distance = 1.0, aspect_ratio = 2.0)
+      cam_persp = newPerspectiveCamera(distance = 1.0, aspect_ratio = 2.0)
       ray1p : Ray = cam_persp.fireRay(0.0, 0.0)
       ray2p : Ray = cam_persp.fireRay(1.0, 0.0)
       ray3p : Ray = cam_persp.fireRay(0.0, 1.0)
       ray4p : Ray = cam_persp.fireRay(1.0, 1.0)
+      image : HdrImage = newHdrImage(width = 4, height = 2)
+      tracer : ImageTracer = newImageTracer(image, cam)
+      ray1t : Ray = tracer.fire_ray(0, 0, u_pixel = 2.5, v_pixel = 1.5)
+      ray2t : Ray = tracer.fire_ray(2, 1, u_pixel = 0.5, v_pixel = 0.5)
   test "Test Ray":
     check:
       areClose(ray1, ray2)
@@ -366,6 +364,12 @@ suite "Test cameras.nim":
       areClose(ray2p.at(1.0), newPoint(0.0, -2.0, -1.0))
       areClose(ray3p.at(1.0), newPoint(0.0, 2.0, 1.0))
       areClose(ray4p.at(1.0), newPoint(0.0, -2.0, 1.0))
-  #test "Test ImageTracer":
-    #scheck:
-      #areClose(ray1t, ray2t)
+  test "Test ImageTracer":
+    check:
+      areClose(ray1t, ray2t)
+    var f = proc (r: Ray): Color = newColor(1.0, 2.0, 3.0)
+    fireAllRays(tracer, f)
+    for row in 0..<(tracer.image.height):
+      for col in 0..<(tracer.image.width):
+        check:
+          tracer.image.getPixel(col, row) == newColor(1.0, 2.0, 3.0)

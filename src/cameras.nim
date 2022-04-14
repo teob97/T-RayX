@@ -36,23 +36,27 @@ proc `*`*(ray : Ray, transformation : Transformation): Ray =
 #CAMERA
 
 type
-  Camera* = object of RootObj
-  OrthogonalCamera* = object of Camera
+  Camera* = ref object of RootObj
+  OrthogonalCamera* = ref object of Camera
     aspect_ratio* : float
     transformation* : Transformation
-  PerspectiveCamera* = object of Camera
+  PerspectiveCamera* = ref object of Camera
     distance* : float
     aspect_ratio* : float
     transformation* : Transformation
 
-proc newOrthogonalCamera*(aspect_ratio : float, transformation = newTransformation()): OrthogonalCamera = 
-  result.aspect_ratio = aspect_ratio
-  result.transformation = transformation
+proc newOrthogonalCamera*(aspect_ratio : float, transformation = newTransformation()): OrthogonalCamera =
+  var cam = OrthogonalCamera.new()
+  cam.aspect_ratio = aspect_ratio
+  cam.transformation = transformation
+  return cam
 
 proc newPerspectiveCamera*(distance, aspect_ratio : float; transformation = newTransformation()): PerspectiveCamera =
-  result.distance = distance
-  result.aspect_ratio = aspect_ratio
-  result.transformation = transformation
+  var cam = PerspectiveCamera.new()
+  cam.distance = distance
+  cam.aspect_ratio = aspect_ratio
+  cam.transformation = transformation
+  return cam
 
 method fireRay*(cam : Camera; u,v : float): Ray {.base.} =
   quit "to override"
@@ -74,7 +78,7 @@ type
     image* : HdrImage
     camera* : Camera
 
-proc newImageTracer*(image : HdrImage, camera : OrthogonalCamera): ImageTracer =
+proc newImageTracer*(image : HdrImage, camera : Camera): ImageTracer =
   result.image = image
   result.camera = camera
 
@@ -83,7 +87,7 @@ proc fireRay*(imageT : ImageTracer, col : int, row : int, u_pixel = 0.5, v_pixel
   var v : float = (row.float + v_pixel) / (imageT.image.height - 1).float
   return imageT.camera.fireRay(u, v)
 
-proc fireAllRay*(imageT : var ImageTracer, function : proc) =
+proc fireAllRays*(imageT : var ImageTracer, function : proc) =
   var ray : Ray
   var color : Color
   for row in 0..<(imageT.image.height):
