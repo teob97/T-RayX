@@ -41,8 +41,16 @@ type
     aspect_ratio* : float
     transformation* : Transformation
   PerspectiveCamera* = object of Camera
+    distance* : float
+    aspect_ratio* : float
+    transformation* : Transformation
 
 proc newOrthogonalCamera*(aspect_ratio : float, transformation = newTransformation()): OrthogonalCamera = 
+  result.aspect_ratio = aspect_ratio
+  result.transformation = transformation
+
+proc newPerspectiveCamera*(distance, aspect_ratio : float; transformation = newTransformation()): PerspectiveCamera =
+  result.distance = distance
   result.aspect_ratio = aspect_ratio
   result.transformation = transformation
 
@@ -53,6 +61,11 @@ method fireRay*(cam : OrthogonalCamera; u,v : float): Ray =
   let origin = newPoint(-1.0, (1.0 - 2 * u) * cam.aspect_ratio, 2 * v - 1)
   let dir = VEC_X
   return newRay(origin = origin, dir = dir, tmin = 1.0) * cam.transformation
+
+method fireRay*(cam : PerspectiveCamera; u,v : float): Ray =
+  let origin = newPoint(-cam.distance, 0.0, 0.0)
+  let dir = newVec(cam.distance, (1.0 - 2 * u) * cam.aspect_ratio, 2 * v - 1)
+  return newRay(origin = origin, dir = dir, tmin=1.0) * cam.transformation
 
 #IMAGE TRACER
 

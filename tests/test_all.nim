@@ -323,10 +323,19 @@ suite "Test cameras.nim":
       ray2f : Ray = cam.fireRay(1.0, 0.0)
       ray3f : Ray = cam.fireRay(0.0, 1.0)
       ray4f : Ray = cam.fireRay(1.0, 1.0)
-      image : HdrImage = newHdrImage(width = 4, height = 2)
-      tracer : ImageTracer = newImageTracer(image, cam)
-      ray1t : Ray = tracer.fire_ray(0, 0, u_pixel = 2.5, v_pixel = 1.5)
-      ray2t : Ray = tracer.fire_ray(2, 1, u_pixel = 0.5, v_pixel = 0.5)
+
+      #image : HdrImage = newHdrImage(width = 4, height = 2)
+      #tracer : ImageTracer = newImageTracer(image, cam)
+      #ray1t : Ray = tracer.fire_ray(0, 0, u_pixel = 2.5, v_pixel = 1.5)
+      #ray2t : Ray = tracer.fire_ray(2, 1, u_pixel = 0.5, v_pixel = 0.5)
+      cam2 : OrthogonalCamera = newOrthogonalCamera(aspect_ratio = 2.0, transformation = translation(- VEC_Y * 2.0) * rotation_z(90.0))
+      ray5f = cam2.fireRay(0.5, 0.5)
+
+      cam_persp : PerspectiveCamera = newPerspectiveCamera(distance = 1.0, aspect_ratio = 2.0)
+      ray1p : Ray = cam_persp.fireRay(0.0, 0.0)
+      ray2p : Ray = cam_persp.fireRay(1.0, 0.0)
+      ray3p : Ray = cam_persp.fireRay(0.0, 1.0)
+      ray4p : Ray = cam_persp.fireRay(1.0, 1.0)
   test "Test Ray":
     check:
       areClose(ray1, ray2)
@@ -347,6 +356,16 @@ suite "Test cameras.nim":
       areClose(ray2f.at(1.0), newPoint(0.0, -2.0, -1.0))
       areClose(ray3f.at(1.0), newPoint(0.0, 2.0, 1.0))
       areClose(ray4f.at(1.0), newPoint(0.0, -2.0, 1.0))
-  test "Test ImageTracer":
+      areClose(ray5f.at(1.0), newPoint(0.0, -2.0, 0.0))
+  test "Test PerpectiveCamera":
     check:
-      areClose(ray1t, ray2t)
+      areClose(ray1p.origin, ray2p.origin)
+      areClose(ray1p.origin, ray3p.origin)
+      areClose(ray1p.origin, ray4p.origin)
+      areClose(ray1p.at(1.0), newPoint(0.0, 2.0, -1.0))
+      areClose(ray2p.at(1.0), newPoint(0.0, -2.0, -1.0))
+      areClose(ray3p.at(1.0), newPoint(0.0, 2.0, 1.0))
+      areClose(ray4p.at(1.0), newPoint(0.0, -2.0, 1.0))
+  #test "Test ImageTracer":
+    #scheck:
+      #areClose(ray1t, ray2t)
