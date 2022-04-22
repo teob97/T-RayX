@@ -63,7 +63,7 @@ define_string_conversion(Point)
 define_string_conversion(Normal)
 
 template define_areClose(t: typedesc) =
-  ## Compare the object with a precision of e=1e-5
+  ## Compare two objects of the same type (Vec, Point, Normal) with a precision of e=1e-5
   proc areClose*(arg1, arg2 : t; e = 1e-5): bool =
     return abs(arg1.x-arg2.x)<e and abs(arg1.y-arg2.y)<e and abs(arg1.z-arg2.z)<e
 
@@ -71,8 +71,8 @@ define_areClose(Vec)
 define_areClose(Point)
 define_areClose(Normal) 
 
-# Product between a scalar and an object
 template define_product*(t: typedesc) =
+  ## Product between a scalar and an object (Vec, Point, Normal)
   proc `*`*(arg1 : float, arg2 : t) : t =
     result.x = arg1 * arg2.x
     result.y = arg1 * arg2.y
@@ -87,16 +87,16 @@ define_product(Vec)
 define_product(Point)
 define_product(Normal)
 
-# Negation: return the reversed vector
 template define_neg(t: typedesc) =
+  ## Negation: return the reversed Vec or the reversed Normal
   proc `-`*(arg : t): t =
     result = -1.0 * arg 
 
 define_neg(Vec)
 define_neg(Normal)
 
-# Define a vector product between two objects
 template define_cross(t1, t2: typedesc) =
+  ## Define a vector product between two objects
   proc cross*(arg1 : t1, arg2 : t2) : Vec =
     result.x = arg1.y*arg2.z - arg1.z*arg2.y
     result.y = arg1.z*arg2.x - arg1.x*arg2.z
@@ -107,8 +107,8 @@ define_cross(Normal, Vec)
 define_cross(Vec, Vec)
 define_cross(Normal, Normal)
 
-# Operation fname (+ or -) between object of different type
 template define_3dop*(fname: untyped, type1: typedesc, type2: typedesc, rettype: typedesc) =
+  ## Operation fname (+ or -) between object of different type
   proc fname*(a: type1, b: type2): rettype =
     result.x = fname(a.x, b.x)
     result.y = fname(a.y, b.y)
@@ -123,8 +123,8 @@ define_3dop(`+`, Normal, Normal, Normal)
 define_3dop(`-`, Normal, Normal, Normal)
 define_3dop(`-`, Point, Point, Vec)
 
-# Scalar product between Vector and/or Normal
 template define_dot*(type1: typedesc, type2: typedesc) =
+  ## Scalar product between Vector and/or Normal
   proc dot*(a: type1, b: type2): float =
     return a.x * b.x +  a.y * b.y +  a.z * b.z
 
@@ -132,39 +132,39 @@ define_dot(Vec, Vec)
 define_dot(Vec, Normal)
 define_dot(Normal, Vec)
 
-# Squared norm of a Vector or a Normal
 template define_squared_norm*(t: typedesc) =
+  ## Squared norm of a Vector or a Normal
   proc squared_norm*(a: t): float =
     return a.x * a.x +  a.y * a.y +  a.z * a.z
 
 define_squared_norm(Vec)
 define_squared_norm(Normal)
 
-# Norm of a Vector or a Normal
 template define_norm*(t: typedesc) =
+  ## Norm of a Vector or a Normal
   proc norm*(a: t): float =
     return sqrt(squared_norm(a))
 
 define_norm(Vec)
 define_norm(Normal)
 
-# Modify the vector's norm so that it becomes equal to 1
 template define_normalization*(t: typedesc) =
+  ## Modify the vector's norm so that it becomes equal to 1
   proc normalization*(a: t) : t =
     result = (1/norm(a)) * a
 
 define_normalization(Vec)
 define_normalization(Normal)
 
-# Conversion from Vec to Normal
 proc VecToNormal*(v: Vec) : Normal =
+  ## Conversion from Vec to Normal
   var v : Vec = normalization(v)
   result.x = v.x
   result.y = v.y
   result.z = v.z
 
-# Conversion from Point to Vec
 proc PointToVec*(p: Point) : Vec =
+  ## Conversion from Point to Vec
   result.x = p.x
   result.y = p.y
   result.z = p.z

@@ -31,9 +31,11 @@ proc normalizeImage*(img : var HdrImage, factor : float, luminosity : Option[flo
 
 # Light points
 proc clamp*(x : float32) : float32 =
+    ## Clamp the luminosity of a pixel
     return x / (1 + x)
 
 proc clampImage*(img : var HdrImage) =
+    ## Clamp the entire image
     for i in 0..<len(img.pixels):
         img.pixels[i].r = clamp(img.pixels[i].r)
         img.pixels[i].g = clamp(img.pixels[i].g)
