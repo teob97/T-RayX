@@ -1,6 +1,8 @@
 import basictypes
 import pfm
 import ldr
+import cameras
+
 import std/strutils
 import std/strformat
 import std/streams

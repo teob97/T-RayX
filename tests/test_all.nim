@@ -3,6 +3,7 @@ import ../src/pfm
 import ../src/ldr
 import ../src/geometry
 import ../src/transformation
+import ../src/cameras
 import std/options
 import std/unittest
 import std/streams
@@ -299,3 +300,76 @@ suite "Test transformation.nim":
       areClose(r2_x*VEC_Y, VEC_Z) == true
       areClose(r2_y*VEC_Z, VEC_X) == true
       areClose(r2_z*VEC_X, VEC_Y) == true
+
+##############
+#TEST CAMERAS#
+##############
+
+proc areClose(a,b : float): bool = 
+  return abs(a-b)<1e-5
+
+suite "Test cameras.nim":
+  setup:
+    var
+      ray1 : Ray = newRay(origin = newPoint(1.0, 2.0, 3.0), dir = newVec(5.0, 4.0, -1.0))
+      ray2 : Ray = newRay(origin = newPoint(1.0, 2.0, 3.0), dir = newVec(5.0, 4.0, -1.0))
+      ray3 : Ray = newRay(origin = newPoint(5.0, 1.0, 4.0), dir = newVec(3.0, 9.0, 4.0))
+      ray4 : Ray = newRay(origin = newPoint(1.0, 2.0, 4.0), dir = newVec(4.0, 2.0, 1.0))
+      ray5 : Ray = newRay(origin = newPoint(1.0, 2.0, 3.0), dir = newVec(6.0, 5.0, 4.0))
+      transformation : Transformation = translation(newVec(10.0, 11.0, 12.0)) * rotation_x(90.0)
+      transformed : Ray = ray5 * transformation
+      cam = newOrthogonalCamera(aspect_ratio = 2.0)
+      ray1f : Ray = cam.fireRay(0.0, 0.0)
+      ray2f : Ray = cam.fireRay(1.0, 0.0)
+      ray3f : Ray = cam.fireRay(0.0, 1.0)
+      ray4f : Ray = cam.fireRay(1.0, 1.0)
+      cam2 = newOrthogonalCamera(aspect_ratio = 2.0, transformation = translation(- VEC_Y * 2.0) * rotation_z(90.0))
+      ray5f = cam2.fireRay(0.5, 0.5)
+      cam_persp = newPerspectiveCamera(distance = 1.0, aspect_ratio = 2.0)
+      ray1p : Ray = cam_persp.fireRay(0.0, 0.0)
+      ray2p : Ray = cam_persp.fireRay(1.0, 0.0)
+      ray3p : Ray = cam_persp.fireRay(0.0, 1.0)
+      ray4p : Ray = cam_persp.fireRay(1.0, 1.0)
+      image : HdrImage = newHdrImage(width = 4, height = 2)
+      tracer : ImageTracer = newImageTracer(image, cam)
+      ray1t : Ray = tracer.fire_ray(0, 0, u_pixel = 2.5, v_pixel = 1.5)
+      ray2t : Ray = tracer.fire_ray(2, 1, u_pixel = 0.5, v_pixel = 0.5)
+  test "Test Ray":
+    check:
+      areClose(ray1, ray2)
+      areClose(ray1, ray3) == false 
+      areClose(ray4.at(0.0), ray4.origin)
+      areClose(ray4.at(1.0), newPoint(5.0, 4.0, 5.0))
+      areClose(ray4.at(2.0), newPoint(9.0, 6.0, 6.0))
+      areClose(transformed.origin, newPoint(11.0, 8.0, 14.0))
+      areClose(transformed.dir, newVec(6.0, -4.0, 5.0))
+  test "Test OrthogonalCamera":
+    check:
+      #verify that the rays are parallel
+      areClose(0.0, ray1f.dir.cross(ray2f.dir).squared_norm())
+      areClose(0.0, ray1f.dir.cross(ray3f.dir).squared_norm())
+      areClose(0.0, ray1f.dir.cross(ray4f.dir).squared_norm())
+      #verify that the ray hitting the corners have the right coordinates
+      areClose(ray1f.at(1.0), newPoint(0.0, 2.0, -1.0))
+      areClose(ray2f.at(1.0), newPoint(0.0, -2.0, -1.0))
+      areClose(ray3f.at(1.0), newPoint(0.0, 2.0, 1.0))
+      areClose(ray4f.at(1.0), newPoint(0.0, -2.0, 1.0))
+      areClose(ray5f.at(1.0), newPoint(0.0, -2.0, 0.0))
+  test "Test PerpectiveCamera":
+    check:
+      areClose(ray1p.origin, ray2p.origin)
+      areClose(ray1p.origin, ray3p.origin)
+      areClose(ray1p.origin, ray4p.origin)
+      areClose(ray1p.at(1.0), newPoint(0.0, 2.0, -1.0))
+      areClose(ray2p.at(1.0), newPoint(0.0, -2.0, -1.0))
+      areClose(ray3p.at(1.0), newPoint(0.0, 2.0, 1.0))
+      areClose(ray4p.at(1.0), newPoint(0.0, -2.0, 1.0))
+  test "Test ImageTracer":
+    check:
+      areClose(ray1t, ray2t)
+    var f = proc (r: Ray): Color = newColor(1.0, 2.0, 3.0)
+    fireAllRays(tracer, f)
+    for row in 0..<(tracer.image.height):
+      for col in 0..<(tracer.image.width):
+        check:
+          tracer.image.getPixel(col, row) == newColor(1.0, 2.0, 3.0)

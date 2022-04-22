@@ -8,17 +8,19 @@ const IDENTITY_MATRIX4x4 = [1.0, 0.0, 0.0, 0.0,
 
 # USEFULL OPERAIONS
 
-# Overload [] operator
 proc `[]`*(m: array[16, float]; x, y: int) : float =
+  ## Overload [] operator: return the element at position (x,y).
   return m[4*x+y]
 
 proc `*`*(m1, m2: array[16, float]) : array[16, float] =
+  ## Product between two matrices
   for i in 0..<4:
     for j in 0..<4:
       for k in 0..<4:
         result[4*i+k] += m1[i,j]*m2[j,k]
 
 proc areMatrClose*(m1, m2: array[16, float], epsilon : float = 1e-5) : bool =
+  ## Check if two matrices are equal with a tolerance of "epsilon"
   for i in 0..<16:
     if (abs(m1[i]-m2[i]) > epsilon):
       return false
@@ -28,9 +30,7 @@ proc areMatrClose*(m1, m2: array[16, float], epsilon : float = 1e-5) : bool =
 proc diffOfProduct*(m1, m2, m3, m4: float) : float =
   return m1*m2-m3*m4
 
-#######################
-#TRANSFORMATION OBJECT#
-#######################
+#TRANSFORMATION OBJECT
 
 type
   ## Affine transformation.
