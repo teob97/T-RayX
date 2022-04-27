@@ -373,3 +373,9 @@ suite "Test cameras.nim":
       for col in 0..<(tracer.image.width):
         check:
           tracer.image.getPixel(col, row) == newColor(1.0, 2.0, 3.0)
+  test "Test ImageTracer Orientation":
+    var top_left_ray : Ray = tracer.fireRay(0, 0, u_pixel=0.0, v_pixel=0.0)
+    var bottom_right_ray : Ray = tracer.fireRay(3, 1, u_pixel=1.0, v_pixel=1.0)
+    check:
+      newPoint(0.0, 2.0, 1.0).areClose(top_left_ray.at(1.0))
+      newPoint(0.0, -2.0, -1.0).areClose(bottom_right_ray.at(1.0))
