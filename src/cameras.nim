@@ -91,8 +91,8 @@ proc newImageTracer*(image : HdrImage, camera : Camera): ImageTracer =
 
 proc fireRay*(imageT : ImageTracer, col : int, row : int, u_pixel = 0.5, v_pixel = 0.5): Ray =
   ## Send a new Ray in pixel (col, row) taking in account the position of the ray inside the pixel (u_pixel, v_pixel). Default: the ray is in the centre of the pixel.
-  var u : float = (col.float + u_pixel) / (imageT.image.width - 1).float
-  var v : float = (row.float + v_pixel) / (imageT.image.height - 1).float
+  var u : float = (col.float + u_pixel) / (imageT.image.width).float
+  var v : float = 1.0 - (row.float + v_pixel) / (imageT.image.height).float
   return imageT.camera.fireRay(u, v)
 
 proc fireAllRays*(imageT : var ImageTracer, function : proc) =
