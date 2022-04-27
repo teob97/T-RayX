@@ -1,6 +1,6 @@
-import ../src/basictypes
-import ../src/geometry
-import ../src/transformation
+import basictypes
+import geometry
+import transformation
 
 #RAY
 
@@ -8,9 +8,9 @@ type
   Ray* = object
     origin* : Point 
     dir* : Vec
-    tmin : float
-    tmax : float
-    depth : int
+    tmin* : float
+    tmax* : float
+    depth* : int
 
 proc newRay*(origin : Point, dir : Vec, tmin = 1e-5, tmax = Inf, depth = 0): Ray =
   ## Constructor of Ray
@@ -26,6 +26,10 @@ proc areClose*(ray1, ray2 : Ray): bool =
 proc at*(ray : Ray, t : float): Point = 
   ## Return the position of a ray at a given "time" t
   return ray.origin + ray.dir * t
+
+proc transform*(ray : Ray, t : Transformation) : Ray =
+  ## Transform a ray
+  result = newRay(origin = t*ray.origin, dir = t*ray.dir, tmin = ray.tmin, tmax = ray.tmax, depth = ray.depth)
 
 proc `*`*(ray : Ray, transformation : Transformation): Ray =
   ## Overload the operator * to transform a Ray object using a Transformation

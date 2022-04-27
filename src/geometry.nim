@@ -12,6 +12,18 @@ proc newVec*(x, y, z : float) : Vec =
   result.y = y
   result.z = z
 
+type
+  Vec2d* = object
+    u*, v* : float
+
+proc areClose*(v1, v2 : Vec2d, epsilon : float = 1e-5) : bool =
+  ## Check whether two Vec2d points are roughly the same or not
+  return (abs(v1.u - v2.u) < epsilon) and (abs(v1.v - v2.v) < epsilon)
+
+proc newVec2d*(u, v : float) : Vec2d =
+  result.u = u
+  result.v = v
+
 # Useful constats
 const VEC_X* : Vec = newVec(1.0, 0.0, 0.0)
 const VEC_Y* : Vec = newVec(0.0, 1.0, 0.0)
