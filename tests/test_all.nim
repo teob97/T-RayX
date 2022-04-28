@@ -4,9 +4,8 @@ import ../src/ldr
 import ../src/geometry
 import ../src/transformation
 import ../src/cameras
-import std/options
-import std/unittest
-import std/streams
+import ../src/shapes
+import std/[options, unittest, streams]
 
 #################
 #TEST BASICTYPES#
@@ -14,8 +13,9 @@ import std/streams
 
 suite "Test basictypes.nim":
   setup:
-    var img = newHdrImage(7,4)
-    var reference_color = newColor(1.0, 2.0, 3.0)
+    var
+      img = newHdrImage(7,4)
+      reference_color = newColor(1.0, 2.0, 3.0)
   test "Test getPixel":
     expect IOError:
       var test = img.getPixel(1,-3)
@@ -27,10 +27,10 @@ suite "Test basictypes.nim":
     check:
       test_valid_coordinates(img, 0, 0)
       test_valid_coordinates(img, 6, 3)
-      test_valid_coordinates(img, -1, 0) == false
-      test_valid_coordinates(img, 0, -1) == false
-      test_valid_coordinates(img, 7, 0) == false
-      test_valid_coordinates(img, 0, 4) == false
+      not test_valid_coordinates(img, -1, 0)
+      not test_valid_coordinates(img, 0, -1)
+      not test_valid_coordinates(img, 7, 0)
+      not test_valid_coordinates(img, 0, 4)
   test "Test pixelOffset":
     check:
       pixelOffset(img, 0, 0) == 0
@@ -70,19 +70,22 @@ suite "Test pfm.nim":
     check:
       parseImgSize("2 3") == (2,3)
     expect InvalidPfmFileFormat:
-      var test1 = parseImgSize("-2 3")
-      var test2 = parseImgSize("2 2 8")
+      var
+        test1 = parseImgSize("-2 3")
+        test2 = parseImgSize("2 2 8")
   test "Test parseEndiannes":
     check:
       parseEndianness("-20.4") == -1.0
       parseEndianness("49.8") == 1.0
     expect InvalidPfmFileFormat:
-      var test1 = parseEndianness("")
-      var test2 = parseEndianness("0")
+      var
+        test1 = parseEndianness("")
+        test2 = parseEndianness("0")
   test "Test readPfmImage_le":
-    var buffer = toString(le_ref_bytes)
-    var stream = newStringStream(buffer)
-    var img = readPfmImage(stream)
+    var
+      buffer = toString(le_ref_bytes)
+      stream = newStringStream(buffer)
+      img = readPfmImage(stream)
     check:
       img.width == 3
       img.height == 2
@@ -93,9 +96,10 @@ suite "Test pfm.nim":
       img.getPixel(1, 1).areClose(newColor(4.0e2, 5.0e2, 6.0e2))
       img.getPixel(2, 1).areClose(newColor(7.0e2, 8.0e2, 9.0e2))
   test "Test readPfmImage_be":
-    var buffer = toString(be_ref_bytes)
-    var stream = newStringStream(buffer)
-    var img = readPfmImage(stream)
+    var
+      buffer = toString(be_ref_bytes)
+      stream = newStringStream(buffer)
+      img = readPfmImage(stream)
     check:
       img.width == 3
       img.height == 2
@@ -116,12 +120,14 @@ suite "Test pfm.nim":
     img_test.setPixel(0, 1, newColor(1.0e2, 2.0e2, 3.0e2))
     img_test.setPixel(1, 1, newColor(4.0e2, 5.0e2, 6.0e2))
     img_test.setPixel(2, 1, newColor(7.0e2, 8.0e2, 9.0e2))
-    var stream = newStringStream("")
-    var buffer = be_ref_bytes
+    var
+      stream = newStringStream("")
+      buffer = be_ref_bytes
     writePfmImage(img_test, stream, 1.0)
     stream.setPosition(0)
-    var buffer2: array[sizeof(buffer), byte]
-    var stuff = stream.readData(addr(buffer2), sizeof(buffer2)) 
+    var
+      buffer2: array[sizeof(buffer), byte]
+      stuff = stream.readData(addr(buffer2), sizeof(buffer2)) 
     check:
       buffer2 == buffer
 
@@ -131,9 +137,10 @@ suite "Test pfm.nim":
 
 suite "Test ldr.nim":
   setup:
-    let c1 = newColor(1.0, 2.0, 3.0)
-    let c2 = newColor(9.0, 5.0, 7.0)
-    var img : HdrImage = newHdrImage(2, 1)
+    var
+      c1 = newColor(1.0, 2.0, 3.0)
+      c2 = newColor(9.0, 5.0, 7.0)
+      img : HdrImage = newHdrImage(2, 1)
   test "Test luminosity":
     check:
       luminosity(c1) == 2.0
@@ -166,14 +173,15 @@ suite "Test ldr.nim":
 
 suite "Test geometry.nim":
   setup:
-    var a : Vec = newVec(1.0, 2.0, 3.0)
-    var b : Vec = newVec(4.0, 6.0, 8.0)
-    var p1 : Point = newPoint(1.0, 2.0, 3.0)
-    var p2 : Point = newPoint(4.0, 6.0, 8.0)
+    var
+      a : Vec = newVec(1.0, 2.0, 3.0)
+      b : Vec = newVec(4.0, 6.0, 8.0)
+      p1 : Point = newPoint(1.0, 2.0, 3.0)
+      p2 : Point = newPoint(4.0, 6.0, 8.0)
   test "Test Vec":
     check:
-      a.areClose(a) == true
-      a.areClose(b) == false
+      a.areClose(a)
+      not a.areClose(b)
   test "Test Vector Operations":
     check:
       (-a).areClose(newVec(-1.0, -2.0, -3.0))
@@ -188,8 +196,8 @@ suite "Test geometry.nim":
       a.norm()*a.norm() - 14.0 < 1e-6
   test "Test Point":
     check:
-      p1.areClose(p1) == true
-      p2.areClose(p1) == false
+      p1.areClose(p1)
+      not p2.areClose(p1)
   test "Test Point Operations":
     check:
       areClose(p1*2, newPoint(2.0, 4.0, 6.0))
@@ -203,7 +211,8 @@ suite "Test geometry.nim":
 
 suite "Test transformation.nim":
   setup:
-    var m1 : Transformation = newTransformation(
+    var
+      m1 : Transformation = newTransformation(
                               m = [1.0, 2.0, 3.0, 4.0,
                                    5.0, 6.0, 7.0, 8.0,
                                    9.0, 9.0, 8.0, 7.0,
@@ -212,12 +221,11 @@ suite "Test transformation.nim":
                                       4.375, -3.875, 2.0, -0.5,
                                       0.5, 0.5, -1.0, 1.0,
                                       -1.375, 0.875, 0.0, -0.5])
-    var m1_inv : Transformation = m1.inverse()
-    var prod_m : Transformation = m1*m1_inv
-    var m2 : Transformation = newTransformation(m1.m, m1.invm)
-    var m3 : Transformation = newTransformation(m1.m, m1.invm)
-    m3.m[10] += 1
-    var m4 : Transformation = newTransformation(
+      m1_inv : Transformation = m1.inverse()
+      prod_m : Transformation = m1*m1_inv
+      m2 : Transformation = newTransformation(m1.m, m1.invm)
+      m3 : Transformation = newTransformation(m1.m, m1.invm)
+      m4 : Transformation = newTransformation(
                               m = [3.0, 5.0, 2.0, 4.0,
                                    4.0, 1.0, 0.0, 5.0,
                                    6.0, 3.0, 2.0, 0.0,
@@ -226,7 +234,7 @@ suite "Test transformation.nim":
                                       2.9, -1.7, 0.2, -3.1,
                                       -5.55, 3.15, -0.4, 6.45,
                                       -0.9, 0.7, -0.2, 1.1])
-    var ex : Transformation = newTransformation(
+      ex : Transformation = newTransformation(
                               m = [33.0, 32.0, 16.0, 18.0,
                                    89.0, 84.0, 40.0, 58.0,
                                    118.0, 106.0, 48.0, 88.0,
@@ -235,7 +243,7 @@ suite "Test transformation.nim":
                                       -13.95, 11.95, -6.5, 2.6,
                                       25.525, -22.025, 12.25, -5.2,
                                       4.825, -4.325, 2.5, -1.1])
-    var m5 : Transformation = newTransformation(
+      m5 : Transformation = newTransformation(
                               m = [1.0, 2.0, 3.0, 4.0,
                                    5.0, 6.0, 7.0, 8.0,
                                    9.0, 9.0, 8.0, 7.0,
@@ -244,62 +252,63 @@ suite "Test transformation.nim":
                                       5.75, -4.75, 2.0, 1.0,
                                       -2.25, 2.25, -1.0, -2.0,
                                       0.0, 0.0, 0.0, 1.0])
-    var ex_v : Vec = newVec(14.0, 38.0, 51.0)
-    var ex_p : Point = newPoint(18.0, 46.0, 58.0)
-    var ex_n : Normal = newNormal(-8.75, 7.75, -3.0)
-    var tr1 : Transformation = translation(newVec(1.0, 2.0, 3.0))
-    var tr2 : Transformation = translation(newVec(4.0, 6.0, 8.0))
-    var prod_t : Transformation = tr1*tr2
-    var ex_t : Transformation = translation(newVec(5.0, 8.0, 11.0))
-    var r1_x : Transformation = rotation_x(0.1)
-    var r1_y : Transformation = rotation_y(0.1)
-    var r1_z : Transformation = rotation_z(0.1)
-    var r2_x : Transformation = rotation_x(90.0)
-    var r2_y : Transformation = rotation_y(90.0)
-    var r2_z : Transformation = rotation_z(90.0)
-    var s1 : Transformation = scaling(newVec(2.0, 5.0, 10.0))
-    var s2 : Transformation = scaling(newVec(3.0, 2.0, 4.0))
-    var ex_s : Transformation = scaling(newVec(6.0, 10.0, 40.0))
+      ex_v : Vec = newVec(14.0, 38.0, 51.0)
+      ex_p : Point = newPoint(18.0, 46.0, 58.0)
+      ex_n : Normal = newNormal(-8.75, 7.75, -3.0)
+      tr1 : Transformation = translation(newVec(1.0, 2.0, 3.0))
+      tr2 : Transformation = translation(newVec(4.0, 6.0, 8.0))
+      prod_t : Transformation = tr1*tr2
+      ex_t : Transformation = translation(newVec(5.0, 8.0, 11.0))
+      r1_x : Transformation = rotation_x(0.1)
+      r1_y : Transformation = rotation_y(0.1)
+      r1_z : Transformation = rotation_z(0.1)
+      r2_x : Transformation = rotation_x(90.0)
+      r2_y : Transformation = rotation_y(90.0)
+      r2_z : Transformation = rotation_z(90.0)
+      s1 : Transformation = scaling(newVec(2.0, 5.0, 10.0))
+      s2 : Transformation = scaling(newVec(3.0, 2.0, 4.0))
+      ex_s : Transformation = scaling(newVec(6.0, 10.0, 40.0))
+    m3.m[10] += 1
   test "Test Is Close":
     check:
-      m1.isConsistent() == true
-      m3.isConsistent() == false
-      m1.isClose(m2) == true
-      m1.isClose(m3) == false
+      m1.isConsistent()
+      not m3.isConsistent()
+      m1.isClose(m2)
+      not m1.isClose(m3)
   test "Test Multiplication":
     check:
-      m4.isConsistent() == true
-      ex.isConsistent() == true
-      ex.isClose(m1*m4) == true
+      m4.isConsistent()
+      ex.isConsistent()
+      ex.isClose(m1*m4)
   test "Test Vec Point Multiplication":
     check:
-      ex_v.areClose(m5*newVec(1.0, 2.0, 3.0)) == true
-      ex_p.areClose(m5*newPoint(1.0, 2.0, 3.0)) == true
-      ex_n.areClose(m5*newNormal(3.0, 2.0, 4.0)) == true
+      ex_v.areClose(m5*newVec(1.0, 2.0, 3.0))
+      ex_p.areClose(m5*newPoint(1.0, 2.0, 3.0))
+      ex_n.areClose(m5*newNormal(3.0, 2.0, 4.0))
   test "Teste Inverse":
     check:
-      m1_inv.isConsistent() == true
-      prod_m.isConsistent() == true
-      prod_m.isClose(newTransformation()) == true
+      m1_inv.isConsistent()
+      prod_m.isConsistent()
+      prod_m.isClose(newTransformation())
   test "Test Translations":
     check:
-      tr1.isConsistent() == true
-      tr2.isConsistent() == true
-      prod_t.isConsistent() == true
-      prod_t.isClose(ex_t) == true
+      tr1.isConsistent()
+      tr2.isConsistent()
+      prod_t.isConsistent()
+      prod_t.isClose(ex_t)
   test "Test Scaling":
     check:
-      s1.isConsistent() == true
-      s2.isConsistent() == true
-      ex_s.isClose(s1*s2) == true
+      s1.isConsistent()
+      s2.isConsistent()
+      ex_s.isClose(s1*s2)
   test "Test Rotations":
     check:
-      r1_x.isConsistent() == true
-      r1_y.isConsistent() == true
-      r1_z.isConsistent() == true
-      areClose(r2_x*VEC_Y, VEC_Z) == true
-      areClose(r2_y*VEC_Z, VEC_X) == true
-      areClose(r2_z*VEC_X, VEC_Y) == true
+      r1_x.isConsistent()
+      r1_y.isConsistent()
+      r1_z.isConsistent()
+      areClose(r2_x*VEC_Y, VEC_Z)
+      areClose(r2_y*VEC_Z, VEC_X)
+      areClose(r2_z*VEC_X, VEC_Y)
 
 ##############
 #TEST CAMERAS#
@@ -334,10 +343,12 @@ suite "Test cameras.nim":
       tracer : ImageTracer = newImageTracer(image, cam)
       ray1t : Ray = tracer.fire_ray(0, 0, u_pixel = 2.5, v_pixel = 1.5)
       ray2t : Ray = tracer.fire_ray(2, 1, u_pixel = 0.5, v_pixel = 0.5)
+      top_left_ray : Ray = tracer.fireRay(0, 0, u_pixel=0.0, v_pixel=0.0)
+      bottom_right_ray : Ray = tracer.fireRay(3, 1, u_pixel=1.0, v_pixel=1.0)
   test "Test Ray":
     check:
       areClose(ray1, ray2)
-      areClose(ray1, ray3) == false 
+      not areClose(ray1, ray3)
       areClose(ray4.at(0.0), ray4.origin)
       areClose(ray4.at(1.0), newPoint(5.0, 4.0, 5.0))
       areClose(ray4.at(2.0), newPoint(9.0, 6.0, 6.0))
@@ -374,8 +385,70 @@ suite "Test cameras.nim":
         check:
           tracer.image.getPixel(col, row) == newColor(1.0, 2.0, 3.0)
   test "Test ImageTracer Orientation":
-    var top_left_ray : Ray = tracer.fireRay(0, 0, u_pixel=0.0, v_pixel=0.0)
-    var bottom_right_ray : Ray = tracer.fireRay(3, 1, u_pixel=1.0, v_pixel=1.0)
     check:
       newPoint(0.0, 2.0, 1.0).areClose(top_left_ray.at(1.0))
       newPoint(0.0, -2.0, -1.0).areClose(bottom_right_ray.at(1.0))
+
+##############
+#TEST SHAPES#
+##############
+
+suite "Test shapes.nim":
+  setup:
+    var
+      sphere = newSphere()
+      sphereTrans = newSphere(transformation = translation(newVec(10.0, 0.0, 0.0)))
+      ray1 = newRay(origin = newPoint(0, 0, 2), dir = -VEC_Z)
+      ray2 = newRay(origin = newPoint(3, 0, 0), dir = -VEC_X)
+      ray3 = newRay(origin = newPoint(0, 0, 0), dir = VEC_X)
+      ray4 = newRay(origin = newPoint(10, 0, 2), dir = -VEC_Z)
+      ray5 = newRay(origin = newPoint(13, 0, 0), dir = -VEC_X)
+      intersection1 = sphere.rayIntersection(ray1)
+      intersection2 = sphere.rayIntersection(ray2)
+      intersection3 = sphere.rayIntersection(ray3)
+      intersection4 = sphereTrans.rayIntersection(ray4)
+      intersection5 = sphereTrans.rayIntersection(ray5)
+  test "Test Sphere Hit":
+    check:
+      not intersection1.isNone
+      not intersection2.isNone
+      areClose(newHitRecord(world_point=newPoint(0.0, 0.0, 1.0),
+                            normal=newNormal(0.0, 0.0, 1.0),
+                            surface_point=newVec2d(0.0, 0.0),
+                            t=1.0,
+                            ray=ray1),
+                intersection1.get())
+      areClose(newHitRecord(world_point=newPoint(1.0, 0.0, 0.0),
+                            normal=newNormal(1.0, 0.0, 0.0),
+                            surface_point=newVec2d(0.0, 0.5),
+                            t=2.0,
+                            ray=ray2),
+                intersection2.get())
+      sphere.rayIntersection(newRay(origin = newPoint(0, 10, 2), dir = -VEC_Z)).isNone
+  test "Test Sphere InnerHit":
+    check:
+      not intersection3.isNone
+      areClose(newHitRecord(world_point=newPoint(1.0, 0.0, 0.0),
+                            normal=newNormal(-1.0, 0.0, 0.0),
+                            surface_point=newVec2d(0.0, 0.5),
+                            t=1.0,
+                            ray=ray3),
+                intersection3.get())
+  test "Test Sphere Transformation":
+    check:
+      not intersection4.isNone
+      not intersection5.isNone
+      areClose(newHitRecord(world_point=newPoint(10.0, 0.0, 1.0),
+                            normal=newNormal(0.0, 0.0, 1.0),
+                            surface_point=newVec2d(0.0, 0.0),
+                            t=1.0,
+                            ray=ray4),
+                intersection4.get())
+      areClose(newHitRecord(world_point=newPoint(11.0, 0.0, 0.0),
+                            normal=newNormal(1.0, 0.0, 0.0),
+                            surface_point=newVec2d(0.0, 0.5),
+                            t=2.0,
+                            ray=ray5),
+                intersection5.get())
+      sphereTrans.rayIntersection(newRay(origin = newPoint(0, 0, 2), dir = -VEC_Z)).isNone
+      sphereTrans.rayIntersection(newRay(origin = newPoint(-10, 0, 0), dir = -VEC_Z)).isNone
