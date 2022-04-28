@@ -1,8 +1,7 @@
 import geometry
 import cameras
 import transformation
-import std/math
-import std/options
+import std/[math, options]
 
 type
   HitRecord* = object
@@ -11,6 +10,13 @@ type
     surface_point* : Vec2d
     t* : float
     ray* : Ray
+  Shape* = ref object of RootObj
+  Sphere* = ref object of Shape
+    transformation* : Transformation
+  World* = object
+    shapes* : seq[Shape]
+
+#HITRECORD
 
 proc newHitRecord*(world_point : Point, normal : Normal, surface_point : Vec2d, t : float, ray : Ray) : HitRecord =
   result.world_point = world_point
@@ -47,11 +53,6 @@ proc sphereNormal*(point: Point, ray_dir: Vec) : Normal =
 
 # SHAPE
 
-type
-  Shape* = ref object of RootObj
-  Sphere* = ref object of Shape
-    transformation* : Transformation
-
 proc newSphere*(transformation : Transformation = newTransformation()) : Sphere =
   var sphere = Sphere.new()
   sphere.transformation = transformation
@@ -63,18 +64,20 @@ method rayIntersection*(shape : Shape, ray : Ray): Option[HitRecord] {.base.} =
 method rayIntersection*(sphere : Sphere, ray : Ray): Option[HitRecord] =
   ## Checks if a ray intersects the sphere
   ## Return a `HitRecord`, or `None` if no intersection was found.
-  var inv_ray : Ray = ray.transform(sphere.transformation.inverse())
-  var origin_vec = PointToVec(inv_ray.origin)
-  var a : float = inv_ray.dir.squared_norm()
-  var b : float = 2.0 * origin_vec.dot(inv_ray.dir)
-  var c : float = origin_vec.squared_norm() - 1.0
-  var delta : float = b * b - 4.0 * a * c
-  var first_hit_t : float
+  var 
+    inv_ray : Ray = ray.transform(sphere.transformation.inverse())
+    origin_vec = PointToVec(inv_ray.origin)
+    a : float = inv_ray.dir.squared_norm()
+    b : float = 2.0 * origin_vec.dot(inv_ray.dir)
+    c : float = origin_vec.squared_norm() - 1.0
+    delta : float = b * b - 4.0 * a * c
+    first_hit_t : float
   if delta <= 0:
     return none(HitRecord)
-  var sqrt_delta : float = sqrt(delta)
-  var tmin : float = (-b - sqrt_delta) / (2.0 * a)
-  var tmax : float = (-b + sqrt_delta) / (2.0 * a)
+  var 
+    sqrt_delta : float = sqrt(delta)
+    tmin : float = (-b - sqrt_delta) / (2.0 * a)
+    tmax : float = (-b + sqrt_delta) / (2.0 * a)
   if (tmin > inv_ray.tmin) and (tmin < inv_ray.tmax):
     first_hit_t = tmin
   elif (tmax > inv_ray.tmin) and (tmax < inv_ray.tmax):
@@ -87,3 +90,16 @@ method rayIntersection*(sphere : Sphere, ray : Ray): Option[HitRecord] =
                       surface_point = spherePointToUV(hit_point),
                       t = first_hit_t,
                       ray = ray))
+
+#WORLD
+
+proc rayIntersection*(world : World, ray : Ray): Option[HitRecord] =
+  ## Iterate over the entire list of shapes and check if there are any intersection with ray
+  var closest : Option[HitRecord] = none(HitRecord)
+  for shape in world.shapes:
+    var intersection = shape.rayIntersection(ray)
+    if intersection.isNone:
+      continue
+    if closest.isNone or intersection.get().t < closest.get().t:
+      closest = intersection
+  return closest

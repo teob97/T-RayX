@@ -84,7 +84,7 @@ proc writeFloat*(stream : Stream, color : float32, endianness: float32) =
         swapEndian32(addr val2, addr col)
         stream.write(val2)
 
-proc writePfmImage*(img: HdrImage, stream: Stream, endianness: float32) =
+proc writePfmImage*(img: HdrImage, stream: Stream, endianness: float32 = -1.0) =
     ## Print a PFM image into a stream
     var endianness_string : string
     if endianness == -1.0: endianness_string = "-1.0"
