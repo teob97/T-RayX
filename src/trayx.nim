@@ -23,7 +23,7 @@ Usage:
 Options:
   -h --help     Show this screen.
   --version     Show version.
-  --orthogonal  defaul = perspective
+  --orthogonal  Camera type. Defaul = perspective
 
 """
 
@@ -55,6 +55,7 @@ proc parseCommandLine*(param : var Parameters) =
   param.output_png_file_name = args[4]
 
 proc pfm2png() =
+  ## Main procedure to convert a .pfm file into a .png file
   var param : Parameters
   try:
     parseCommandLine(param):
@@ -75,6 +76,7 @@ proc pfm2png() =
 #DEMO
 
 proc demo() =
+  # Demo procedure that generates 10 spheres
   var tracer : ImageTracer
   if args["--orthogonal"]:
     tracer = newImageTracer(newHdrImage(640, 480), newOrthogonalCamera(640/480, translation(newVec(-1,0,0))))
@@ -94,7 +96,9 @@ proc demo() =
     s10 = newSphere(translation(newVec(-0.5, -0.5, -0.5))*scaling)
     world : World
     strm = newFileStream("output/demo.pfm", fmWrite)
-  world.shapes = @[s1, s2, s3, s4, s5, s6, s7, s8, s9, s10]
+    buffer = @[s1, s2, s3, s4, s5, s6, s7, s8, s9, s10]
+  for shape in buffer:
+    world.shapes.add(shape) 
   proc f(r : Ray) : Color = 
     if world.rayIntersection(r).isNone: 
       result = newColor(0.2, 0.2, 0.2)
