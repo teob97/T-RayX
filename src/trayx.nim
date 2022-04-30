@@ -1,35 +1,25 @@
-import basictypes
-import pfm
-import ldr
-import cameras
-import shapes
-import transformation
-import geometry
+import basictypes, pfm, ldr, cameras, shapes, transformation, geometry, docopt
+import std/[strutils, strformat, streams, os, options]
 
-import std/strutils
-import std/strformat
-import std/streams
-import std/os
-import std/options
-import docopt
 
-const doc = """
+let doc = """
 T-RayX: a Nim Raytracing Library
 
 Usage:
-  trayx pfm2png <INPUT_FILE.pfm> <alpha> <gamma> <OUTPUT.png>
-  trayx demo [--orthogonal]
+  ./trayx pfm2png <INPUT_FILE.pfm> <alpha> <gamma> <OUTPUT.png>
+  ./trayx demo [--angle=<angle-deg>] [--output=<output-file>] [--orthogonal]
 
 Options:
-  -h --help     Show this screen.
-  --version     Show version.
-  --orthogonal  Camera type. Defaul = perspective
-
+  -h --help                 Show this screen.
+  --version                 Show version.
+  --angle=<angle-deg>       Angle in degree
+  --orthogonal              Camera type. Default = perspective
+  --output=<output-file>    Output file.png
 """
 
 let args = docopt(doc, version = "0.1.0" )
 
-#PFM2PNG
+#--------------------------------PFM2PNG--------------------------------
 
 type
   Parameters* = object
@@ -73,15 +63,21 @@ proc pfm2png() =
   outf.close()
   echo (fmt"File {param.output_png_file_name} has been written to disk.")
 
-#DEMO
+#--------------------------------DEMO--------------------------------
 
 proc demo() =
   # Demo procedure that generates 10 spheres
   var tracer : ImageTracer
   if args["--orthogonal"]:
-    tracer = newImageTracer(newHdrImage(640, 480), newOrthogonalCamera(640/480, translation(newVec(-1,0,0))))
-  else:  
-    tracer = newImageTracer(newHdrImage(640, 480), newPerspectiveCamera(1, 640/480, translation(newVec(-1,0,0))))
+    if args["--angle"]:
+      tracer = newImageTracer(newHdrImage(640, 480), newOrthogonalCamera(640/480, rotation_z(-parseFloat($args["--angle"]))*translation(newVec(-1,0,0))))
+    else:
+      tracer = newImageTracer(newHdrImage(640, 480), newOrthogonalCamera(640/480, translation(newVec(-1,0,0))))
+  else:
+    if args["--angle"]:
+      tracer = newImageTracer(newHdrImage(640, 480), newPerspectiveCamera(1, 640/480, rotation_z(-parseFloat($args["--angle"]))*translation(newVec(-1,0,0))))
+    else:
+      tracer = newImageTracer(newHdrImage(640, 480), newPerspectiveCamera(1, 640/480, translation(newVec(-1,0,0))))
   var
     scaling = scaling(newVec(1/10, 1/10, 1/10))
     s1 = newSphere(translation(newVec(0, 0.5, 0))*scaling)
@@ -101,13 +97,17 @@ proc demo() =
     world.shapes.add(shape) 
   proc f(r : Ray) : Color = 
     if world.rayIntersection(r).isNone: 
-      result = newColor(0.2, 0.2, 0.2)
+      result = newColor(0.0, 0.0, 0.0)
     else:
       result = newColor(1, 1, 1)
   tracer.fireAllRays(f)
   tracer.image.writePfmImage(strm)
-  tracer.image.writeLdrImage("demo.png")
+  if args["--output"]:
+    tracer.image.writeLdrImage($args["--output"])
+  else:
+    tracer.image.writeLdrImage("demo.png")
 
+#--------------------------------MAIN--------------------------------
 
 when isMainModule:
   if args["pfm2png"]:
