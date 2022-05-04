@@ -14,6 +14,7 @@ type
   AABox * = ref object of Shape
     pmin* : Point
     pmax* : Point
+    transformation* : Transformation
   Plane* = ref object of Shape
     transformation* : Transformation
   World* = object
