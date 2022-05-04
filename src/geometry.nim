@@ -176,7 +176,7 @@ proc PointToVec*(p: Point) : Vec =
   result.z = p.z
 
 proc `<`*(p1, p2:Point):bool=
-  return p1.x<p2.x and p1.y<p2.y and p1.z<p2.z
+  return p1.x<p2.x or p1.y<p2.y or p1.z<p2.z
 
 proc `>`*(p1, p2:Point):bool=
-  return p1.x>p2.x and p1.y>p2.y and p1.z>p2.z
+  return p1.x>p2.x or p1.y>p2.y or p1.z>p2.z

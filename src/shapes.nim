@@ -119,6 +119,15 @@ proc checkIntersection(x_min, x_max, y_min, y_max : float): bool =
     else:
       return false
 
+proc get_t_hit(a_min, a_max, b_min, b_max : float): float =
+  if checkIntersection(a_min, a_max, b_min, b_max):
+    if a_min < b_min:
+      return b_min
+    else:
+      return a_min
+  else:
+    return Inf
+
 proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
   var
     a = box.pmin
@@ -155,33 +164,45 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
     tx_max : float = (box.pmax.x - origin_vec.x) / inv_ray.dir.x
     ty_max : float = (box.pmax.y - origin_vec.y) / inv_ray.dir.y
     tz_max : float = (box.pmax.z - origin_vec.z) / inv_ray.dir.z
+    t1, t2, t3: float
     t_hit : float
     normal : Normal
-  if checkIntersection(min(tx_min, tx_max), max(tx_min, tx_max), min(ty_min, ty_max), max(ty_min, ty_max)):
-    if min(tx_min, tx_max)<min(ty_min, ty_max):
-      t_hit = min(ty_min, ty_max)
-    else:
-      t_hit = min(tx_min, tx_max)
-  elif checkIntersection(min(ty_min, ty_max), max(ty_min, ty_max), min(tz_min, tz_max), max(tz_min, tz_max)):
-    if min(ty_min, ty_max)<min(tz_min, tz_max):
-      t_hit = min(tz_min, tz_max)
-    else:
-      t_hit = min(ty_min, ty_max)
-  elif checkIntersection(min(tx_min, tx_max), max(tx_min, tx_max), min(tz_min, tz_max), max(tz_min, tz_max)):
-    if min(tx_min, tx_max)<min(tz_min, tz_max):
-      t_hit = min(tz_min, tz_max)
-    else:
-      t_hit = min(tx_min, tx_max)
-  else:
+
+  if tx_min > tx_max: swap(tx_min, tx_max)
+  if ty_min > ty_max: swap(ty_min, ty_max)
+  if tz_min > tz_max: swap(tz_min, tz_max)
+
+#[   if abs(inv_ray.dir.x) < 1e-5:
+    return none(HitRecord)
+
+  if abs(inv_ray.dir.y) < 1e-5:
+    return none(HitRecord)
+  
+  if abs(inv_ray.dir.z) < 1e-5:
+    return none(HitRecord) ]#
+
+  t1 = get_t_hit(tx_min, tx_max, ty_min, ty_max)
+  t2 = get_t_hit(tx_min, tx_max, tz_min, tz_max)
+  t3 = get_t_hit(tz_min, tz_max, ty_min, ty_max)
+
+  if t1 == Inf and t2 == Inf and t3 == Inf:
+    return none(HitRecord)
+  
+  t_hit = min(t1, min(t2, t3))
+
+  if (t_hit <= inv_ray.tmin) or (t_hit >= inv_ray.tmax):
     return none(HitRecord)
 
   var hit_point : Point = inv_ray.at(t_hit)
+
   if hit_point > box.pmax or hit_point < box.pmin:
     return none(HitRecord)
+
   if PointToVec(hit_point).dot(inv_ray.dir) < 0:
     normal = boxNormal(box, hit_point, inv_ray)
   else:
     normal = -boxNormal(box, hit_point, inv_ray)
+
   result = some(newHitRecord(world_point = box.transformation * hit_point,
                       normal = normal,
                       surface_point = newVec2d(0,0),

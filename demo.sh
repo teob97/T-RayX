@@ -1,4 +1,4 @@
-for angle in $(seq 0 90); do
+for angle in $(seq 0 100); do
     # Angle with three digits, e.g. angle="1" → angleNNN="001"
     angleNNN=$(printf "%03d" $angle)
     ./trayx demo --angle=$angle --output=demo/img$angleNNN.png
