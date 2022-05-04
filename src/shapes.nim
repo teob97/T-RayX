@@ -13,6 +13,10 @@ type
   Shape* = ref object of RootObj
   Sphere* = ref object of Shape
     transformation* : Transformation
+  AABox * = ref object of Shape
+    pmin* : Point
+    pmax* : Point
+    transformation* : Transformation
   World* = object
     shapes* : seq[Shape]
 
@@ -90,6 +94,102 @@ method rayIntersection*(sphere : Sphere, ray : Ray): Option[HitRecord] =
                       surface_point = spherePointToUV(hit_point),
                       t = first_hit_t,
                       ray = ray))
+
+
+
+#*********************** Axis-Aligned-Boxes *****************************
+
+proc newAABox*(pmin, pmax : Point; transformation : Transformation = newTransformation()) : AABox =
+  ## Constructor for an Axis Aligned Boxes with min vertex in pmin and max vertex in pmax
+  var box = AABox.new()
+  box.pmin = pmin
+  box.pmax = pmax
+  box.transformation = transformation
+  return box
+
+proc checkIntersection(x_min, x_max, y_min, y_max : float): bool =
+  if x_min > x_max or y_min > y_max:
+    raise newException(IOError, "Invalid segment's boundaries")
+  if x_min < y_min:
+    if x_max > y_min:
+      return true
+    else:
+      return false
+  else:
+    if y_max > x_min:
+      return true
+    else:
+      return false
+
+proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
+  var
+    a = box.pmin
+    h = box.pmax
+    b = newPoint(h.x, a.y, a.z)
+    c = newPoint(h.x, a.y, h.z)
+    d = newPoint(a.x, a.y, h.z)
+    e = newPoint(a.x, h.y, h.z)
+    f = newPoint(a.x, h.y, a.z)
+    g = newPoint(h.x, h.y, a.z)
+  if hit_point.x == box.pmin.x:
+    # faccia yz (pmin.x, hit_point.y, hit_point.z)
+    result = VecToNormal(cross(d-a, f-a))
+  elif hit_point.y == box.pmin.y:
+    # faccia xz
+    result = VecToNormal(cross(b-a, d-a))
+  elif hit_point.z == box.pmin.z:
+    # faccia xy
+    result = VecToNormal(cross(f-a, b-a))
+  elif hit_point.x == box.pmax.x:
+    result = VecToNormal(cross(g-b, c-b))
+  elif hit_point.y == box.pmax.y:
+    result = VecToNormal(cross(e-f, g-f))
+  elif hit_point.z == box.pmax.z:
+    result = VecToNormal(cross(c-d, e-d))
+
+method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
+  var
+    inv_ray : Ray = ray.transform(box.transformation.inverse())
+    origin_vec = PointToVec(inv_ray.origin)
+    tx_min : float = (box.pmin.x - origin_vec.x) / inv_ray.dir.x
+    ty_min : float = (box.pmin.y - origin_vec.y) / inv_ray.dir.y
+    tz_min : float = (box.pmin.z - origin_vec.z) / inv_ray.dir.z
+    tx_max : float = (box.pmax.x - origin_vec.x) / inv_ray.dir.x
+    ty_max : float = (box.pmax.y - origin_vec.y) / inv_ray.dir.y
+    tz_max : float = (box.pmax.z - origin_vec.z) / inv_ray.dir.z
+    t_hit : float
+    normal : Normal
+  if checkIntersection(min(tx_min, tx_max), max(tx_min, tx_max), min(ty_min, ty_max), max(ty_min, ty_max)):
+    if min(tx_min, tx_max)<min(ty_min, ty_max):
+      t_hit = min(ty_min, ty_max)
+    else:
+      t_hit = min(tx_min, tx_max)
+  elif checkIntersection(min(ty_min, ty_max), max(ty_min, ty_max), min(tz_min, tz_max), max(tz_min, tz_max)):
+    if min(ty_min, ty_max)<min(tz_min, tz_max):
+      t_hit = min(tz_min, tz_max)
+    else:
+      t_hit = min(ty_min, ty_max)
+  elif checkIntersection(min(tx_min, tx_max), max(tx_min, tx_max), min(tz_min, tz_max), max(tz_min, tz_max)):
+    if min(tx_min, tx_max)<min(tz_min, tz_max):
+      t_hit = min(tz_min, tz_max)
+    else:
+      t_hit = min(tx_min, tx_max)
+  else:
+    return none(HitRecord)
+
+  var hit_point : Point = inv_ray.at(t_hit)
+  if hit_point > box.pmax or hit_point < box.pmin:
+    return none(HitRecord)
+  if PointToVec(hit_point).dot(inv_ray.dir) < 0:
+    normal = boxNormal(box, hit_point, inv_ray)
+  else:
+    normal = -boxNormal(box, hit_point, inv_ray)
+  result = some(newHitRecord(world_point = box.transformation * hit_point,
+                      normal = normal,
+                      surface_point = newVec2d(0,0),
+                      t = t_hit,
+                      ray = ray))
+  
 
 #WORLD
 

@@ -180,3 +180,9 @@ proc PointToVec*(p: Point) : Vec =
   result.x = p.x
   result.y = p.y
   result.z = p.z
+
+proc `<`*(p1, p2:Point):bool=
+  return p1.x<p2.x and p1.y<p2.y and p1.z<p2.z
+
+proc `>`*(p1, p2:Point):bool=
+  return p1.x>p2.x and p1.y>p2.y and p1.z>p2.z

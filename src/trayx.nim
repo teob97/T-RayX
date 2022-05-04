@@ -90,9 +90,10 @@ proc demo() =
     s8 = newSphere(translation(newVec(-0.5, 0.5, -0.5))*scaling)
     s9 = newSphere(translation(newVec(-0.5, -0.5, 0.5))*scaling)
     s10 = newSphere(translation(newVec(-0.5, -0.5, -0.5))*scaling)
+    cube = newAABox(newPoint(0.1,0.1,0.1), newPoint(0.2,0.2,0.2))
     world : World
     strm = newFileStream("output/demo.pfm", fmWrite)
-    buffer = @[s1, s2, s3, s4, s5, s6, s7, s8, s9, s10]
+    buffer = @[s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, cube]
   for shape in buffer:
     world.shapes.add(shape) 
   proc f(r : Ray) : Color = 
