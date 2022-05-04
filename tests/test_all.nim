@@ -398,16 +398,35 @@ suite "Test shapes.nim":
     var
       sphere = newSphere()
       sphereTrans = newSphere(transformation = translation(newVec(10.0, 0.0, 0.0)))
+      plane = newPlane()
+      planeTrans = newPlane(transformation = rotation_y(angle_deg = 90.0))
       ray1 = newRay(origin = newPoint(0, 0, 2), dir = -VEC_Z)
       ray2 = newRay(origin = newPoint(3, 0, 0), dir = -VEC_X)
       ray3 = newRay(origin = newPoint(0, 0, 0), dir = VEC_X)
       ray4 = newRay(origin = newPoint(10, 0, 2), dir = -VEC_Z)
       ray5 = newRay(origin = newPoint(13, 0, 0), dir = -VEC_X)
+      ray1p = newRay(origin = newPoint(0, 0, 1), dir = -VEC_Z)
+      ray2p = newRay(origin = newPoint(0, 0, 1), dir = VEC_Z)
+      ray3p = newRay(origin = newPoint(0, 0, 1), dir = VEC_X)
+      ray4p = newRay(origin = newPoint(0, 0, 1), dir = VEC_Y)
+      ray5p = newRay(origin = newPoint(1, 0, 0), dir = -VEC_X)
+      ray6p = newRay(origin = newPoint(0.25, 0.75, 1), dir = -VEC_Z)
+      ray7p = newRay(origin = newPoint(4.25, 7.75, 1), dir = -VEC_Z)
       intersection1 = sphere.rayIntersection(ray1)
       intersection2 = sphere.rayIntersection(ray2)
       intersection3 = sphere.rayIntersection(ray3)
       intersection4 = sphereTrans.rayIntersection(ray4)
       intersection5 = sphereTrans.rayIntersection(ray5)
+      intersection1p = plane.rayIntersection(ray1p)
+      intersection2p = plane.rayIntersection(ray2p)
+      intersection3p = plane.rayIntersection(ray3p)
+      intersection2pTrans = planeTrans.rayIntersection(ray2p)
+      intersection3pTrans = planeTrans.rayIntersection(ray3p)
+      intersection4pTrans = planeTrans.rayIntersection(ray4p)
+      intersection4p = planeTrans.rayIntersection(ray4p)
+      intersection5p = planeTrans.rayIntersection(ray5p)
+      intersection6p = plane.rayIntersection(ray6p)
+      intersection7p = plane.rayIntersection(ray7p)
   test "Test Sphere Hit":
     check:
       not intersection1.isNone
@@ -452,3 +471,55 @@ suite "Test shapes.nim":
                 intersection5.get())
       sphereTrans.rayIntersection(newRay(origin = newPoint(0, 0, 2), dir = -VEC_Z)).isNone
       sphereTrans.rayIntersection(newRay(origin = newPoint(-10, 0, 0), dir = -VEC_Z)).isNone
+  test "Test Plane Hit":
+    check:
+      not intersection1p.isNone
+      intersection2p.isNone
+      intersection3p.isNone
+      intersection4p.isNone
+      areClose(newHitRecord(world_point=newPoint(0.0, 0.0, 0.0),
+                            normal=newNormal(0.0, 0.0, 1.0),
+                            surface_point=newVec2d(0.0, 0.0),
+                            t=1.0,
+                            ray=ray1p),
+                intersection1p.get())
+  test "Test Plane Transformation":
+    check:
+      not intersection5p.isNone
+      areClose(newHitRecord(world_point=newPoint(0.0, 0.0, 0.0),
+                            normal=newNormal(1.0, 0.0, 0.0),
+                            surface_point=newVec2d(0.0, 0.0),
+                            t=1.0,
+                            ray=ray5p),
+                intersection5p.get())
+      intersection2pTrans.isNone
+      intersection3pTrans.isNone
+      intersection4pTrans.isNone
+  test "Test UV Coordinates":
+    check:
+      areClose(intersection1p.get().surface_point, (newVec2d(0.0, 0.0)))
+      areClose(intersection6p.get().surface_point, (newVec2d(0.25, 0.75)))
+      areClose(intersection7p.get().surface_point, (newVec2d(0.25, 0.75)))
+
+
+############
+#TEST WORLD#
+############
+
+suite "Test World":
+  setup:
+    var
+      world : World
+      sphere1 = newSphere(transformation = translation(VEC_X * 2))
+      sphere2 = newSphere(transformation = translation(VEC_X * 8))
+    world.shapes.add(sphere1)
+    world.shapes.add(sphere2)
+    var
+      intersection1 = world.rayIntersection(newRay(origin = newPoint(0.0, 0.0, 0.0), dir = VEC_X))
+      intersection2 = world.rayIntersection(newRay(origin = newPoint(10.0, 0.0, 0.0), dir = -VEC_X))
+  test "Test World Hit":
+    check:
+      not intersection1.isNone
+      not intersection2.isNone
+      areClose(intersection1.get().world_point, (newPoint(1.0, 0.0, 0.0)))
+      areClose(intersection2.get().world_point, (newPoint(9.0, 0.0, 0.0)))

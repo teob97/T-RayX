@@ -10,8 +10,8 @@ Usage:
   ./trayx demo [--angle=<angle-deg>] [--output=<output-file>] [--orthogonal]
 
 Options:
-  -h --help                 Show this screen.
-  --version                 Show version.
+  -h --help                 Show this screen
+  --version                 Show version
   --angle=<angle-deg>       Angle in degree
   --orthogonal              Camera type. Default = perspective
   --output=<output-file>    Output file.png
@@ -19,7 +19,7 @@ Options:
 
 let args = docopt(doc, version = "0.1.0" )
 
-#--------------------------------PFM2PNG--------------------------------
+#*********************************** PFM2PNG ***********************************
 
 type
   Parameters* = object
@@ -49,8 +49,8 @@ proc pfm2png() =
   var param : Parameters
   try:
     parseCommandLine(param):
-  except IOError as err:
-    echo ("Error: ", err)
+  except IOError:
+    echo ("Error: wrong parameters. See --help.")
     return
   var impf = openFileStream(param.input_pfm_file_name)
   var img : HdrImage = readPfmImage(impf)
@@ -63,7 +63,7 @@ proc pfm2png() =
   outf.close()
   echo (fmt"File {param.output_png_file_name} has been written to disk.")
 
-#--------------------------------DEMO--------------------------------
+#*********************************** DEMO ***********************************
 
 proc demo() =
   # Demo procedure that generates 10 spheres
@@ -108,7 +108,7 @@ proc demo() =
   else:
     tracer.image.writeLdrImage("demo.png")
 
-#--------------------------------MAIN--------------------------------
+#*********************************** MAIN ***********************************
 
 when isMainModule:
   if args["pfm2png"]:
