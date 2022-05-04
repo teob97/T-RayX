@@ -1,6 +1,4 @@
-import geometry
-import cameras
-import transformation
+import geometry, cameras, transformation
 import std/[math, options]
 
 type
@@ -13,10 +11,12 @@ type
   Shape* = ref object of RootObj
   Sphere* = ref object of Shape
     transformation* : Transformation
+  Plane* = ref object of Shape
+    transformation* : Transformation
   World* = object
     shapes* : seq[Shape]
 
-#HITRECORD
+#*********************************** HITRECORD ***********************************
 
 proc newHitRecord*(world_point : Point, normal : Normal, surface_point : Vec2d, t : float, ray : Ray) : HitRecord =
   result.world_point = world_point
@@ -51,7 +51,7 @@ proc sphereNormal*(point: Point, ray_dir: Vec) : Normal =
     result = -newNormal(point.x, point.y, point.z)
 
 
-# SHAPE
+#*********************************** SHAPE ***********************************
 
 proc newSphere*(transformation : Transformation = newTransformation()) : Sphere =
   var sphere = Sphere.new()
@@ -91,7 +91,37 @@ method rayIntersection*(sphere : Sphere, ray : Ray): Option[HitRecord] =
                       t = first_hit_t,
                       ray = ray))
 
-#WORLD
+#*********************************** PLANE ***********************************
+
+proc newPlane*(transformation : Transformation = newTransformation()) : Plane =
+  var plane = Plane.new()
+  plane.transformation = transformation
+  return plane
+
+method rayIntersection*(plane : Plane, ray : Ray): Option[HitRecord] =
+  ## Checks if a ray intersects the plane
+  ## Return a `HitRecord`, or `None` if no intersection was found.
+  var
+    inv_ray : Ray = ray.transform(plane.transformation.inverse())
+    normal : Normal
+  if abs(inv_ray.dir.z) < 1e-5:
+    return none(HitRecord)
+  var t = -inv_ray.origin.z / inv_ray.dir.z
+  if (t <= inv_ray.tmin) or (t >= inv_ray.tmax):
+    return none(HitRecord)
+  else:
+    var hit_point = inv_ray.at(t)
+    if inv_ray.dir.z < 0.0:
+      normal = newNormal(0.0, 0.0, 1.0)
+    else:
+      normal = newNormal(0.0, 0.0, -1.0)
+    result = some(newHitRecord(world_point = plane.transformation * hit_point,
+                               normal = plane.transformation * normal,
+                               surface_point = newVec2d(hit_point.x - floor(hit_point.x), hit_point.y - floor(hit_point.y)),
+                               t = t,
+                               ray = ray))
+
+#*********************************** WORLD ***********************************
 
 proc rayIntersection*(world : World, ray : Ray): Option[HitRecord] =
   ## Iterate over the entire list of shapes and check if there are any intersection with ray

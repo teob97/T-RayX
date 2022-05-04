@@ -1,13 +1,10 @@
-import std/endians
-import std/streams
-import std/strutils
-import std/strformat
+import std/[endians, streams, strutils, strformat]
 import basictypes
 
 type
     InvalidPfmFileFormat* = object of CatchableError
 
-# READING
+#*********************************** READING ***********************************
 
 proc readFloat*(stream: Stream, endianness: float) : float32 =
     ## Reading 4 byte sequence in a 32 bit floating-point taking endianness into account
@@ -72,7 +69,7 @@ proc readPfmImage*(stream: Stream) : HdrImage =
     stream.close()
     return img
 
-# WRITING
+#*********************************** WRITING ***********************************
 
 proc writeFloat*(stream : Stream, color : float32, endianness: float32) =
     ## Write a float32 into a stream with the right endianness

@@ -1,24 +1,27 @@
 import std/math
 
-
-#VECTOR OBJECT
-
 type 
   Vec* = object
     x*, y*, z* : float
+  Vec2d* = object
+    u*, v* : float
+  Point* = object
+    x*, y*, z* : float
+  Normal* = object
+    x*, y*, z* : float
+
+#*********************************** VEC ***********************************
 
 proc newVec*(x, y, z : float) : Vec =
   result.x = x
   result.y = y
   result.z = z
 
-type
-  Vec2d* = object
-    u*, v* : float
-
 proc areClose*(v1, v2 : Vec2d, epsilon : float = 1e-5) : bool =
   ## Check whether two Vec2d points are roughly the same or not
   return (abs(v1.u - v2.u) < epsilon) and (abs(v1.v - v2.v) < epsilon)
+
+#*********************************** VEC2D ***********************************
 
 proc newVec2d*(u, v : float) : Vec2d =
   result.u = u
@@ -30,30 +33,21 @@ const VEC_Y* : Vec = newVec(0.0, 1.0, 0.0)
 const VEC_Z* : Vec = newVec(0.0, 0.0, 1.0)
 
 
-#POINT OBJECT
-
-type 
-  Point* = object
-    x*, y*, z* : float
+#*********************************** POINT ***********************************
 
 proc newPoint*(x, y, z : float) : Point =
   result.x = x
   result.y = y
   result.z = z
 
-
-#NORMAL OBJECT
-
-type 
-  Normal* = object
-    x*, y*, z* : float
+#*********************************** NORMAL ***********************************
 
 proc newNormal*(x, y, z : float) : Normal =
   result.x = x
   result.y = y
   result.z = z
 
-#TEMPLATES
+#*********************************** OPERATIONS ***********************************
 
 template define_print_string(t: typedesc) = 
   ## Print the object in the format Obj.type(Obj.x, Obj.y, Obj.z)
