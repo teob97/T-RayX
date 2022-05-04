@@ -105,28 +105,23 @@ proc newAABox*(pmin, pmax : Point; transformation : Transformation = newTransfor
   box.transformation = transformation
   return box
 
-proc checkIntersection(x_min, x_max, y_min, y_max : float): bool =
-  if x_min > x_max or y_min > y_max:
-    raise newException(IOError, "Invalid segment's boundaries")
-  if x_min < y_min:
-    if x_max > y_min:
-      return true
-    else:
-      return false
-  else:
-    if y_max > x_min:
-      return true
-    else:
-      return false
-
-proc get_t_hit(a_min, a_max, b_min, b_max : float): float =
-  if checkIntersection(a_min, a_max, b_min, b_max):
-    if a_min < b_min:
-      return b_min
-    else:
-      return a_min
-  else:
-    return Inf
+proc checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max: float): Option[float] =
+  var 
+    t_hit_min : float = tx_min
+    t_hit_max : float = tx_max
+  if tx_min > ty_max or ty_min > tx_max:
+    return none(float)
+  if ty_min > tx_min:
+    t_hit_min = ty_min
+  if ty_max < tx_max:
+    t_hit_max = ty_max
+  if t_hit_min > tz_max or tz_min > t_hit_max:
+    return none(float)
+  if tz_min > t_hit_min:
+    t_hit_min = tz_min
+  if tz_max < t_hit_max:
+    t_hit_max = tz_max
+  return some(t_hit_min)
 
 proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
   var
@@ -172,31 +167,15 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
   if ty_min > ty_max: swap(ty_min, ty_max)
   if tz_min > tz_max: swap(tz_min, tz_max)
 
-#[   if abs(inv_ray.dir.x) < 1e-5:
+  if checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max).isNone:
     return none(HitRecord)
-
-  if abs(inv_ray.dir.y) < 1e-5:
-    return none(HitRecord)
-  
-  if abs(inv_ray.dir.z) < 1e-5:
-    return none(HitRecord) ]#
-
-  t1 = get_t_hit(tx_min, tx_max, ty_min, ty_max)
-  t2 = get_t_hit(tx_min, tx_max, tz_min, tz_max)
-  t3 = get_t_hit(tz_min, tz_max, ty_min, ty_max)
-
-  if t1 == Inf and t2 == Inf and t3 == Inf:
-    return none(HitRecord)
-  
-  t_hit = min(t1, min(t2, t3))
+  else:
+    t_hit = get(checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max))
 
   if (t_hit <= inv_ray.tmin) or (t_hit >= inv_ray.tmax):
     return none(HitRecord)
 
   var hit_point : Point = inv_ray.at(t_hit)
-
-  if hit_point > box.pmax or hit_point < box.pmin:
-    return none(HitRecord)
 
   if PointToVec(hit_point).dot(inv_ray.dir) < 0:
     normal = boxNormal(box, hit_point, inv_ray)
