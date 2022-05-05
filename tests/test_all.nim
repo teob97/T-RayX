@@ -523,3 +523,23 @@ suite "Test World":
       not intersection2.isNone
       areClose(intersection1.get().world_point, (newPoint(1.0, 0.0, 0.0)))
       areClose(intersection2.get().world_point, (newPoint(9.0, 0.0, 0.0)))
+
+
+##########
+#TEST AAB#
+##########
+
+suite "Test AAB":
+  setup:
+    var
+      ray = newRay(origin = newPoint(0, 1.5, 1.5), dir = VEC_X)
+      ray2 = newRay(origin = newPoint(0, 3.5, 1.5), dir = VEC_X)
+      cube = newAABox(newPoint(1.0,1.0,1.0), newPoint(2.0,2.0,2.0))
+      intersection = cube.rayIntersection(ray)
+      intersection2 = cube.rayIntersection(ray2)
+
+  test "Test AAB Hit":
+    check:
+      not intersection.isNone
+      intersection2.isNone
+      areClose(intersection.get().world_point, (newPoint(1.0, 1.5, 1.5)))
