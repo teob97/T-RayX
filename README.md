@@ -92,7 +92,7 @@ Use the command:
 to create the following animation.
 
 <p align="center"> 
-  <img src="output/demo/spheres-perspective.mp4" alt="demo" width="60%" height="60%">
+  <img src="output/demo/animation.gif" alt="demo" width="60%" height="60%">
 </p>
 
 
