@@ -15,17 +15,6 @@
   <a href='https://github.com/teob97/T-RayX/blob/main/LICENSE'>
   <img src='https://img.shields.io/github/license/teob97/T-RayX?style=for-the-badge'>
   </a>
-<!---
-  <a href="https://github.com/teob97/T-RayX/releases">
-    <img src="https://img.shields.io/github/v/release/teob97/T-RayX?color=orange&&sort=semver&style=flat-square" alt="Version">
-  </a>
-  <a href="https://github.com/teob97/T-RayX/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/teob97/T-RayX?color=blue&style=flat-square" alt="License">
-  </a>
-  <a href="https://www.paypal.me/EGatti619">
-    <img src="https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&amp;style=flat-square">
-  </a>
--->
 </p>
 
 ---
@@ -38,22 +27,51 @@ T-RayX works on Windows, Linux and MacOSX machine.
 
 Nim version required: 1.6.4
 
-## :rocket:  Example
-Convert pfm file in png image using syntax:
+## :rocket:  Usage
+To generate the executable file, use:
 
 ```bash
-nim r main.nim file.pfm alpha gamma output.png
+nimble run
 ```
 
-In `src` directory run:
+### pfm2png
+
+Convert pfm file in png image using:
 
 ```bash
-nim r main.nim ../tests/img/lawn.pbm 0.6 1.45 lawn_a0.6-gamma1.45.png
+./trayx <file.pfm> <alpha> <gamma> <output.png>
+```
+
+It is necessary to set specific values for alpha and gamma parameters.
+
+### demo
+
+To run the demo, use:
+
+```bash
+./trayx demo [--angle=<angle-deg>] [--output=<output-file>] [--orthogonal]
+```
+where:
+- angle: angle of rotation around z axis. Default 0.
+- output: name of output file. Default demo.png.
+- orthogonal: flag to chenge camera type. Default perespective.
+
+## 	:sunglasses: Examples
+
+### Example 1
+
+Run:
+
+```bash
+./trayx tests/img/lawn.pbm 0.6 1.45 lawn_a0.6-gamma1.45.png
 ```
 
 in order to create the following image:
 
-![](output/lawn_a0.6-gamma1.45.png)
+<p float="center">
+  <img src="output/lawn_a0.6-gamma1.45.png" width="600" />
+
+</p>
 
 It is possible to change the parameters alpha and gamma.
 <p float="left">
@@ -61,3 +79,21 @@ It is possible to change the parameters alpha and gamma.
   <img src="output/lawn_a0.6-gamma1.45.png" width="270" /> 
   <img src="output/lawn_a0.9-gamma1.45.png" width="270" />
 </p>
+
+
+### Example 2
+
+Use the command:
+
+```bash
+./trayx demo
+```
+
+to create the following animation.
+
+<p align="center"> 
+  <img src="output/demo/spheres-perspective.mp4" alt="demo" width="60%" height="60%">
+</p>
+
+
+
