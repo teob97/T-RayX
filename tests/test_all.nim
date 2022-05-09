@@ -400,6 +400,8 @@ suite "Test shapes.nim":
       sphereTrans = newSphere(transformation = translation(newVec(10.0, 0.0, 0.0)))
       plane = newPlane()
       planeTrans = newPlane(transformation = rotation_y(angle_deg = 90.0))
+      cube = newAABox(newPoint(1.0,1.0,1.0), newPoint(2.0,2.0,2.0))
+      cubeTrans = newAABox(newPoint(-1.0,-1.0,-1.0), newPoint(1.0,1.0,1.0), transformation = rotation_x(angle_deg = 45.0))
       ray1 = newRay(origin = newPoint(0, 0, 2), dir = -VEC_Z)
       ray2 = newRay(origin = newPoint(3, 0, 0), dir = -VEC_X)
       ray3 = newRay(origin = newPoint(0, 0, 0), dir = VEC_X)
@@ -412,6 +414,10 @@ suite "Test shapes.nim":
       ray5p = newRay(origin = newPoint(1, 0, 0), dir = -VEC_X)
       ray6p = newRay(origin = newPoint(0.25, 0.75, 1), dir = -VEC_Z)
       ray7p = newRay(origin = newPoint(4.25, 7.75, 1), dir = -VEC_Z)
+      ray1a = newRay(origin = newPoint(0, 1.5, 1.5), dir = VEC_X)
+      ray2a = newRay(origin = newPoint(0, 3.5, 1.5), dir = VEC_X)
+      ray3a = newRay(origin = newPoint(-2, 0.99, 0.99), dir = VEC_X)
+      ray4a = newRay(origin = newPoint(0.5, 0.5, -2.5), dir = VEC_Z)
       intersection1 = sphere.rayIntersection(ray1)
       intersection2 = sphere.rayIntersection(ray2)
       intersection3 = sphere.rayIntersection(ray3)
@@ -427,6 +433,10 @@ suite "Test shapes.nim":
       intersection5p = planeTrans.rayIntersection(ray5p)
       intersection6p = plane.rayIntersection(ray6p)
       intersection7p = plane.rayIntersection(ray7p)
+      intersection1a = cube.rayIntersection(ray1a)
+      intersection2a = cube.rayIntersection(ray2a)
+      intersection3a = cubeTrans.rayIntersection(ray3a)
+      intersection4a = cubeTrans.rayIntersection(ray4a)
   test "Test Sphere Hit":
     check:
       not intersection1.isNone
@@ -500,7 +510,15 @@ suite "Test shapes.nim":
       areClose(intersection1p.get().surface_point, (newVec2d(0.0, 0.0)))
       areClose(intersection6p.get().surface_point, (newVec2d(0.25, 0.75)))
       areClose(intersection7p.get().surface_point, (newVec2d(0.25, 0.75)))
-
+  test "Test AABox Hit":
+    check:
+      not intersection1a.isNone
+      intersection2a.isNone
+      areClose(intersection1a.get().world_point, (newPoint(1.0, 1.5, 1.5)))
+  test "Test AABox Transformation":
+    check:
+      intersection3a.isNone
+      not intersection4a.isNone
 
 ############
 #TEST WORLD#
@@ -523,23 +541,3 @@ suite "Test World":
       not intersection2.isNone
       areClose(intersection1.get().world_point, (newPoint(1.0, 0.0, 0.0)))
       areClose(intersection2.get().world_point, (newPoint(9.0, 0.0, 0.0)))
-
-
-##########
-#TEST AAB#
-##########
-
-suite "Test AAB":
-  setup:
-    var
-      ray = newRay(origin = newPoint(0, 1.5, 1.5), dir = VEC_X)
-      ray2 = newRay(origin = newPoint(0, 3.5, 1.5), dir = VEC_X)
-      cube = newAABox(newPoint(1.0,1.0,1.0), newPoint(2.0,2.0,2.0))
-      intersection = cube.rayIntersection(ray)
-      intersection2 = cube.rayIntersection(ray2)
-
-  test "Test AAB Hit":
-    check:
-      not intersection.isNone
-      intersection2.isNone
-      areClose(intersection.get().world_point, (newPoint(1.0, 1.5, 1.5)))
