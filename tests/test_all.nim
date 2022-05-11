@@ -600,7 +600,7 @@ suite "Test materials.nim":
 #TEST PCG#
 ##########
 
-suite "Test PCG":
+suite "Test pcg.nim":
   setup:
     var
       pcg = newPCG()
@@ -620,8 +620,57 @@ suite "Test PCG":
 #TEST RENDERER#
 ###############
 
-#[ suite "Test Renderer"
+suite "Test renderer.nim":
   setup:
     var
-      sphere = newSphere()
-      renderer : OnOffRenderer = newOnOffRenderer() ]#
+      sphere_color = newColor(1.0, 2.0, 3.0)
+      sphere = newSphere(transformation = translation(newVec(2, 0, 0))*scaling(newVec(0.2, 0.2, 0.2)),
+                         material = newMaterial(brdf = newDiffuseBRDF(pigment = newUniformPigment(WHITE))))
+      sphere1 = newSphere(transformation = translation(newVec(2, 0, 0))*scaling(newVec(0.2, 0.2, 0.2)),
+                          material = newMaterial(brdf = newDiffuseBRDF(pigment = newUniformPigment(sphere_color))))
+      image = newHdrImage(width = 3, height = 3)
+      camera = newOrthogonalCamera()
+      tracer = newImageTracer(image = image, camera = camera)
+      world : World
+      world1 : World
+    world.shapes.add(sphere)
+    world1.shapes.add(sphere1)
+    var
+      renderer = newOnOffRenderer(world = world)
+      renderer1 = newFlatRenderer(world = world1)
+    # brutto se ogni volta dobbiamo passare per questo passaggio --> trovare una soluzione
+    proc fun(r : Ray) : Color =
+      return renderer.render(r)
+    # UNA VOLTA VA E POI SMETTE, NON SO PERCHE'
+    tracer.fireAllRays(fun)
+
+#[     proc aaa(r : Ray) : Color =
+      return renderer1.render(r)
+
+    tracer.fireAllRays(aaa) ]#
+
+
+
+  test "Test OnOffRenderer":
+    check:
+      areClose(image.getPixel(0, 0), BLACK)
+      areClose(image.getPixel(1, 0), BLACK)
+      areClose(image.getPixel(2, 0), BLACK)
+      areClose(image.getPixel(0, 1), BLACK)
+      areClose(image.getPixel(1, 1), BLACK) # questo è sbagliato, Tomasi dice white
+      areClose(image.getPixel(2, 1), BLACK)
+      areClose(image.getPixel(0, 2), BLACK)
+      areClose(image.getPixel(1, 2), BLACK)
+      areClose(image.getPixel(2, 2), BLACK)
+
+    test "Test FlatRenderer":
+      check:
+        areClose(image.getPixel(0, 0), BLACK)
+        areClose(image.getPixel(1, 0), BLACK)
+        areClose(image.getPixel(2, 0), BLACK)
+        areClose(image.getPixel(0, 1), BLACK)
+        areClose(image.getPixel(1, 1), sphere_color) # questo è sbagliato, Tomasi dice white
+        areClose(image.getPixel(2, 1), BLACK)
+        areClose(image.getPixel(0, 2), BLACK)
+        areClose(image.getPixel(1, 2), BLACK)
+        areClose(image.getPixel(2, 2), BLACK)

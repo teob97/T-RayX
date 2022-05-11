@@ -50,7 +50,7 @@ proc `*`*(ray : Ray, transformation : Transformation): Ray =
 
 #*********************************** CAMERA ***********************************
 
-proc newOrthogonalCamera*(aspect_ratio : float, transformation = newTransformation()): OrthogonalCamera =
+proc newOrthogonalCamera*(aspect_ratio : float = 2.0, transformation = newTransformation()): OrthogonalCamera =
   ## Constructor of OrthogonalCamera
   var cam = OrthogonalCamera.new()
   cam.aspect_ratio = aspect_ratio

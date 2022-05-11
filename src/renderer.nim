@@ -12,7 +12,7 @@ type
     color* : Color
   FlatRenderer* = ref object of Renderer
 
-proc newOnOffRenderer*(world : World, color : Color, background_color : Color = BLACK) : OnOffRenderer =
+proc newOnOffRenderer*(world : World, color : Color = WHITE, background_color : Color = BLACK) : OnOffRenderer =
   result = OnOffRenderer.new()
   result.world = world
   result.color = color
