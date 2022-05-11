@@ -5,7 +5,11 @@ import ../src/geometry
 import ../src/transformation
 import ../src/cameras
 import ../src/shapes
+<<<<<<< HEAD
 import ../src/materials
+=======
+import ../src/pcg
+>>>>>>> c1038d4e1f8a5ac72f5ba1a888ad6cf4217a8660
 import std/[options, unittest, streams]
 
 #################
@@ -544,9 +548,6 @@ suite "Test World":
       areClose(intersection2.get().world_point, (newPoint(9.0, 0.0, 0.0)))
 
 
-
-
-
 ################
 #TEST MATERIALS#
 ################
@@ -592,3 +593,23 @@ suite "Test materials.nim":
       areClose(pigment3.getColor(newVec2d(0.75, 0.25)), color2)
       areClose(pigment3.getColor(newVec2d(0.25, 0.75)), color2)
       areClose(pigment3.getColor(newVec2d(0.75, 0.75)), color1)
+
+##########
+#TEST PCG#
+##########
+
+suite "Test PCG":
+  setup:
+    var
+      pcg = newPCG()
+      expected = [2707161783.uint32, 2068313097.uint32,
+                  3122475824.uint32, 2211639955.uint32, 
+                  3215226955.uint32, 3421331566.uint32]
+  test "Test PCG generator":
+    check:
+      pcg.state == uint64(1753877967969059832)
+      pcg.inc == uint64(109)
+  test "Test PCG usage":
+    for k in expected:
+      check:
+        k == pcg.random()
