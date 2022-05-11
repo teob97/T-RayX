@@ -556,6 +556,11 @@ suite "Test materials.nim":
       color1 = newColor(1.0, 2.0, 3.0)
       color2 = newColor(10.0, 20.0, 30.0)
       image1 = newHdrImage(width=2, height=2)
+    image1.set_pixel(0, 0, newColor(1.0, 2.0, 3.0))
+    image1.set_pixel(1, 0, newColor(2.0, 3.0, 1.0))
+    image1.set_pixel(0, 1, newColor(2.0, 1.0, 3.0))
+    image1.set_pixel(1, 1, newColor(3.0, 2.0, 1.0))
+    var
       pigment1 = newUniformPigment(color = color1)
       pigment2 = newImagePigment(image1)
       pigment3 = newCheckeredPigment(color1 = color1, color2 = color2, num_of_steps = 2)
@@ -565,12 +570,11 @@ suite "Test materials.nim":
       areClose(pigment1.getColor(newVec2d(0.0, 0.0)), color1)
 
   test "Test Image Pigment":
-    image1.set_pixel(0, 0, newColor(1.0, 2.0, 3.0))
-    image1.set_pixel(1, 0, newColor(2.0, 3.0, 1.0))
-    image1.set_pixel(0, 1, newColor(2.0, 1.0, 3.0))
-    image1.set_pixel(1, 1, newColor(3.0, 2.0, 1.0))
     check:
       areClose(pigment2.getColor(newVec2d(0.0, 0.0)), newColor(1.0, 2.0, 3.0))
+      areClose(pigment2.getColor(newVec2d(1.0, 0.0)), newColor(2.0, 3.0, 1.0))
+      areClose(pigment2.getColor(newVec2d(0.0, 1.0)), newColor(2.0, 1.0, 3.0))
+      areClose(pigment2.getColor(newVec2d(1.0, 1.0)), newColor(3.0, 2.0, 1.0))
 
   test "Test Checkered Pigment":
     check:
