@@ -5,11 +5,8 @@ import ../src/geometry
 import ../src/transformation
 import ../src/cameras
 import ../src/shapes
-<<<<<<< HEAD
 import ../src/materials
-=======
 import ../src/pcg
->>>>>>> c1038d4e1f8a5ac72f5ba1a888ad6cf4217a8660
 import std/[options, unittest, streams]
 
 #################
