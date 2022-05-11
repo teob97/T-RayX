@@ -124,6 +124,7 @@ proc checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max: float): O
   return some(t_hit_min)
 
 proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
+  ## Check in which face of the cube there is the intersection and calculate the normal using the cross product.
   var
     a = box.pmin
     h = box.pmax
@@ -134,13 +135,10 @@ proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
     f = newPoint(a.x, h.y, a.z)
     g = newPoint(h.x, h.y, a.z)
   if hit_point.x == box.pmin.x:
-    # faccia yz (pmin.x, hit_point.y, hit_point.z)
     result = VecToNormal(cross(d-a, f-a))
   elif hit_point.y == box.pmin.y:
-    # faccia xz
     result = VecToNormal(cross(b-a, d-a))
   elif hit_point.z == box.pmin.z:
-    # faccia xy
     result = VecToNormal(cross(f-a, b-a))
   elif hit_point.x == box.pmax.x:
     result = VecToNormal(cross(g-b, c-b))
@@ -150,6 +148,8 @@ proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
     result = VecToNormal(cross(c-d, e-d))
 
 method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
+  ## Checks if a ray intersects the AAB
+  ## Return a `HitRecord`, or `None` if no intersection was found.  
   var
     inv_ray : Ray = ray.transform(box.transformation.inverse())
     origin_vec = PointToVec(inv_ray.origin)
@@ -184,7 +184,7 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
 
   result = some(newHitRecord(world_point = box.transformation * hit_point,
                       normal = normal,
-                      surface_point = newVec2d(0,0),
+                      surface_point = newVec2d(0,0), #Incorrect. We don't know the correct parametrisation.
                       t = t_hit,
                       ray = ray))
 
