@@ -5,6 +5,7 @@ import ../src/geometry
 import ../src/transformation
 import ../src/cameras
 import ../src/shapes
+import ../src/materials
 import std/[options, unittest, streams]
 
 #################
@@ -541,3 +542,53 @@ suite "Test World":
       not intersection2.isNone
       areClose(intersection1.get().world_point, (newPoint(1.0, 0.0, 0.0)))
       areClose(intersection2.get().world_point, (newPoint(9.0, 0.0, 0.0)))
+
+
+
+
+
+################
+#TEST MATERIALS#
+################
+
+suite "Test materials.nim":
+  setup:
+    var
+      color1 = newColor(1.0, 2.0, 3.0)
+      color2 = newColor(10.0, 20.0, 30.0)
+      image1 = newHdrImage(width=2, height=2)
+      pigment1 = newUniformPigment(color = color1)
+      pigment2 = newImagePigment(image1)
+      pigment3 = newCheckeredPigment(color1 = color1, color2 = color2, num_of_steps = 2)
+
+  test "Test Uniform Pigment":
+    check:
+      areClose(pigment1.getColor(newVec2d(0.0, 0.0)), color1)
+
+  test "Test Image Pigment":
+    image1.set_pixel(0, 0, newColor(1.0, 2.0, 3.0))
+    image1.set_pixel(1, 0, newColor(2.0, 3.0, 1.0))
+    image1.set_pixel(0, 1, newColor(2.0, 1.0, 3.0))
+    image1.set_pixel(1, 1, newColor(3.0, 2.0, 1.0))
+    check:
+      areClose(pigment2.getColor(newVec2d(0.0, 0.0)), newColor(1.0, 2.0, 3.0))
+
+  test "Test Checkered Pigment":
+    check:
+      # With num_of_steps == 2, the pattern should be the following:
+      #
+      #              (0.5, 0)
+      #   (0, 0) +------+------+ (1, 0)
+      #          |      |      |
+      #          | col1 | col2 |
+      #          |      |      |
+      # (0, 0.5) +------+------+ (1, 0.5)
+      #          |      |      |
+      #          | col2 | col1 |
+      #          |      |      |
+      #   (0, 1) +------+------+ (1, 1)
+      #              (0.5, 1)
+      areClose(pigment3.getColor(newVec2d(0.25, 0.25)), color1)
+      areClose(pigment3.getColor(newVec2d(0.75, 0.25)), color2)
+      areClose(pigment3.getColor(newVec2d(0.25, 0.75)), color2)
+      areClose(pigment3.getColor(newVec2d(0.75, 0.75)), color1)
