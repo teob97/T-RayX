@@ -7,6 +7,7 @@ import ../src/cameras
 import ../src/shapes
 import ../src/materials
 import ../src/pcg
+import ../src/renderer
 import std/[options, unittest, streams]
 
 #################
@@ -610,3 +611,13 @@ suite "Test PCG":
     for k in expected:
       check:
         k == pcg.random()
+
+###############
+#TEST RENDERER#
+###############
+
+#[ suite "Test Renderer"
+  setup:
+    var
+      sphere = newSphere()
+      renderer : OnOffRenderer = newOnOffRenderer() ]#

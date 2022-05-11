@@ -162,7 +162,6 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
     tx_max : float = (box.pmax.x - origin_vec.x) / inv_ray.dir.x
     ty_max : float = (box.pmax.y - origin_vec.y) / inv_ray.dir.y
     tz_max : float = (box.pmax.z - origin_vec.z) / inv_ray.dir.z
-    t1, t2, t3: float
     t_hit : float
     normal : Normal
   if tx_min > tx_max: swap(tx_min, tx_max)

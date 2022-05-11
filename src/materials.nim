@@ -12,6 +12,7 @@ type
     color2* : Color
     num_of_steps* : int
 
+
 #*********************************** PIGMENT ***********************************
 
 proc newUniformPigment*(color : Color) : UniformPigment =

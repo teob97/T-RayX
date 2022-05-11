@@ -1,4 +1,5 @@
-import basictypes, pfm, ldr, cameras, shapes, transformation, geometry, docopt
+import basictypes, pfm, ldr, cameras, shapes, transformation, geometry, renderer
+import docopt
 import std/[strutils, strformat, streams, os, options]
 
 
