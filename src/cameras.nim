@@ -1,16 +1,25 @@
-import ../src/basictypes
-import ../src/geometry
-import ../src/transformation
-
-#RAY
+import basictypes, geometry, transformation
 
 type
   Ray* = object
     origin* : Point 
     dir* : Vec
-    tmin : float
-    tmax : float
-    depth : int
+    tmin* : float
+    tmax* : float
+    depth* : int
+  Camera* = ref object of RootObj
+  OrthogonalCamera* = ref object of Camera
+    aspect_ratio* : float
+    transformation* : Transformation
+  PerspectiveCamera* = ref object of Camera
+    distance* : float
+    aspect_ratio* : float
+    transformation* : Transformation
+  ImageTracer* = object
+    image* : HdrImage
+    camera* : Camera
+
+#*********************************** RAY ***********************************
 
 proc newRay*(origin : Point, dir : Vec, tmin = 1e-5, tmax = Inf, depth = 0): Ray =
   ## Constructor of Ray
@@ -27,6 +36,10 @@ proc at*(ray : Ray, t : float): Point =
   ## Return the position of a ray at a given "time" t
   return ray.origin + ray.dir * t
 
+proc transform*(ray : Ray, t : Transformation) : Ray =
+  ## Transform a ray
+  result = newRay(origin = t*ray.origin, dir = t*ray.dir, tmin = ray.tmin, tmax = ray.tmax, depth = ray.depth)
+
 proc `*`*(ray : Ray, transformation : Transformation): Ray =
   ## Overload the operator * to transform a Ray object using a Transformation
   result.origin = transformation * ray.origin
@@ -35,17 +48,7 @@ proc `*`*(ray : Ray, transformation : Transformation): Ray =
   result.tmax = ray.tmax
   result.depth = ray.depth
 
-#CAMERA
-
-type
-  Camera* = ref object of RootObj
-  OrthogonalCamera* = ref object of Camera
-    aspect_ratio* : float
-    transformation* : Transformation
-  PerspectiveCamera* = ref object of Camera
-    distance* : float
-    aspect_ratio* : float
-    transformation* : Transformation
+#*********************************** CAMERA ***********************************
 
 proc newOrthogonalCamera*(aspect_ratio : float, transformation = newTransformation()): OrthogonalCamera =
   ## Constructor of OrthogonalCamera
@@ -77,12 +80,7 @@ method fireRay*(cam : PerspectiveCamera; u,v : float): Ray =
   let dir = newVec(cam.distance, (1.0 - 2 * u) * cam.aspect_ratio, 2 * v - 1)
   return newRay(origin = origin, dir = dir, tmin=1.0) * cam.transformation
 
-#IMAGE TRACER
-
-type
-  ImageTracer* = object
-    image* : HdrImage
-    camera* : Camera
+#*********************************** IMAGE TRACER ***********************************
 
 proc newImageTracer*(image : HdrImage, camera : Camera): ImageTracer =
   ## Constructor if ImageTracer

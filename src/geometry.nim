@@ -1,16 +1,31 @@
 import std/math
 
-
-#VECTOR OBJECT
-
 type 
   Vec* = object
     x*, y*, z* : float
+  Vec2d* = object
+    u*, v* : float
+  Point* = object
+    x*, y*, z* : float
+  Normal* = object
+    x*, y*, z* : float
+
+#*********************************** VEC ***********************************
 
 proc newVec*(x, y, z : float) : Vec =
   result.x = x
   result.y = y
   result.z = z
+
+proc areClose*(v1, v2 : Vec2d, epsilon : float = 1e-5) : bool =
+  ## Check whether two Vec2d points are roughly the same or not
+  return (abs(v1.u - v2.u) < epsilon) and (abs(v1.v - v2.v) < epsilon)
+
+#*********************************** VEC2D ***********************************
+
+proc newVec2d*(u, v : float) : Vec2d =
+  result.u = u
+  result.v = v
 
 # Useful constats
 const VEC_X* : Vec = newVec(1.0, 0.0, 0.0)
@@ -18,30 +33,21 @@ const VEC_Y* : Vec = newVec(0.0, 1.0, 0.0)
 const VEC_Z* : Vec = newVec(0.0, 0.0, 1.0)
 
 
-#POINT OBJECT
-
-type 
-  Point* = object
-    x*, y*, z* : float
+#*********************************** POINT ***********************************
 
 proc newPoint*(x, y, z : float) : Point =
   result.x = x
   result.y = y
   result.z = z
 
-
-#NORMAL OBJECT
-
-type 
-  Normal* = object
-    x*, y*, z* : float
+#*********************************** NORMAL ***********************************
 
 proc newNormal*(x, y, z : float) : Normal =
   result.x = x
   result.y = y
   result.z = z
 
-#TEMPLATES
+#*********************************** OPERATIONS ***********************************
 
 template define_print_string(t: typedesc) = 
   ## Print the object in the format Obj.type(Obj.x, Obj.y, Obj.z)
@@ -168,3 +174,9 @@ proc PointToVec*(p: Point) : Vec =
   result.x = p.x
   result.y = p.y
   result.z = p.z
+
+proc `<`*(p1, p2:Point):bool=
+  return p1.x<p2.x or p1.y<p2.y or p1.z<p2.z
+
+proc `>`*(p1, p2:Point):bool=
+  return p1.x>p2.x or p1.y>p2.y or p1.z>p2.z

@@ -5,8 +5,13 @@ const IDENTITY_MATRIX4x4 = [1.0, 0.0, 0.0, 0.0,
                             0.0, 1.0, 0.0, 0.0,
                             0.0, 0.0, 1.0, 0.0,
                             0.0, 0.0, 0.0, 1.0]
+type
+  ## Affine transformation.
+  Transformation* = object
+    m* : array[16, float]
+    invm* : array[16, float]
 
-# USEFULL OPERAIONS
+#*********************************** MATRIX OPERAIONS ***********************************
 
 proc `[]`*(m: array[16, float]; x, y: int) : float =
   ## Overload [] operator: return the element at position (x,y).
@@ -26,17 +31,10 @@ proc areMatrClose*(m1, m2: array[16, float], epsilon : float = 1e-5) : bool =
       return false
   return true
   
-
 proc diffOfProduct*(m1, m2, m3, m4: float) : float =
   return m1*m2-m3*m4
 
-#TRANSFORMATION OBJECT
-
-type
-  ## Affine transformation.
-  Transformation* = object
-    m* : array[16, float]
-    invm* : array[16, float]
+#*********************************** TRANSFORMATION ***********************************
 
 proc newTransformation*(m=IDENTITY_MATRIX4x4, invm=IDENTITY_MATRIX4x4) : Transformation =
   ## Constructor for Transormation object.
@@ -55,6 +53,8 @@ proc isConsistent*(T: Transformation) : bool =
 proc isClose*(T1: Transformation, T2: Transformation) : bool =
   ## Check if T2 represents the same transform.
   return areMatrClose(T1.m, T2.m) and areMatrClose(T1.invm, T2.invm)
+
+#*********************************** OPERAIONS ***********************************
 
 proc `*`*(T: Transformation, v: Vec) : Vec =
   ## Multiplication between a Transformation object and a Vec object.
@@ -88,8 +88,7 @@ proc `*`*(T1: Transformation, T2: Transformation) : Transformation =
   result.m = T1.m*T2.m
   result.invm = T2.invm*T1.invm
 
-
-# AFFINE TRANSFORMATIONS
+#*********************************** AFFINE TRANSFORMATIONS ***********************************
 
 proc translation*(v: Vec) : Transformation =
   ## Return a `Transformation` object encoding a rigid translation.
