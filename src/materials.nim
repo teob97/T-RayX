@@ -12,11 +12,12 @@ type
     color2* : Color
     num_of_steps* : int
   BRDF* = ref object of RootObj
+    pigment* : Pigment
   DiffuseBRDF* = ref object of BRDF
-    reflectance : float
-  Material*
-    brdf: BRDF
-    emitted_radiance: Pigment
+    reflectance* : float
+  Material* = object
+    brdf_function* : BRDF
+    emitted_radiance* : Pigment
 
 
 #*********************************** PIGMENT ***********************************
@@ -65,9 +66,18 @@ method getColor*(pig : CheckeredPigment; uv : Vec2d): Color =
 
 #*********************************** BRDF ***********************************
 
-method eval*(bdrf : BRDF, normal : Normal; in_dir, out_dir : Vec; uv : Vec2d): Color {.base.} =
+proc newDiffuseBRDF*(pigment : Pigment): DiffuseBRDF =
+  result = DiffuseBRDF.new()
+  result.pigment = pigment
+
+method eval*(brdf : BRDF, normal : Normal; in_dir, out_dir : Vec; uv : Vec2d): Color {.base.} =
   quit "to override"
 
-method eval*(bdrf : DiffuseBRDF, normal : Normal; in_dir, out_dir : Vec; uv : Vec2d): Color {.base.} =
+method eval*(brdf : DiffuseBRDF, normal : Normal; in_dir, out_dir : Vec; uv : Vec2d): Color =
   return brdf.pigment.getColor(uv) * (brdf.reflectance / PI)
 
+#********************************** MATERIAL *******************************
+
+proc newMaterial*(brdf : BRDF, emitted_radiance : Pigment = newUniformPigment(BLACK)): Material =
+  result.brdf_function = brdf
+  result.emitted_radiance = emitted_radiance

@@ -16,8 +16,8 @@ func newColor*(r : float32 = 0.0; g : float32 = 0.0; b : float32 = 0.0) : Color 
     return C
 
 const
-  BLACK = newColor(0.0, 0.0, 0.0)
-  WHITE = newColor(1.0, 1.0, 1.0)
+  BLACK* = newColor(0.0, 0.0, 0.0)
+  WHITE* = newColor(1.0, 1.0, 1.0)
 
 #*********************************** HDR IMAGE ***********************************
 

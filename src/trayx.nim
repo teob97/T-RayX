@@ -1,6 +1,6 @@
-import basictypes, pfm, ldr, cameras, shapes, transformation, geometry, renderer
+import basictypes, pfm, ldr, cameras, shapes, transformation, geometry, materials, renderer
 import docopt
-import std/[strutils, strformat, streams, os, options]
+import std/[strutils, strformat, streams, os]
 
 
 let doc = """
@@ -82,9 +82,10 @@ proc demo() =
   var
     strm = newFileStream("output/demo.pfm", fmWrite)
     scaling = scaling(newVec(1/10, 1/10, 1/10))
-    s1 = newSphere(translation(newVec(0, 0.5, 0))*scaling)
-    s2 = newSphere(translation(newVec(0, 0, -0.5))*scaling)
-    cube = newAABox(newPoint(-0.25,-0.15,-0.15), newPoint(0.25,0.15,0.15), rotation_x(45.0))
+    material = newMaterial(newDiffuseBRDF(newUniformPigment(WHITE)))
+    s1 = newSphere(translation(newVec(0, 0.5, 0))*scaling, material)
+    s2 = newSphere(translation(newVec(0, 0, -0.5))*scaling, material)
+    cube = newAABox(newPoint(-0.25,-0.15,-0.15), newPoint(0.25,0.15,0.15), rotation_x(45.0), material)
     world : World
   world.shapes.add(s1)
   world.shapes.add(s2)
@@ -92,12 +93,11 @@ proc demo() =
   for i in [-0.5, 0.5]:
     for j in [-0.5, 0.5]:
       for k in [-0.5, 0.5]:
-        world.shapes.add(newSphere(translation(newVec(i, j, k))*scaling))
-  proc f(r : Ray) : Color = 
-    if world.rayIntersection(r).isNone: 
-      result = newColor(0.0, 0.0, 0.0)
-    else:
-      result = newColor(1, 1, 1)
+        world.shapes.add(newSphere(translation(newVec(i, j, k))*scaling, material))
+  var renderer = newOnOffRenderer(world, newColor(1.0, 0.0, 0.0))
+  # Il fatto di dover wrappare il renderer in un proc mi fa abbastanza schifo, rimediare!
+  proc f(r : Ray) : Color =
+    return renderer.render(r)
   tracer.fireAllRays(f)
   tracer.image.writePfmImage(strm)
   if args["--output"]:

@@ -1,4 +1,4 @@
-import geometry, cameras, transformation
+import geometry, cameras, transformation, materials
 import std/[math, options]
 
 type
@@ -8,26 +8,30 @@ type
     surface_point* : Vec2d
     t* : float
     ray* : Ray
+    material* : Material
   Shape* = ref object of RootObj
-  Sphere* = ref object of Shape
     transformation* : Transformation
+    material* : Material
+  Sphere* = ref object of Shape
+    #transformation* : Transformation
   AABox * = ref object of Shape
     pmin* : Point
     pmax* : Point
-    transformation* : Transformation
+    #transformation* : Transformation
   Plane* = ref object of Shape
-    transformation* : Transformation
+    #transformation* : Transformation
   World* = object
     shapes* : seq[Shape]
 
 #*********************************** HITRECORD ***********************************
 
-proc newHitRecord*(world_point : Point, normal : Normal, surface_point : Vec2d, t : float, ray : Ray) : HitRecord =
+proc newHitRecord*(world_point : Point, normal : Normal, surface_point : Vec2d, t : float, ray : Ray, material : Material) : HitRecord =
   result.world_point = world_point
   result.normal = normal
   result.surface_point = surface_point
   result.t = t
   result.ray = ray
+  result.material = material
 
 proc areClose*(h1, h2: HitRecord, epsilon : float = 1e-5) : bool =
   return areClose(h1.world_point, h2.world_point) and
@@ -57,10 +61,10 @@ proc sphereNormal*(point: Point, ray_dir: Vec) : Normal =
 
 #*********************************** SHAPE ***********************************
 
-proc newSphere*(transformation : Transformation = newTransformation()) : Sphere =
-  var sphere = Sphere.new()
-  sphere.transformation = transformation
-  return sphere
+proc newSphere*(transformation : Transformation = newTransformation(), material : Material) : Sphere =
+  result = Sphere.new()
+  result.transformation = transformation
+  result.material = material
 
 method rayIntersection*(shape : Shape, ray : Ray): Option[HitRecord] {.base.} =
   quit "to override"
@@ -93,17 +97,18 @@ method rayIntersection*(sphere : Sphere, ray : Ray): Option[HitRecord] =
                       normal = sphere.transformation * sphereNormal(hit_point, inv_ray.dir),
                       surface_point = spherePointToUV(hit_point),
                       t = first_hit_t,
-                      ray = ray))
+                      ray = ray,
+                      material = sphere.material))
 
 #*********************** AXIS-ALIGNED-BOXES *****************************
 
-proc newAABox*(pmin, pmax : Point; transformation : Transformation = newTransformation()) : AABox =
+proc newAABox*(pmin, pmax : Point; transformation : Transformation = newTransformation(), material : Material) : AABox =
   ## Constructor for an Axis Aligned Boxes with min vertex in pmin and max vertex in pmax
-  var box = AABox.new()
-  box.pmin = pmin
-  box.pmax = pmax
-  box.transformation = transformation
-  return box
+  result = AABox.new()
+  result.pmin = pmin
+  result.pmax = pmax
+  result.transformation = transformation
+  result.material = material
 
 proc checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max: float): Option[float] =
   var 
@@ -182,14 +187,15 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
                       normal = normal,
                       surface_point = newVec2d(0,0), #Incorrect. We don't know the correct parametrisation.
                       t = t_hit,
-                      ray = ray))
+                      ray = ray,
+                      material = box.material))
 
 #*********************************** PLANE ***********************************
 
-proc newPlane*(transformation : Transformation = newTransformation()) : Plane =
-  var plane = Plane.new()
-  plane.transformation = transformation
-  return plane
+proc newPlane*(transformation : Transformation = newTransformation(), material : Material) : Plane =
+  result = Plane.new()
+  result.transformation = transformation
+  result.material = material
 
 method rayIntersection*(plane : Plane, ray : Ray): Option[HitRecord] =
   ## Checks if a ray intersects the plane
@@ -212,7 +218,8 @@ method rayIntersection*(plane : Plane, ray : Ray): Option[HitRecord] =
                                normal = plane.transformation * normal,
                                surface_point = newVec2d(hit_point.x - floor(hit_point.x), hit_point.y - floor(hit_point.y)),
                                t = t,
-                               ray = ray))
+                               ray = ray,
+                               material = plane.material))
 
 #*********************************** WORLD ***********************************
 

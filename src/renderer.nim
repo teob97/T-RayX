@@ -1,34 +1,31 @@
 import shapes
-import materials
 import basictypes
+import cameras
+import options
 
 type
-  Renderer* : ref object of RootObj
+  Renderer* = ref object of RootObj
     world* : World
     background_color* : Color
-  OnOffRenderer* : ref object of Renderer
+  OnOffRenderer* = ref object of Renderer
     color* : Color
-  FlatRenderer* : ref object of Renderer
+  FlatRenderer* = ref object of Renderer
 
 proc newRenderer*(world : World, color : Color) : Renderer =
-  render = Renderer.new()
-  render.world = world 
-  render.color = color
+  result = Renderer.new()
+  result.world = world 
 
 proc newOnOffRenderer*(world : World, color : Color, background_color : Color = BLACK) : OnOffRenderer =
-  render = OnOffRenderer.new()
-  render.world = world
-  render.color = color
-  render.background_color = background_color
-  return render
+  result = OnOffRenderer.new()
+  result.world = world
+  result.color = color
+  result.background_color = background_color
 
-method render*(renderer: Render, ray : Ray): Color {.base.} =
+method render*(renderer: Renderer, ray : Ray): Color {.base.} =
   quit "to overrride1"
 
-method render(renderer: OnOffRenderer, ray : Ray): Color =
+method render*(renderer: OnOffRenderer, ray : Ray): Color =
   if renderer.world.rayIntersection(ray).isNone: 
-    result = renderer.color    
+    result = BLACK  
   else:
-    result = BLACK
-  
-  
+    result = renderer.color
