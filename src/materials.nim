@@ -23,21 +23,18 @@ type
 #*********************************** PIGMENT ***********************************
 
 proc newUniformPigment*(color : Color = WHITE) : UniformPigment =
-  var pig = UniformPigment.new()
-  pig.color = color
-  return pig
+  result = UniformPigment.new()
+  result.color = color
 
 proc newImagePigment*(image : HdrImage) : ImagePigment =
-  var pig = ImagePigment.new()
-  pig.image = image
-  return pig
+  result = ImagePigment.new()
+  result.image = image
 
 proc newCheckeredPigment*(color1, color2 : Color; num_of_steps : int) : CheckeredPigment =
-  var pig = CheckeredPigment.new()
-  pig.color1 = color1
-  pig.color2 = color2
-  pig.num_of_steps = num_of_steps
-  return pig
+  result = CheckeredPigment.new()
+  result.color1 = color1
+  result.color2 = color2
+  result.num_of_steps = num_of_steps
 
 method getColor*(pig : Pigment; uv : Vec2d): Color {.base.} =
   quit "to override"
