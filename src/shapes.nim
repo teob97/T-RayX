@@ -95,7 +95,7 @@ method rayIntersection*(sphere : Sphere, ray : Ray): Option[HitRecord] =
                       t = first_hit_t,
                       ray = ray))
 
-#*********************** Axis-Aligned-Boxes *****************************
+#*********************** AXIS-ALIGNED-BOXES *****************************
 
 proc newAABox*(pmin, pmax : Point; transformation : Transformation = newTransformation()) : AABox =
   ## Constructor for an Axis Aligned Boxes with min vertex in pmin and max vertex in pmax
@@ -135,10 +135,13 @@ proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
     f = newPoint(a.x, h.y, a.z)
     g = newPoint(h.x, h.y, a.z)
   if hit_point.x == box.pmin.x:
+    # yz face (pmin.x, hit_point.y, hit_point.z)
     result = VecToNormal(cross(d-a, f-a))
   elif hit_point.y == box.pmin.y:
+    # xz face
     result = VecToNormal(cross(b-a, d-a))
   elif hit_point.z == box.pmin.z:
+    # xy face
     result = VecToNormal(cross(f-a, b-a))
   elif hit_point.x == box.pmax.x:
     result = VecToNormal(cross(g-b, c-b))
@@ -162,26 +165,20 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
     t1, t2, t3: float
     t_hit : float
     normal : Normal
-
   if tx_min > tx_max: swap(tx_min, tx_max)
   if ty_min > ty_max: swap(ty_min, ty_max)
   if tz_min > tz_max: swap(tz_min, tz_max)
-
   if checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max).isNone:
     return none(HitRecord)
   else:
     t_hit = get(checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max))
-
   if (t_hit <= inv_ray.tmin) or (t_hit >= inv_ray.tmax):
     return none(HitRecord)
-
   var hit_point : Point = inv_ray.at(t_hit)
-
   if PointToVec(hit_point).dot(inv_ray.dir) < 0:
     normal = boxNormal(box, hit_point, inv_ray)
   else:
     normal = -boxNormal(box, hit_point, inv_ray)
-
   result = some(newHitRecord(world_point = box.transformation * hit_point,
                       normal = normal,
                       surface_point = newVec2d(0,0), #Incorrect. We don't know the correct parametrisation.

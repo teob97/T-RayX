@@ -79,23 +79,19 @@ proc demo() =
     else:
       tracer = newImageTracer(newHdrImage(640, 480), newPerspectiveCamera(1, 640/480, translation(newVec(-1,0,0))))
   var
+    strm = newFileStream("output/demo.pfm", fmWrite)
     scaling = scaling(newVec(1/10, 1/10, 1/10))
     s1 = newSphere(translation(newVec(0, 0.5, 0))*scaling)
     s2 = newSphere(translation(newVec(0, 0, -0.5))*scaling)
-    s3 = newSphere(translation(newVec(0.5, 0.5, 0.5))*scaling)
-    s4 = newSphere(translation(newVec(-0.5, 0.5, 0.5))*scaling)
-    s5 = newSphere(translation(newVec(0.5, -0.5, 0.5))*scaling)
-    s6 = newSphere(translation(newVec(0.5, 0.5, -0.5))*scaling)
-    s7 = newSphere(translation(newVec(0.5, -0.5, -0.5))*scaling)
-    s8 = newSphere(translation(newVec(-0.5, 0.5, -0.5))*scaling)
-    s9 = newSphere(translation(newVec(-0.5, -0.5, 0.5))*scaling)
-    s10 = newSphere(translation(newVec(-0.5, -0.5, -0.5))*scaling)
-    cube = newAABox(newPoint(0,0,0), newPoint(0.3,0.3,0.3))
+    cube = newAABox(newPoint(-0.25,-0.15,-0.15), newPoint(0.25,0.15,0.15), rotation_x(45.0))
     world : World
-    strm = newFileStream("output/demo.pfm", fmWrite)
-    buffer = @[s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, cube]
-  for shape in buffer:
-    world.shapes.add(shape) 
+  world.shapes.add(s1)
+  world.shapes.add(s2)
+  world.shapes.add(cube)
+  for i in [-0.5, 0.5]:
+    for j in [-0.5, 0.5]:
+      for k in [-0.5, 0.5]:
+        world.shapes.add(newSphere(translation(newVec(i, j, k))*scaling))
   proc f(r : Ray) : Color = 
     if world.rayIntersection(r).isNone: 
       result = newColor(0.0, 0.0, 0.0)
