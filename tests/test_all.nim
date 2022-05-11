@@ -5,6 +5,7 @@ import ../src/geometry
 import ../src/transformation
 import ../src/cameras
 import ../src/shapes
+import ../src/pcg
 import std/[options, unittest, streams]
 
 #################
@@ -541,3 +542,23 @@ suite "Test World":
       not intersection2.isNone
       areClose(intersection1.get().world_point, (newPoint(1.0, 0.0, 0.0)))
       areClose(intersection2.get().world_point, (newPoint(9.0, 0.0, 0.0)))
+
+##########
+#TEST PCG#
+##########
+
+suite "Test PCG":
+  setup:
+    var
+      pcg = newPCG()
+      expected = [2707161783.uint32, 2068313097.uint32,
+                  3122475824.uint32, 2211639955.uint32, 
+                  3215226955.uint32, 3421331566.uint32]
+  test "Test PCG generator":
+    check:
+      pcg.state == uint64(1753877967969059832)
+      pcg.inc == uint64(109)
+  test "Test PCG usage":
+    for k in expected:
+      check:
+        k == pcg.random()
