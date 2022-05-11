@@ -32,7 +32,7 @@ proc newImagePigment*(image : HdrImage) : ImagePigment =
   pig.image = image
   return pig
 
-proc newCheckeredPigment*(color1, color2 : Color; num_of_steps : int) : CheckeredPigment =
+proc newCheckeredPigment*(color1 : Color = newColor(0.03, 0.27, 0.8), color2 : Color = newColor(0.98, 0.68, 0.08), num_of_steps : int) : CheckeredPigment =
   var pig = CheckeredPigment.new()
   pig.color1 = color1
   pig.color2 = color2
