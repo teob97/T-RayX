@@ -22,7 +22,7 @@ type
 
 #*********************************** PIGMENT ***********************************
 
-proc newUniformPigment*(color : Color) : UniformPigment =
+proc newUniformPigment*(color : Color = WHITE) : UniformPigment =
   var pig = UniformPigment.new()
   pig.color = color
   return pig
@@ -66,7 +66,7 @@ method getColor*(pig : CheckeredPigment; uv : Vec2d): Color =
 
 #*********************************** BRDF ***********************************
 
-proc newDiffuseBRDF*(pigment : Pigment): DiffuseBRDF =
+proc newDiffuseBRDF*(pigment : Pigment = newUniformPigment()): DiffuseBRDF =
   result = DiffuseBRDF.new()
   result.pigment = pigment
 
@@ -78,6 +78,6 @@ method eval*(brdf : DiffuseBRDF, normal : Normal; in_dir, out_dir : Vec; uv : Ve
 
 #********************************** MATERIAL *******************************
 
-proc newMaterial*(brdf : BRDF, emitted_radiance : Pigment = newUniformPigment(BLACK)): Material =
+proc newMaterial*(brdf : BRDF = newDiffuseBRDF(newUniformPigment()), emitted_radiance : Pigment = newUniformPigment(BLACK)): Material =
   result.brdf_function = brdf
   result.emitted_radiance = emitted_radiance

@@ -25,7 +25,7 @@ type
 
 #*********************************** HITRECORD ***********************************
 
-proc newHitRecord*(world_point : Point, normal : Normal, surface_point : Vec2d, t : float, ray : Ray, material : Material) : HitRecord =
+proc newHitRecord*(world_point : Point, normal : Normal, surface_point : Vec2d, t : float, ray : Ray, material : Material = newMaterial()) : HitRecord =
   result.world_point = world_point
   result.normal = normal
   result.surface_point = surface_point
@@ -61,7 +61,7 @@ proc sphereNormal*(point: Point, ray_dir: Vec) : Normal =
 
 #*********************************** SHAPE ***********************************
 
-proc newSphere*(transformation : Transformation = newTransformation(), material : Material) : Sphere =
+proc newSphere*(transformation : Transformation = newTransformation(), material : Material = newMaterial()) : Sphere =
   result = Sphere.new()
   result.transformation = transformation
   result.material = material
@@ -102,7 +102,7 @@ method rayIntersection*(sphere : Sphere, ray : Ray): Option[HitRecord] =
 
 #*********************** AXIS-ALIGNED-BOXES *****************************
 
-proc newAABox*(pmin, pmax : Point; transformation : Transformation = newTransformation(), material : Material) : AABox =
+proc newAABox*(pmin, pmax : Point; transformation : Transformation = newTransformation(), material : Material = newMaterial()) : AABox =
   ## Constructor for an Axis Aligned Boxes with min vertex in pmin and max vertex in pmax
   result = AABox.new()
   result.pmin = pmin
@@ -192,7 +192,7 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
 
 #*********************************** PLANE ***********************************
 
-proc newPlane*(transformation : Transformation = newTransformation(), material : Material) : Plane =
+proc newPlane*(transformation : Transformation = newTransformation(), material : Material = newMaterial()) : Plane =
   result = Plane.new()
   result.transformation = transformation
   result.material = material
