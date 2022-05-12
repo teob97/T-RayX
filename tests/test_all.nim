@@ -638,39 +638,32 @@ suite "Test renderer.nim":
     var
       renderer = newOnOffRenderer(world = world)
       renderer1 = newFlatRenderer(world = world1)
-    # brutto se ogni volta dobbiamo passare per questo passaggio --> trovare una soluzione
-    proc fun(r : Ray) : Color =
-      return renderer.render(r)
-    # UNA VOLTA VA E POI SMETTE, NON SO PERCHE'
-    tracer.fireAllRays(fun)
-
-#[     proc aaa(r : Ray) : Color =
-      return renderer1.render(r)
-
-    tracer.fireAllRays(aaa) ]#
-
-
 
   test "Test OnOffRenderer":
+    proc fun(r : Ray) : Color =
+      return renderer.render(r)
+    tracer.fireAllRays(fun)
     check:
-      areClose(image.getPixel(0, 0), BLACK)
-      areClose(image.getPixel(1, 0), BLACK)
-      areClose(image.getPixel(2, 0), BLACK)
-      areClose(image.getPixel(0, 1), BLACK)
-      areClose(image.getPixel(1, 1), BLACK) # questo è sbagliato, Tomasi dice white
-      areClose(image.getPixel(2, 1), BLACK)
-      areClose(image.getPixel(0, 2), BLACK)
-      areClose(image.getPixel(1, 2), BLACK)
-      areClose(image.getPixel(2, 2), BLACK)
-
+      areClose(tracer.image.getPixel(0, 0), BLACK)
+      areClose(tracer.image.getPixel(1, 0), BLACK)
+      areClose(tracer.image.getPixel(2, 0), BLACK)
+      areClose(tracer.image.getPixel(0, 1), BLACK)
+      areClose(tracer.image.getPixel(1, 1), WHITE)
+      areClose(tracer.image.getPixel(2, 1), BLACK)
+      areClose(tracer.image.getPixel(0, 2), BLACK)
+      areClose(tracer.image.getPixel(1, 2), BLACK)
+      areClose(tracer.image.getPixel(2, 2), BLACK)
     test "Test FlatRenderer":
+      proc fun1(r : Ray) : Color =
+        return renderer1.render(r)
+      tracer.fireAllRays(fun1)
       check:
-        areClose(image.getPixel(0, 0), BLACK)
-        areClose(image.getPixel(1, 0), BLACK)
-        areClose(image.getPixel(2, 0), BLACK)
-        areClose(image.getPixel(0, 1), BLACK)
-        areClose(image.getPixel(1, 1), sphere_color) # questo è sbagliato, Tomasi dice white
-        areClose(image.getPixel(2, 1), BLACK)
-        areClose(image.getPixel(0, 2), BLACK)
-        areClose(image.getPixel(1, 2), BLACK)
-        areClose(image.getPixel(2, 2), BLACK)
+        areClose(tracer.image.getPixel(0, 0), BLACK)
+        areClose(tracer.image.getPixel(1, 0), BLACK)
+        areClose(tracer.image.getPixel(2, 0), BLACK)
+        areClose(tracer.image.getPixel(0, 1), BLACK)
+        areClose(tracer.image.getPixel(1, 1), sphere_color)
+        areClose(tracer.image.getPixel(2, 1), BLACK)
+        areClose(tracer.image.getPixel(0, 2), BLACK)
+        areClose(tracer.image.getPixel(1, 2), BLACK)
+        areClose(tracer.image.getPixel(2, 2), BLACK)
