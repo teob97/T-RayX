@@ -1,4 +1,4 @@
-import basictypes, pfm, ldr, cameras, shapes, transformation, geometry, materials, renderer
+import basictypes, pfm, ldr, cameras, imagetracer, shapes, transformation, geometry, materials, renderer
 import docopt
 import std/[strutils, strformat, streams, os]
 
@@ -98,10 +98,10 @@ proc demo() =
         world.shapes.add(newSphere(translation(newVec(i, j, k))*scaling, material))
   #var renderer = newOnOffRenderer(world, WHITE)
   var renderer = newFlatRenderer(world)
-  # Il fatto di dover wrappare il renderer in un proc mi fa abbastanza schifo, rimediare!
-  proc f(r : Ray) : Color =
-    return renderer.render(r)
-  tracer.fireAllRays(f)
+  # Il fatto di dover wrappare il renderer in un proc mi fa abbastanza schifo, rimediare! (risolto)
+#[   proc f(r : Ray) : Color =
+    return renderer.render(r) ]#
+  tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)
   if args["--output"]:
     tracer.image.writeLdrImage($args["--output"])

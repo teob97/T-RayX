@@ -4,6 +4,7 @@ import ../src/ldr
 import ../src/geometry
 import ../src/transformation
 import ../src/cameras
+import ../src/imagetracer
 import ../src/shapes
 import ../src/materials
 import ../src/pcg
@@ -382,7 +383,10 @@ suite "Test cameras.nim":
     check:
       areClose(ray1t, ray2t)
     var f = proc (r: Ray): Color = newColor(1.0, 2.0, 3.0)
-    fireAllRays(tracer, f)
+    var
+      w : World
+      renderer : OnOffRenderer = newOnOffRenderer(w, newColor(1.0, 2.0, 3.0), newColor(1.0, 2.0, 3.0))
+    tracer.fireAllRays(renderer)
     for row in 0..<(tracer.image.height):
       for col in 0..<(tracer.image.width):
         check:
@@ -640,9 +644,9 @@ suite "Test renderer.nim":
       renderer1 = newFlatRenderer(world = world1)
 
   test "Test OnOffRenderer":
-    proc fun(r : Ray) : Color =
-      return renderer.render(r)
-    tracer.fireAllRays(fun)
+#[     proc fun(r : Ray) : Color =
+      return renderer.render(r) ]#
+    tracer.fireAllRays(renderer)
     check:
       areClose(tracer.image.getPixel(0, 0), BLACK)
       areClose(tracer.image.getPixel(1, 0), BLACK)
@@ -653,17 +657,17 @@ suite "Test renderer.nim":
       areClose(tracer.image.getPixel(0, 2), BLACK)
       areClose(tracer.image.getPixel(1, 2), BLACK)
       areClose(tracer.image.getPixel(2, 2), BLACK)
-    test "Test FlatRenderer":
-      proc fun1(r : Ray) : Color =
-        return renderer1.render(r)
-      tracer.fireAllRays(fun1)
-      check:
-        areClose(tracer.image.getPixel(0, 0), BLACK)
-        areClose(tracer.image.getPixel(1, 0), BLACK)
-        areClose(tracer.image.getPixel(2, 0), BLACK)
-        areClose(tracer.image.getPixel(0, 1), BLACK)
-        areClose(tracer.image.getPixel(1, 1), sphere_color)
-        areClose(tracer.image.getPixel(2, 1), BLACK)
-        areClose(tracer.image.getPixel(0, 2), BLACK)
-        areClose(tracer.image.getPixel(1, 2), BLACK)
-        areClose(tracer.image.getPixel(2, 2), BLACK)
+  test "Test FlatRenderer":
+#[     proc fun1(r : Ray) : Color =
+      return renderer1.render(r) ]#
+    tracer.fireAllRays(renderer1)
+    check:
+      areClose(tracer.image.getPixel(0, 0), BLACK)
+      areClose(tracer.image.getPixel(1, 0), BLACK)
+      areClose(tracer.image.getPixel(2, 0), BLACK)
+      areClose(tracer.image.getPixel(0, 1), BLACK)
+      areClose(tracer.image.getPixel(1, 1), sphere_color)
+      areClose(tracer.image.getPixel(2, 1), BLACK)
+      areClose(tracer.image.getPixel(0, 2), BLACK)
+      areClose(tracer.image.getPixel(1, 2), BLACK)
+      areClose(tracer.image.getPixel(2, 2), BLACK)

@@ -28,7 +28,7 @@ method render*(renderer: Renderer, ray : Ray): Color {.base.} =
 
 method render*(renderer: OnOffRenderer, ray : Ray): Color =
   if renderer.world.rayIntersection(ray).isNone: 
-    result = BLACK  
+    result = renderer.background_color  
   else:
     result = renderer.color
 
@@ -38,4 +38,3 @@ method render*(renderer: FlatRenderer, ray : Ray): Color =
     return renderer.background_color
   var mat = get(hit).material
   return (mat.brdf_function.pigment.getColor(get(hit).surface_point) + mat.emitted_radiance.getColor(get(hit).surface_point))
-  
