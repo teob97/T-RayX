@@ -9,14 +9,23 @@ type
     t* : float
     ray* : Ray
     material* : Material
+  AABoundingBox* = ref object
+    pmin* : Point
+    pmax* : Point
   Shape* = ref object of RootObj
     transformation* : Transformation
     material* : Material
+    bound_box* : AABoundingBox
   Sphere* = ref object of Shape
   AABox * = ref object of Shape
     pmin* : Point
     pmax* : Point
   Plane* = ref object of Shape
+  Cylinder* = ref object of Shape
+    r* : float
+    z_min* : float
+    z_max* : float
+    phi_max* : float
   World* = object
     shapes* : seq[Shape]
 
@@ -30,12 +39,43 @@ proc newHitRecord*(world_point : Point, normal : Normal, surface_point : Vec2d, 
   result.ray = ray
   result.material = material
 
+proc newAABoundungBox(pmin, pmax : Point): AABoundingBox =
+  result = AABoundingBox.new()
+  result.pmin = pmin
+  result.pmax = pmax
+
 proc areClose*(h1, h2: HitRecord, epsilon : float = 1e-5) : bool =
   return areClose(h1.world_point, h2.world_point) and
          areClose(h1.normal, h2.normal) and 
          areClose(h1.surface_point, h2.surface_point) and 
          abs(h1.t - h2.t) < epsilon and 
          areClose(h1.ray, h2.ray)
+
+#*********************************** WORLD ***********************************
+
+method rayIntersection*(shape : Shape, ray : Ray): Option[HitRecord] {.base.} =
+  quit "to override"
+
+proc rayIntersection*(world : World, ray : Ray): Option[HitRecord] =
+  ## Iterate over the entire list of shapes and check if there are any intersection with ray
+  var closest : Option[HitRecord] = none(HitRecord)
+  for shape in world.shapes:
+    var intersection = shape.rayIntersection(ray)
+    if intersection.isNone:
+      continue
+    if closest.isNone or intersection.get().t < closest.get().t:
+      closest = intersection
+  return closest
+
+
+#******************************************************************************
+#*********************************** SPHERE ***********************************
+#******************************************************************************
+
+proc newSphere*(transformation : Transformation = newTransformation(), material : Material = newMaterial()) : Sphere =
+  result = Sphere.new()
+  result.transformation = transformation
+  result.material = material
 
 proc spherePointToUV*(point: Point) : Vec2d =
   ## Convert a 3D point on the surface of the unit sphere into a (u, v) 2D point
@@ -54,17 +94,6 @@ proc sphereNormal*(point: Point, ray_dir: Vec) : Normal =
     result = newNormal(point.x, point.y, point.z)
   else:
     result = -newNormal(point.x, point.y, point.z)
-
-
-#*********************************** SHAPE ***********************************
-
-proc newSphere*(transformation : Transformation = newTransformation(), material : Material = newMaterial()) : Sphere =
-  result = Sphere.new()
-  result.transformation = transformation
-  result.material = material
-
-method rayIntersection*(shape : Shape, ray : Ray): Option[HitRecord] {.base.} =
-  quit "to override"
 
 method rayIntersection*(sphere : Sphere, ray : Ray): Option[HitRecord] =
   ## Checks if a ray intersects the sphere
@@ -97,7 +126,10 @@ method rayIntersection*(sphere : Sphere, ray : Ray): Option[HitRecord] =
                       ray = ray,
                       material = sphere.material))
 
-#*********************** AXIS-ALIGNED-BOXES *****************************
+
+#*************************************************************************
+#*********************** AXIS-ALIGNED-BOXES ******************************
+#*************************************************************************
 
 proc newAABox*(pmin, pmax : Point; transformation : Transformation = newTransformation(), material : Material = newMaterial()) : AABox =
   ## Constructor for an Axis Aligned Boxes with min vertex in pmin and max vertex in pmax
@@ -124,6 +156,24 @@ proc checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max: float): O
   if tz_max < t_hit_max:
     t_hit_max = tz_max
   return some(t_hit_min)
+
+proc boxIntersection(pmin, pmax : Point; ray : Ray) : bool =
+  ## Check if there is an intersection with the boundary box
+  var
+    tx_min : float = (pmin.x - ray.origin.x) / ray.dir.x
+    ty_min : float = (pmin.y - ray.origin.y) / ray.dir.y
+    tz_min : float = (pmin.z - ray.origin.z) / ray.dir.z
+    tx_max : float = (pmax.x - ray.origin.x) / ray.dir.x
+    ty_max : float = (pmax.y - ray.origin.y) / ray.dir.y
+    tz_max : float = (pmax.z - ray.origin.z) / ray.dir.z
+  if tx_min > tx_max: swap(tx_min, tx_max)
+  if ty_min > ty_max: swap(ty_min, ty_max)
+  if tz_min > tz_max: swap(tz_min, tz_max)
+  if checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max).isNone:
+    return false
+  else:
+    return true
+
 
 proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
   ## Check in which face of the cube there is the intersection and calculate the normal using the cross product.
@@ -187,7 +237,10 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
                       ray = ray,
                       material = box.material))
 
+
+#*****************************************************************************
 #*********************************** PLANE ***********************************
+#*****************************************************************************
 
 proc newPlane*(transformation : Transformation = newTransformation(), material : Material = newMaterial()) : Plane =
   result = Plane.new()
@@ -218,15 +271,77 @@ method rayIntersection*(plane : Plane, ray : Ray): Option[HitRecord] =
                                ray = ray,
                                material = plane.material))
 
-#*********************************** WORLD ***********************************
+#*************************************************************************
+#**************************** CYLINDER ***********************************
+#*************************************************************************
 
-proc rayIntersection*(world : World, ray : Ray): Option[HitRecord] =
-  ## Iterate over the entire list of shapes and check if there are any intersection with ray
-  var closest : Option[HitRecord] = none(HitRecord)
-  for shape in world.shapes:
-    var intersection = shape.rayIntersection(ray)
-    if intersection.isNone:
-      continue
-    if closest.isNone or intersection.get().t < closest.get().t:
-      closest = intersection
-  return closest
+proc newCylinder*(transformation : Transformation = newTransformation(), material : Material = newMaterial(); r, z_min, z_max : float; phi_max : float = 2 * PI): Cylinder =
+  ## Constructor for a cylinder's later surface.
+  result = Cylinder.new()
+  result.transformation = transformation
+  result.material = material
+  result.r = r
+  result.z_min = z_min
+  result.z_max = z_max
+  result.phi_max = phi_max
+  result.bound_box = newAABoundungBox(newPoint(-r, -r, z_min), newPoint(r, r, z_max))
+
+method rayIntersection(cylinder : Cylinder, ray : Ray): Option[HitRecord] =
+  ## Checks if a ray intersects the cylinder's lateral surface
+  ## Return a `HitRecord`, or `None` if no intersection was found.
+  var
+    inv_ray : Ray = ray.transform(cylinder.transformation.inverse())
+    hit_point : Point
+    t_hit : float
+    phi : float
+    t0, t1 : float
+  #Check if ray intersects the Bounding Box
+  if boxIntersection(cylinder.bound_box.pmin, cylinder.bound_box.pmax, inv_ray) == false :
+    return none(HitRecord)
+  #Calculate the intersection equation's coefficients
+  let
+    a : float = inv_ray.dir.x * inv_ray.dir.x + inv_ray.dir.y * inv_ray.dir.y
+    b : float = 2 * (inv_ray.dir.x * inv_ray.origin.x + inv_ray.dir.y * inv_ray.origin.y)
+    c : float = inv_ray.origin.x * inv_ray.origin.x + inv_ray.origin.y * inv_ray.origin.y - cylinder.r * cylinder.r
+    delta : float = b * b - 4 * a * c
+  #Check if there are solutions
+  if delta < 0:
+    return none(HitRecord)
+  #Calculate the solutions
+  t0 = (- b - sqrt(delta))/(2 * a)
+  t1 = (- b + sqrt(delta))/(2 * a)
+  if t0 > t1 : swap(t0, t1) #NON SONO SICURO
+  #Check if t0 and t1 are in the correct [t_min, t_max] range
+  if (t0 > inv_ray.tmax or t1 < inv_ray.tmin):
+    return none(HitRecord)
+  #Check which solution is the correct one
+  t_hit = t0
+  if t_hit < inv_ray.tmin :
+    t_hit = t1
+    if t_hit > inv_ray.tmax:
+      return none(HitRecord)
+  #Calculate the hit point and phi
+  hit_point = inv_ray.at(t_hit)
+  phi = arctan2(hit_point.y, hit_point.x)
+  if phi < 0:
+    phi = phi + 2 * PI
+  #Check the boundaries conditions for z, and if they aren't safisfied try the other solution
+  if (hit_point.z < cylinder.z_min or hit_point.z > cylinder.z_max or phi > cylinder.phi_max):
+    if (t_hit == t1):
+      return none(HitRecord)
+    t_hit = t1
+    if t_hit > inv_ray.tmax:
+      return none(HitRecord)
+    hit_point = inv_ray.at(t_hit)
+    phi = arctan2(hit_point.y, hit_point.x)
+    if phi < 0:
+      phi = phi + 2 * PI
+    if (hit_point.z < cylinder.z_min or hit_point.z > cylinder.z_max or phi > cylinder.phi_max):
+      return none(HitRecord)
+  #Return the HitRecord
+  result = some(newHitRecord(world_point = cylinder.transformation * hit_point,
+                            normal = VecToNormal(newVec(0.0, 0.0, 0.0)), #Temporaneo non ho ancora pensato a cosa usare
+                            surface_point = newVec2d(phi / cylinder.phi_max, (hit_point.z - cylinder.z_min) / (cylinder.z_max - cylinder.z_min)),
+                            t = t_hit,
+                            ray = ray,
+                            material = cylinder.material))

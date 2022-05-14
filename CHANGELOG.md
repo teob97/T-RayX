@@ -1,5 +1,6 @@
 # HEAD
 
+-   Added the possibility to deploy differents shapes: Axis Aligned Boxes (n.b. (u,v) surface parametrisation is missing) and Cylinders (n.b. normal vector to the surface is missing)
 -	**Major changes:** now it is possible to choose between `pfm2pdf` and `demo` command through a nice CLI. [#5](https://github.com/teob97/T-RayX/pull/5)
 -   Fix an issue with the vertical order of the images [#4](https://github.com/teob97/T-RayX/pull/4)
 

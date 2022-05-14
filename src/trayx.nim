@@ -1,6 +1,6 @@
 import basictypes, pfm, ldr, cameras, imagetracer, shapes, transformation, geometry, materials, renderer
 import docopt
-import std/[strutils, strformat, streams, os]
+import std/[strutils, strformat, streams, os, math]
 
 
 let doc = """
@@ -87,20 +87,19 @@ proc demo() =
     s2 = newSphere(translation(newVec(0, 0, -0.5))*scaling, material)
     cube = newAABox(newPoint(-0.25,-0.15,-0.15), newPoint(0.25,0.15,0.15), rotation_x(45.0), material)
     plane = newPlane(translation(newVec(0.0, 0.0, -1.5)),material = newMaterial(newDiffuseBRDF(newCheckeredPigment(num_of_steps = 2))))
+    cylinder = newCylinder(translation(newVec(0.0, 0.6, 0.0)), newMaterial(newDiffuseBRDF(newCheckeredPigment(num_of_steps = 4))), 0.3, -0.5, 0.5, 2 * PI)
     world : World
   world.shapes.add(s1)
   world.shapes.add(s2)
   world.shapes.add(cube)
-  world.shapes.add(plane)
+  #world.shapes.add(plane)
+  world.shapes.add(cylinder)
   for i in [-0.5, 0.5]:
     for j in [-0.5, 0.5]:
       for k in [-0.5, 0.5]:
         world.shapes.add(newSphere(translation(newVec(i, j, k))*scaling, material))
   #var renderer = newOnOffRenderer(world, WHITE)
   var renderer = newFlatRenderer(world)
-  # Il fatto di dover wrappare il renderer in un proc mi fa abbastanza schifo, rimediare! (risolto)
-#[   proc f(r : Ray) : Color =
-    return renderer.render(r) ]#
   tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)
   if args["--output"]:
