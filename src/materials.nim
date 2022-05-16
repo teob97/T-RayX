@@ -1,21 +1,44 @@
+#[  T-RayX: a Nim ray tracing library
+    Copyright (C) 2022 Matteo Baratto, Eleonora Gatti
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>. ]#
+
 import geometry, basictypes
 import std/math
 
 type
   Pigment* = ref object of RootObj
+    ## Pigment object
   UniformPigment* = ref object of Pigment
+    ## Uniform Pigment: only one color
     color* : Color
   ImagePigment* = ref object of Pigment
+    ## Image Pigment: pattern of a HdrImage
     image* : HdrImage
   CheckeredPigment* = ref object of Pigment
+    ## Checkered Pigment: chessboard pattern
     color1* : Color
     color2* : Color
     num_of_steps* : int
   BRDF* = ref object of RootObj
+    ## BRDF object
     pigment* : Pigment
   DiffuseBRDF* = ref object of BRDF
+    ## Diffuse BRDF: an ideal diffuse BRDF (also called "Lambertian")
     reflectance* : float
   Material* = object
+    ## Material object
     brdf_function* : BRDF
     emitted_radiance* : Pigment
 

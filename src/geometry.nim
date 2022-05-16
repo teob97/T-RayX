@@ -1,18 +1,43 @@
+#[  T-RayX: a Nim ray tracing library
+    Copyright (C) 2022 Matteo Baratto, Eleonora Gatti
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>. ]#
+
 import std/math
 
 type 
   Vec* = object
+    ## Vec object: (x, y, z) floats
+    ## Represents a Vec in the 3D space
     x*, y*, z* : float
   Vec2d* = object
+    ## Vec2d object: (u,v) floats
+    ## ## Represents a Vec in the 2D space
     u*, v* : float
   Point* = object
+    ## Point object: (x, y, z) floats
+    ## Represents a Point in the 3D space
     x*, y*, z* : float
   Normal* = object
+    ## Normal object: (x, y, z) floats
+    ## Represents a Normal in the 3D space
     x*, y*, z* : float
 
 #*********************************** VEC ***********************************
 
 proc newVec*(x, y, z : float) : Vec =
+  ## Constructor for Vec
   result.x = x
   result.y = y
   result.z = z
@@ -24,6 +49,7 @@ proc areClose*(v1, v2 : Vec2d, epsilon : float = 1e-5) : bool =
 #*********************************** VEC2D ***********************************
 
 proc newVec2d*(u, v : float) : Vec2d =
+  ## Constructor for Vec2d
   result.u = u
   result.v = v
 
@@ -36,6 +62,7 @@ const VEC_Z* : Vec = newVec(0.0, 0.0, 1.0)
 #*********************************** POINT ***********************************
 
 proc newPoint*(x, y, z : float) : Point =
+  ## Constructor for Point
   result.x = x
   result.y = y
   result.z = z
@@ -43,6 +70,7 @@ proc newPoint*(x, y, z : float) : Point =
 #*********************************** NORMAL ***********************************
 
 proc newNormal*(x, y, z : float) : Normal =
+  ## Constructor for Normal
   result.x = x
   result.y = y
   result.z = z
@@ -175,8 +203,10 @@ proc PointToVec*(p: Point) : Vec =
   result.y = p.y
   result.z = p.z
 
-proc `<`*(p1, p2:Point):bool=
+proc `<`*(p1, p2: Point) : bool =
+  ## Comparison `<` between two Points
   return p1.x<p2.x or p1.y<p2.y or p1.z<p2.z
 
-proc `>`*(p1, p2:Point):bool=
+proc `>`*(p1, p2: Point) : bool =
+  ## Comparison `>` between two Points
   return p1.x>p2.x or p1.y>p2.y or p1.z>p2.z
