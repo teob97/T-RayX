@@ -37,7 +37,7 @@ type
 #*********************************** VEC ***********************************
 
 proc newVec*(x, y, z : float) : Vec =
-  ## Constructor for Vec
+  ## Constructor of Vec
   result.x = x
   result.y = y
   result.z = z
@@ -62,7 +62,7 @@ const VEC_Z* : Vec = newVec(0.0, 0.0, 1.0)
 #*********************************** POINT ***********************************
 
 proc newPoint*(x, y, z : float) : Point =
-  ## Constructor for Point
+  ## Constructor of Point
   result.x = x
   result.y = y
   result.z = z
@@ -70,7 +70,7 @@ proc newPoint*(x, y, z : float) : Point =
 #*********************************** NORMAL ***********************************
 
 proc newNormal*(x, y, z : float) : Normal =
-  ## Constructor for Normal
+  ## Constructor of Normal
   result.x = x
   result.y = y
   result.z = z

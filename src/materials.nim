@@ -20,22 +20,27 @@ import std/math
 type
   Pigment* = ref object of RootObj
     ## Pigment object
+    ## This abstract class represents a pigment, i.e., a function that associates a color with
+    ## each point on a parametric surface (u,v). Call the method :meth:`.Pigment.getColor` to
+    ## retrieve the color of the surface given a `Vec2d` object.
   UniformPigment* = ref object of Pigment
     ## Uniform Pigment: only one color
     color* : Color
   ImagePigment* = ref object of Pigment
-    ## Image Pigment: pattern of a HdrImage
+    ## Image Pigment: the texture is given through a PFM image.
     image* : HdrImage
   CheckeredPigment* = ref object of Pigment
-    ## Checkered Pigment: chessboard pattern
+    ## Checkered Pigment: chessboard pattern.
+    ## The number of rows/columns in the checkered pattern is tunable, but you cannot have a different number of
+    ## repetitions along the u/v directions.
     color1* : Color
     color2* : Color
     num_of_steps* : int
   BRDF* = ref object of RootObj
-    ## BRDF object
+    ## An abstract class representing a Bidirectional Reflectance Distribution Function
     pigment* : Pigment
   DiffuseBRDF* = ref object of BRDF
-    ## Diffuse BRDF: an ideal diffuse BRDF (also called "Lambertian")
+    ## A class representing an ideal diffuse BRDF (also called «Lambertian»)
     reflectance* : float
   Material* = object
     ## Material object

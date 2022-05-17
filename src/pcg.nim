@@ -16,10 +16,12 @@
     
 type
   PCG* = object
+    ## PCG Uniform Pseudo-random Number Generator
     state* : uint64
     inc* : uint64
 
 proc random*(pcg : var PCG): uint32 =
+  ## Return a new random number and advance PCG's internal state
   var oldstate : uint64 = pcg.state
   pcg.state = uint64(oldstate * 6364136223846793005.uint64 + pcg.inc)
   var 
@@ -35,4 +37,5 @@ proc newPCG*(init_state : uint64 = 42, init_seq: uint64 = 54): PCG =
   trash = result.random()
 
 proc random_float*(pcg : var PCG): float =
+  ## Return a new random number uniformly distributed over [0, 1]
   result = pcg.random().float / 0xffffffff.float

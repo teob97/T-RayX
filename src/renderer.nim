@@ -18,11 +18,17 @@ import shapes, basictypes, cameras, materials, options
 
 type
   Renderer* = ref object of RootObj
+    ## An object implementing a solver of the rendering equation.
     world* : World
     background_color* : Color
   OnOffRenderer* = ref object of Renderer
+    ## A on/off renderer.
+    ## This renderer is mostly useful for debugging purposes, as it is really fast, but it produces boring images.
     color* : Color
   FlatRenderer* = ref object of Renderer
+    ## A «flat» renderer.
+    ## This renderer estimates the solution of the rendering equation by neglecting any contribution of the light.
+    ## It just uses the pigment of each surface to determine how to compute the final radiance.
 
 proc newOnOffRenderer*(world : World, color : Color = WHITE, background_color : Color = BLACK) : OnOffRenderer =
   result = OnOffRenderer.new()
@@ -36,15 +42,18 @@ proc newFlatRenderer*(world : World, backgroung_color : Color = BLACK) : FlatRen
   result.background_color = backgroung_color
 
 method render*(renderer: Renderer, ray : Ray): Color {.base.} =
+  ## Estimate the radiance along a ray.
   quit "to overrride1"
 
 method render*(renderer: OnOffRenderer, ray : Ray): Color =
+  ## Estimate the radiance along a ray.
   if renderer.world.rayIntersection(ray).isNone: 
     result = renderer.background_color  
   else:
     result = renderer.color
 
 method render*(renderer: FlatRenderer, ray : Ray): Color =
+  ## Estimate the radiance along a ray.
   var hit = renderer.world.rayIntersection(ray)
   if hit.isNone:
     return renderer.background_color

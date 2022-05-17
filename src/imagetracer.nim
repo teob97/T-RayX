@@ -18,23 +18,34 @@ import basictypes, cameras, renderer
 
 type
   ImageTracer* = object
-    ## Image Tracer object
+    ## Trace an image by shooting light rays through each of its pixels.
     image* : HdrImage
     camera* : Camera
 
 proc newImageTracer*(image : HdrImage, camera : Camera): ImageTracer =
-  ## Constructor of ImageTracer
+  ## Initialize an ImageTracer object
+  ## The parameter `image` must be a `HdrImage` object that has already been initialized.
+  ## The parameter `camera` must be a descendeant of the `Camera` object.
+  ## If `samples_per_side` is larger than zero, stratified sampling will be applied to each pixel in the
+  ## image, using the random number generator `pcg`.
   result.image = image
   result.camera = camera
 
 proc fireRay*(imageT : ImageTracer, col : int, row : int, u_pixel = 0.5, v_pixel = 0.5): Ray =
-  ## Send a new Ray in pixel (col, row) taking in account the position of the ray inside the pixel (u_pixel, v_pixel). Default: the ray is in the centre of the pixel.
+  ## Shoot one light ray through image pixel (col, row)
+  ## The parameters (col, row) are measured in the same way as they are in `HdrImage`: the bottom left
+  ## corner is placed at (0, 0).
+  ## The values of `u_pixel` and `v_pixel` are floating-point numbers in the range [0, 1]. They specify where
+  ## the ray should cross the pixel; passing 0.5 to both means that the ray will pass through the pixel's center.
   var u : float = (col.float + u_pixel) / (imageT.image.width).float
   var v : float = 1.0 - (row.float + v_pixel) / (imageT.image.height).float
   return imageT.camera.fireRay(u, v)
 
 proc fireAllRays*(imageT : var ImageTracer, renderer : Renderer) =
-  ## Resolve the rendering equation using a given "function" and then fill all the pixels in the image.
+  ## Shoot several light rays crossing each of the pixels in the image.
+  ## For each pixel in the `HdrImage` object fire one ray, and pass it to the `renderer`, which
+  ## must accept a `Ray` object as its only parameter and must return a `Color` object telling the
+  ## color to assign to that pixel in the image.
   var ray : Ray
   var color : Color
   for row in 0..<(imageT.image.height):

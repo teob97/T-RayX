@@ -19,6 +19,13 @@ import std/[math, options]
 
 type
   HitRecord* = object
+    ## An object holding information about a ray-shape intersection
+    ## The parameters defined in this dataclass are the following:
+    ## - `world_point`: a `Point` object holding the world coordinates of the hit point
+    ## - `normal`: a `Normal` object holding the orientation of the normal to the surface where the hit happened
+    ## - `surface_point`: a `Vec2d` object holding the position of the hit point on the surface of the object
+    ## - `t`: a floating-point value specifying the distance from the origin of the ray where the hit happened
+    ## - `ray`: the ray that hit the surface
     world_point* : Point
     normal* : Normal
     surface_point* : Vec2d
@@ -26,28 +33,41 @@ type
     ray* : Ray
     material* : Material
   AABoundingBox* = ref object
+    ## An axis alligned bounding box defined by two vertices in the 3D space.
     pmin* : Point
     pmax* : Point
   Shape* = ref object of RootObj
+    ## A generic 3D shape
+    ## This is an abstract class, and you should only use it to derive
+    ## concrete classes. Be sure to redefine the method :meth:`.Shape.rayIntersection`.
     transformation* : Transformation
     material* : Material
     bound_box* : AABoundingBox
   Sphere* = ref object of Shape
+    ## A 3D unit sphere centered on the origin of the axes.
   AABox * = ref object of Shape
+    ## An axis alligned box defined by two vertices in the 3D space.
     pmin* : Point
     pmax* : Point
   Plane* = ref object of Shape
+    ## A 3D infinite plane parallel to the x and y axis and passing through the origin.
   Cylinder* = ref object of Shape
+    ## A 3D cylinder lateral surface alligned with z axis.
     r* : float
     z_min* : float
     z_max* : float
     phi_max* : float
   World* = object
+    ## A class holding a list of shapes, which make a «world»
+    ## You can add shapes to a world using :meth:`.World.add`. Typically, you call
+    ## :meth:`.World.rayIntersection` to check whether a light ray intersects any
+    ## of the shapes in the world.
     shapes* : seq[Shape]
 
 #*********************************** HITRECORD ***********************************
 
 proc newHitRecord*(world_point : Point, normal : Normal, surface_point : Vec2d, t : float, ray : Ray, material : Material = newMaterial()) : HitRecord =
+  ## Constructor of HitRecord
   result.world_point = world_point
   result.normal = normal
   result.surface_point = surface_point
@@ -55,12 +75,8 @@ proc newHitRecord*(world_point : Point, normal : Normal, surface_point : Vec2d, 
   result.ray = ray
   result.material = material
 
-proc newAABoundungBox(pmin, pmax : Point): AABoundingBox =
-  result = AABoundingBox.new()
-  result.pmin = pmin
-  result.pmax = pmax
-
 proc areClose*(h1, h2: HitRecord, epsilon : float = 1e-5) : bool =
+  ## Check whether two `HitRecord` represent the same hit event or not
   return areClose(h1.world_point, h2.world_point) and
          areClose(h1.normal, h2.normal) and 
          areClose(h1.surface_point, h2.surface_point) and 
@@ -73,7 +89,7 @@ method rayIntersection*(shape : Shape, ray : Ray): Option[HitRecord] {.base.} =
   quit "to override"
 
 proc rayIntersection*(world : World, ray : Ray): Option[HitRecord] =
-  ## Iterate over the entire list of shapes and check if there are any intersection with ray
+  ## Iterate over the entire list of shapes and check if there are any intersection with ray.
   var closest : Option[HitRecord] = none(HitRecord)
   for shape in world.shapes:
     var intersection = shape.rayIntersection(ray)
@@ -89,12 +105,13 @@ proc rayIntersection*(world : World, ray : Ray): Option[HitRecord] =
 #******************************************************************************
 
 proc newSphere*(transformation : Transformation = newTransformation(), material : Material = newMaterial()) : Sphere =
+  ## Create a shape, potentially associating a transformation to it.
   result = Sphere.new()
   result.transformation = transformation
   result.material = material
 
 proc spherePointToUV*(point: Point) : Vec2d =
-  ## Convert a 3D point on the surface of the unit sphere into a (u, v) 2D point
+  ## Convert a 3D point on the surface of the unit sphere into a (u, v) 2D point.
   var u : float = arctan2(point.y, point.x) / (2.0 * PI)
   if u >= 0:
     result.u = u
@@ -103,7 +120,7 @@ proc spherePointToUV*(point: Point) : Vec2d =
   result.v = arccos(point.z) / PI
 
 proc sphereNormal*(point: Point, ray_dir: Vec) : Normal =
-  ## Compute the normal of a unit sphere
+  ## Compute the normal of a unit sphere.
   ## The normal is computed for `point` (a point on the surface of the sphere),
   ## and it is chosen so that it is always in the opposite direction with respect to `ray_dir`.
   if (PointtoVec(point).dot(ray_dir) < 0.0):
@@ -112,7 +129,7 @@ proc sphereNormal*(point: Point, ray_dir: Vec) : Normal =
     result = -newNormal(point.x, point.y, point.z)
 
 method rayIntersection*(sphere : Sphere, ray : Ray): Option[HitRecord] =
-  ## Checks if a ray intersects the sphere
+  ## Checks if a ray intersects the sphere.
   ## Return a `HitRecord`, or `None` if no intersection was found.
   var 
     inv_ray : Ray = ray.transform(sphere.transformation.inverse())
@@ -143,19 +160,26 @@ method rayIntersection*(sphere : Sphere, ray : Ray): Option[HitRecord] =
                       material = sphere.material))
 
 
-#*************************************************************************
-#*********************** AXIS-ALIGNED-BOXES ******************************
-#*************************************************************************
+#***********************************************************************************************
+#******************************** AXIS-ALIGNED-(BOUNDING)-BOXES ********************************
+#***********************************************************************************************
 
 proc newAABox*(pmin, pmax : Point; transformation : Transformation = newTransformation(), material : Material = newMaterial()) : AABox =
-  ## Constructor for an Axis Aligned Boxes with min vertex in pmin and max vertex in pmax
+  ## Constructor of an Axis Aligned Box with min vertex in pmin and max vertex in pmax
   result = AABox.new()
   result.pmin = pmin
   result.pmax = pmax
   result.transformation = transformation
   result.material = material
 
+proc newAABoundungBox(pmin, pmax : Point): AABoundingBox =
+  ## Constructor of an Axis Aligned Bounding Box with min vertex in pmin and max vertex in pmax.
+  result = AABoundingBox.new()
+  result.pmin = pmin
+  result.pmax = pmax
+
 proc checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max: float): Option[float] =
+  ## Check if the intersection is "real".
   var 
     t_hit_min : float = tx_min
     t_hit_max : float = tx_max
@@ -174,7 +198,8 @@ proc checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max: float): O
   return some(t_hit_min)
 
 proc boxIntersection(pmin, pmax : Point; ray : Ray) : bool =
-  ## Check if there is an intersection with the boundary box
+  ## Check if there is an intersection with the boundary box.
+  ## Return true o false.
   var
     tx_min : float = (pmin.x - ray.origin.x) / ray.dir.x
     ty_min : float = (pmin.y - ray.origin.y) / ray.dir.y
@@ -189,7 +214,6 @@ proc boxIntersection(pmin, pmax : Point; ray : Ray) : bool =
     return false
   else:
     return true
-
 
 proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
   ## Check in which face of the cube there is the intersection and calculate the normal using the cross product.
@@ -259,12 +283,13 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
 #*****************************************************************************
 
 proc newPlane*(transformation : Transformation = newTransformation(), material : Material = newMaterial()) : Plane =
+  ## Create a xy plane, potentially associating a transformation to it.
   result = Plane.new()
   result.transformation = transformation
   result.material = material
 
 method rayIntersection*(plane : Plane, ray : Ray): Option[HitRecord] =
-  ## Checks if a ray intersects the plane
+  ## Checks if a ray intersects the plane.
   ## Return a `HitRecord`, or `None` if no intersection was found.
   var
     inv_ray : Ray = ray.transform(plane.transformation.inverse())
@@ -303,7 +328,7 @@ proc newCylinder*(transformation : Transformation = newTransformation(), materia
   result.bound_box = newAABoundungBox(newPoint(-r, -r, z_min), newPoint(r, r, z_max))
 
 method rayIntersection(cylinder : Cylinder, ray : Ray): Option[HitRecord] =
-  ## Checks if a ray intersects the cylinder's lateral surface
+  ## Checks if a ray intersects the cylinder's lateral surface.
   ## Return a `HitRecord`, or `None` if no intersection was found.
   var
     inv_ray : Ray = ray.transform(cylinder.transformation.inverse())

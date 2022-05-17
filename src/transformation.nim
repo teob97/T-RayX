@@ -22,8 +22,10 @@ const IDENTITY_MATRIX4x4 = [1.0, 0.0, 0.0, 0.0,
                             0.0, 0.0, 1.0, 0.0,
                             0.0, 0.0, 0.0, 1.0]
 type
-  ## Affine transformation.
   Transformation* = object
+    ## An affine transformation.
+    ## This class encodes an affine transformation. It has been designed with the aim of making
+    ## the calculation of the inverse transformation particularly efficient.
     m* : array[16, float]
     invm* : array[16, float]
 
