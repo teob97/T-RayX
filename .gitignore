@@ -3,6 +3,8 @@
 !*.*
 
 output/demo/img*
+output/test*
+.vscode
 
 .DS_Store
 *~

@@ -381,7 +381,7 @@ method rayIntersection(cylinder : Cylinder, ray : Ray): Option[HitRecord] =
       return none(HitRecord)
   #Return the HitRecord
   result = some(newHitRecord(world_point = cylinder.transformation * hit_point,
-                            normal = VecToNormal(newVec(0.0, 0.0, 0.0)), #Temporaneo non ho ancora pensato a cosa usare
+                            normal = VecToNormal(newVec(hit_point.x, hit_point.y, 0.0)),
                             surface_point = newVec2d(phi / cylinder.phi_max, (hit_point.z - cylinder.z_min) / (cylinder.z_max - cylinder.z_min)),
                             t = t_hit,
                             ray = ray,
