@@ -18,7 +18,7 @@ import geometry, cameras, transformation, materials
 import std/[math, options]
 
 type
-  HitRecord* = object
+  HitRecord* = ref object
     ## An object holding information about a ray-shape intersection
     ## The parameters defined in this dataclass are the following:
     ## - `world_point`: a `Point` object holding the world coordinates of the hit point
@@ -68,6 +68,7 @@ type
 
 proc newHitRecord*(world_point : Point, normal : Normal, surface_point : Vec2d, t : float, ray : Ray, material : Material = newMaterial()) : HitRecord =
   ## Constructor of HitRecord
+  result = HitRecord.new()
   result.world_point = world_point
   result.normal = normal
   result.surface_point = surface_point
@@ -297,16 +298,16 @@ proc newPlane*(transformation : Transformation = newTransformation(), material :
 method rayIntersection*(plane : Plane, ray : Ray): Option[HitRecord] =
   ## Checks if a ray intersects the plane.
   ## Return a `HitRecord`, or `None` if no intersection was found.
-  var
+  let
     inv_ray : Ray = ray.transform(plane.transformation.inverse())
-    normal : Normal
   if abs(inv_ray.dir.z) < 1e-5:
     return none(HitRecord)
-  var t = -inv_ray.origin.z / inv_ray.dir.z
+  let t = -inv_ray.origin.z / inv_ray.dir.z
   if (t <= inv_ray.tmin) or (t >= inv_ray.tmax):
     return none(HitRecord)
   else:
-    var hit_point = inv_ray.at(t)
+    let hit_point = inv_ray.at(t)
+    var normal : Normal
     if inv_ray.dir.z < 0.0:
       normal = newNormal(0.0, 0.0, 1.0)
     else:

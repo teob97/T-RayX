@@ -19,7 +19,8 @@
 import basictypes, pfm, ldr, cameras, imagetracer, shapes, transformation, geometry, materials, renderer
 import docopt
 import std/[strutils, strformat, streams, os]
-
+when compileOption("profiler"):
+  import nimprof
 
 let doc = """
 T-RayX: a Nim Raytracing Library
