@@ -61,7 +61,7 @@ proc newImagePigment*(image : HdrImage) : ImagePigment =
   result = ImagePigment.new()
   result.image = image
 
-proc newCheckeredPigment*(color1 : Color = newColor(0.03, 0.27, 0.8), color2 : Color = newColor(0.98, 0.68, 0.08), num_of_steps : int) : CheckeredPigment =
+proc newCheckeredPigment*(color1 : Color = newColor(0.03, 0.27, 0.8), color2 : Color = newColor(0.98, 0.68, 0.08), num_of_steps : int = 10) : CheckeredPigment =
   result = CheckeredPigment.new()
   result.color1 = color1
   result.color2 = color2

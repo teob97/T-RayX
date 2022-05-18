@@ -87,34 +87,60 @@ proc pfm2png() =
 
 proc demo() =
   # Demo procedure that generates 10 spheres,  a cube and a checkered plane
-  var tracer : ImageTracer
+  var 
+    tracer : ImageTracer
+    translation : Transformation = translation(newVec(-1.0, 0.0, 1.0))
+    width  : int = 1080
+    height : int = 720
+    ratio = width/height
   if args["--orthogonal"]:
     if args["--angle"]:
-      tracer = newImageTracer(newHdrImage(640, 480), newOrthogonalCamera(640/480, rotation_z(-parseFloat($args["--angle"]))*translation(newVec(-1,0,0))))
+      tracer = newImageTracer(newHdrImage(width, height), newOrthogonalCamera(ratio, rotation_z(-parseFloat($args["--angle"]))*translation))
     else:
-      tracer = newImageTracer(newHdrImage(640, 480), newOrthogonalCamera(640/480, translation(newVec(-1,0,0))))
-  else:
+      tracer = newImageTracer(newHdrImage(width, height), newOrthogonalCamera(ratio, translation))
+  else:   
     if args["--angle"]:
-      tracer = newImageTracer(newHdrImage(640, 480), newPerspectiveCamera(1, 640/480, rotation_z(-parseFloat($args["--angle"]))*translation(newVec(-1,0,0))))
+      tracer = newImageTracer(newHdrImage(width, height), newPerspectiveCamera(1, ratio, rotation_z(-parseFloat($args["--angle"]))*translation))
     else:
-      tracer = newImageTracer(newHdrImage(640, 480), newPerspectiveCamera(1, 640/480, translation(newVec(-1,0,0))))
+      tracer = newImageTracer(newHdrImage(width, height), newPerspectiveCamera(1, ratio, translation)) 
   var
     strm = newFileStream("output/demo.pfm", fmWrite)
-    scaling = scaling(newVec(1/10, 1/10, 1/10))
-    material = newMaterial(newDiffuseBRDF(newUniformPigment(WHITE)))
-    s1 = newSphere(translation(newVec(0, 0.5, 0))*scaling, material)
-    s2 = newSphere(translation(newVec(0, 0, -0.5))*scaling, material)
-    cube = newAABox(newPoint(-0.25,-0.15,-0.15), newPoint(0.25,0.15,0.15), rotation_x(45.0), material)
-    plane = newPlane(translation(newVec(0.0, 0.0, -1.5)), newMaterial(newDiffuseBRDF(newCheckeredPigment(num_of_steps = 2))))
     world : World
-  world.shapes.add(s1)
-  world.shapes.add(s2)
-  world.shapes.add(cube)
-  world.shapes.add(plane)
-  for i in [-0.5, 0.5]:
-    for j in [-0.5, 0.5]:
-      for k in [-0.5, 0.5]:
-        world.shapes.add(newSphere(translation(newVec(i, j, k))*scaling, material))
+    sky_material = newMaterial(
+        brdf=newDiffuseBRDF(newUniformPigment(newColor(0, 0, 0))),
+        emitted_radiance=newUniformPigment(newColor(1.0, 0.9, 0.5)),
+    )
+    ground_material = newMaterial(
+        brdf=newDiffuseBRDF(
+            pigment=newCheckeredPigment(
+                color1=newColor(0.3, 0.5, 0.1),
+                color2=newColor(0.1, 0.2, 0.5),
+            )
+        )
+    )
+    sphere_material = newMaterial(brdf=newDiffuseBRDF(pigment=newUniformPigment(newColor(0.3, 0.4, 0.8))))
+    mirror_material = newMaterial(brdf=newSpecularBRDF(pigment=newUniformPigment(color=newColor(0.6, 0.2, 0.3))))
+  # Add all the shapes in world
+  world.shapes.add(
+      newSphere(
+          material=sky_material,
+          transformation=scaling(newVec(200, 200, 200)) * translation(newVec(0, 0, 0.4))
+      )
+  )
+  world.shapes.add(
+      newPlane(
+          material=ground_material,
+      )
+  )
+  world.shapes.add(newSphere(
+      material=sphere_material,
+      transformation=translation(newVec(0, 0, 1)),
+  ))
+  world.shapes.add(newSphere(
+      material=mirror_material,
+      transformation=translation(newVec(1, 2.5, 0)),
+  ))
+  #Initiallize the render (future feature : choose from terminal the renderer's types)
   var renderer = newFlatRenderer(world)
   tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)
