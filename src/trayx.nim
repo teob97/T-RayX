@@ -129,10 +129,12 @@ proc debug() =
   var
     tracer : ImageTracer = newImageTracer(newHdrImage(640, 480), newPerspectiveCamera(1, 640/480, translation(newVec(-1,0,0))))
     strm = newFileStream("output/test.pfm", fmWrite)
-    material = newMaterial(newDiffuseBRDF(newCheckeredPigment(num_of_steps = 2)))
-    cylinder = newCylinder(translation(newVec(0.0, 1.0, 0.0)),material, 0.2, 0, 0.5)
+    material = newMaterial(newSpecularBRDF())
+    s1 = newSphere(translation(newVec(0, 0.5, 0)), material)
+    plane = newPlane(translation(newVec(0.0, 0.0, -1.5)), newMaterial(newDiffuseBRDF(newCheckeredPigment(num_of_steps = 2))))
     world : World
-  world.shapes.add(cylinder)
+  world.shapes.add(s1)
+  world.shapes.add(plane)
   var renderer = newFlatRenderer(world)
   tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)    

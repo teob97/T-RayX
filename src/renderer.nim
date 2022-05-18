@@ -48,7 +48,7 @@ method scatterRay(brdf_function : BRDF, pcg : var PCG, incoming_dir : Vec, inter
   ## Sampling new Ray using the importance sampling. Scattered Rays are generated over the semi-shpere with a specific distribution depending on the BRDF type.
   quit "to override"
 
-#[ method scatterRay(brdf_function : DiffuseBRDF, pcg : var PCG, incoming_dir : Vec, interaction_point : Point, normal : Normal, depth : int): Ray =
+method scatterRay(brdf_function : DiffuseBRDF, pcg : var PCG, incoming_dir : Vec, interaction_point : Point, normal : Normal, depth : int): Ray =
   var
     onb : ONB = createONBfromZ(normal) 
     e1 : Vec = onb.e1
@@ -62,7 +62,7 @@ method scatterRay(brdf_function : BRDF, pcg : var PCG, incoming_dir : Vec, inter
                   dir = e1 * cos(phi) * cos_theta + e2 * sin(phi) * cos_theta + e3 * sin_theta,
                   tmin = 1.0e-3,
                   tmax = Inf,
-                  depth = depth) ]#
+                  depth = depth)
 
 method scatterRay(brdf_function : SpecularBRDF, pcg : var PCG, incoming_dir : Vec, interaction_point : Point, normal : Normal, depth : int): Ray =
   var
