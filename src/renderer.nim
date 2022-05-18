@@ -50,7 +50,7 @@ proc newFlatRenderer*(world : World, background_color : Color = BLACK) : FlatRen
   result.world = world 
   result.background_color = background_color
 
-proc newPathTracer*(world: World, background_color: Color = BLACK, pcg: PCG = PCG(), num_of_rays: int = 10,
+proc newPathTracer*(world: World, background_color: Color = BLACK, pcg: PCG = newPCG(), num_of_rays: int = 10,
                     max_depth: int = 2, russian_roulette_limit = 3) : PathTracer =
   ## The algorithm implemented here allows the caller to tune number of rays thrown at each iteration, as well as the
   ## maximum depth. It implements Russian roulette, so in principle it will take a finite time to complete the
@@ -98,18 +98,18 @@ method scatterRay(brdf_function : SpecularBRDF, pcg : var PCG, incoming_dir : Ve
 
 #**************************************************** RENDERER ****************************************************
 
-method render*(renderer: Renderer, ray: Ray): Color {.base.} =
+method render*(renderer: Renderer, ray: Ray): Color {.base, locks: "unknown".} =
   ## Estimate the radiance along a ray.
   quit "to overrride1"
 
-method render*(renderer: OnOffRenderer, ray: Ray): Color =
+method render*(renderer: OnOffRenderer, ray: Ray): Color {.locks: "unknown".} =
   ## Estimate the radiance along a ray using OnOffRenderer.
   if renderer.world.rayIntersection(ray).isNone: 
     result = renderer.background_color  
   else:
     result = renderer.color
 
-method render*(renderer: FlatRenderer, ray: Ray): Color =
+method render*(renderer: FlatRenderer, ray: Ray): Color {.locks: "unknown".} =
   ## Estimate the radiance along a ray using FlatRenderer.
   var hit = renderer.world.rayIntersection(ray)
   if hit.isNone:
@@ -117,7 +117,7 @@ method render*(renderer: FlatRenderer, ray: Ray): Color =
   var mat = get(hit).material
   return (mat.brdf_function.pigment.getColor(get(hit).surface_point) + mat.emitted_radiance.getColor(get(hit).surface_point))
 
-method render*(renderer: PathTracer, ray: Ray): Color =
+method render*(renderer: PathTracer, ray: Ray): Color {.locks: "unknown".} =
   ## Estimate the radiance along a ray using PathTracer.
   if ray.depth > renderer.max_depth:
     return newColor(0.0, 0.0, 0.0)
@@ -132,24 +132,27 @@ method render*(renderer: PathTracer, ray: Ray): Color =
 
   # Russian roulette
   if ray.depth >= renderer.russian_roulette_limit:
-    var q = max(0.05, 1 - hit_color_lum)
+    var q : float = max(0.05, 1 - hit_color_lum)
     if renderer.pcg.random_float() > q:
       # Keep the recursion going, but compensate for other potentially discarded rays
-      hit_color =  1.0 / (1.0 - q) * hit_color
+      hit_color =  ( 1.0 / (1.0 - q) ) * hit_color
     else:
       # Terminate prematurely
       return emitted_radiance
   # Monte Carlo integration
   var cum_radiance = newColor(0.0, 0.0, 0.0)
   if hit_color_lum > 0.0:  # Only do costly recursions if it's worth it
-    for ray_index in 0..renderer.num_of_rays:
-      var 
-        new_ray = hit_material.brdf_function.scatterRay(pcg=renderer.pcg,
-                                                        incoming_dir=hit_record.get().ray.dir,
-                                                        interaction_point=hit_record.get().world_point,
-                                                        normal=hit_record.get().normal,
+    var 
+      new_radiance : Color
+      hit_record_buff = hit_record.get()
+      new_ray : Ray
+    for ray_index in 0..renderer.num_of_rays: 
+      new_ray = hit_material.brdf_function.scatterRay(pcg=renderer.pcg,
+                                                        incoming_dir=hit_record_buff.ray.dir,
+                                                        interaction_point=hit_record_buff.world_point,
+                                                        normal=hit_record_buff.normal,
                                                         depth=ray.depth + 1)
-        # Recursive call
-        new_radiance : Color = renderer.render(new_ray)
+      # Recursive call
+      new_radiance = renderer.render(new_ray)
       cum_radiance = cum_radiance + hit_color * new_radiance
   return emitted_radiance + cum_radiance * (1.0 / renderer.num_of_rays.float)

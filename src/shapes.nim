@@ -99,67 +99,6 @@ proc rayIntersection*(world : World, ray : Ray): Option[HitRecord] =
       closest = intersection
   return closest
 
-
-#******************************************************************************
-#*********************************** SPHERE ***********************************
-#******************************************************************************
-
-proc newSphere*(transformation : Transformation = newTransformation(), material : Material = newMaterial()) : Sphere =
-  ## Create a shape, potentially associating a transformation to it.
-  result = Sphere.new()
-  result.transformation = transformation
-  result.material = material
-
-proc spherePointToUV*(point: Point) : Vec2d =
-  ## Convert a 3D point on the surface of the unit sphere into a (u, v) 2D point.
-  var u : float = arctan2(point.y, point.x) / (2.0 * PI)
-  if u >= 0:
-    result.u = u
-  else:
-    result.u = u + 1.0
-  result.v = arccos(point.z) / PI
-
-proc sphereNormal*(point: Point, ray_dir: Vec) : Normal =
-  ## Compute the normal of a unit sphere.
-  ## The normal is computed for `point` (a point on the surface of the sphere),
-  ## and it is chosen so that it is always in the opposite direction with respect to `ray_dir`.
-  if (PointtoVec(point).dot(ray_dir) < 0.0):
-    result = newNormal(point.x, point.y, point.z)
-  else:
-    result = -newNormal(point.x, point.y, point.z)
-
-method rayIntersection*(sphere : Sphere, ray : Ray): Option[HitRecord] =
-  ## Checks if a ray intersects the sphere.
-  ## Return a `HitRecord`, or `None` if no intersection was found.
-  var 
-    inv_ray : Ray = ray.transform(sphere.transformation.inverse())
-    origin_vec = PointToVec(inv_ray.origin)
-    a : float = inv_ray.dir.squared_norm()
-    b : float = 2.0 * origin_vec.dot(inv_ray.dir)
-    c : float = origin_vec.squared_norm() - 1.0
-    delta : float = b * b - 4.0 * a * c
-    first_hit_t : float
-  if delta <= 0:
-    return none(HitRecord)
-  var 
-    sqrt_delta : float = sqrt(delta)
-    tmin : float = (-b - sqrt_delta) / (2.0 * a)
-    tmax : float = (-b + sqrt_delta) / (2.0 * a)
-  if (tmin > inv_ray.tmin) and (tmin < inv_ray.tmax):
-    first_hit_t = tmin
-  elif (tmax > inv_ray.tmin) and (tmax < inv_ray.tmax):
-    first_hit_t = tmax
-  else:
-    return none(HitRecord)
-  var hit_point : Point = inv_ray.at(first_hit_t)
-  result = some(newHitRecord(world_point = sphere.transformation * hit_point,
-                      normal = sphere.transformation * sphereNormal(hit_point, inv_ray.dir),
-                      surface_point = spherePointToUV(hit_point),
-                      t = first_hit_t,
-                      ray = ray,
-                      material = sphere.material))
-
-
 #***********************************************************************************************
 #******************************** AXIS-ALIGNED-(BOUNDING)-BOXES ********************************
 #***********************************************************************************************
@@ -276,6 +215,73 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
                       t = t_hit,
                       ray = ray,
                       material = box.material))
+
+
+
+#******************************************************************************
+#*********************************** SPHERE ***********************************
+#******************************************************************************
+
+proc newSphere*(transformation : Transformation = newTransformation(), material : Material = newMaterial()) : Sphere =
+  ## Create a shape, potentially associating a transformation to it.
+  result = Sphere.new()
+  result.transformation = transformation
+  result.material = material
+  result.bound_box = newAABoundungBox(newPoint(-1, -1, -1), newPoint(1, 1, 1))
+
+proc spherePointToUV*(point: Point) : Vec2d =
+  ## Convert a 3D point on the surface of the unit sphere into a (u, v) 2D point.
+  var u : float = arctan2(point.y, point.x) / (2.0 * PI)
+  if u >= 0:
+    result.u = u
+  else:
+    result.u = u + 1.0
+  result.v = arccos(point.z) / PI
+
+proc sphereNormal*(point: Point, ray_dir: Vec) : Normal =
+  ## Compute the normal of a unit sphere.
+  ## The normal is computed for `point` (a point on the surface of the sphere),
+  ## and it is chosen so that it is always in the opposite direction with respect to `ray_dir`.
+  if (PointtoVec(point).dot(ray_dir) < 0.0):
+    result = newNormal(point.x, point.y, point.z)
+  else:
+    result = -newNormal(point.x, point.y, point.z)
+
+method rayIntersection*(sphere : Sphere, ray : Ray): Option[HitRecord] =
+  ## Checks if a ray intersects the sphere.
+  ## Return a `HitRecord`, or `None` if no intersection was found.
+  #Check if ray intersects the Bounding Box
+  let 
+    inv_ray : Ray = ray.transform(sphere.transformation.inverse())
+    origin_vec = PointToVec(inv_ray.origin)
+  if boxIntersection(sphere.bound_box.pmin, sphere.bound_box.pmax, inv_ray) == false :
+    return none(HitRecord)
+  let
+    a : float = inv_ray.dir.squared_norm()
+    b : float = 2.0 * origin_vec.dot(inv_ray.dir)
+    c : float = origin_vec.squared_norm() - 1.0
+    delta : float = b * b - 4.0 * a * c
+  if delta <= 0:
+    return none(HitRecord)
+  var
+    first_hit_t : float
+  let
+    sqrt_delta : float = sqrt(delta)
+    tmin : float = (-b - sqrt_delta) / (2.0 * a)
+    tmax : float = (-b + sqrt_delta) / (2.0 * a)
+  if (tmin > inv_ray.tmin) and (tmin < inv_ray.tmax):
+    first_hit_t = tmin
+  elif (tmax > inv_ray.tmin) and (tmax < inv_ray.tmax):
+    first_hit_t = tmax
+  else:
+    return none(HitRecord)
+  let hit_point : Point = inv_ray.at(first_hit_t)
+  result = some(newHitRecord(world_point = sphere.transformation * hit_point,
+                      normal = sphere.transformation * sphereNormal(hit_point, inv_ray.dir),
+                      surface_point = spherePointToUV(hit_point),
+                      t = first_hit_t,
+                      ray = ray,
+                      material = sphere.material))
 
 
 #*****************************************************************************

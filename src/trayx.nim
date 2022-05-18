@@ -90,8 +90,8 @@ proc demo() =
   var 
     tracer : ImageTracer
     translation : Transformation = translation(newVec(-1.0, 0.0, 1.0))
-    width  : int = 1080
-    height : int = 720
+    width  : int = 960
+    height : int = 540
     ratio = width/height
   if args["--orthogonal"]:
     if args["--angle"]:
@@ -141,7 +141,7 @@ proc demo() =
       transformation=translation(newVec(1, 2.5, 0)),
   ))
   #Initiallize the render (future feature : choose from terminal the renderer's types)
-  var renderer = newFlatRenderer(world)
+  var renderer = newPathTracer(world)
   tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)
   if args["--output"]:

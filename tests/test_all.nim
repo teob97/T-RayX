@@ -216,12 +216,12 @@ suite "Test geometry.nim":
       var ONB = createONBfromZ(normal)
       check:
         areClose(VecToNormal(ONB.e3), normal)
-        ONB.e1.squared_norm() - 1 < 1e-6
-        ONB.e2.squared_norm() - 1 < 1e-6
-        ONB.e3.squared_norm() - 1 < 1e-6
-        ONB.e1.dot(ONB.e2) < 1e-6
-        ONB.e2.dot(ONB.e3) < 1e-6
-        ONB.e3.dot(ONB.e1) < 1e-6
+        abs(ONB.e1.squared_norm() - 1) < 1e-6
+        abs(ONB.e2.squared_norm() - 1) < 1e-6
+        abs(ONB.e3.squared_norm() - 1) < 1e-6
+        abs(ONB.e1.dot(ONB.e2)) < 1e-6
+        abs(ONB.e2.dot(ONB.e3)) < 1e-6
+        abs(ONB.e3.dot(ONB.e1)) < 1e-6
         areClose(ONB.e1.cross(ONB.e2), ONB.e3)
         areClose(ONB.e2.cross(ONB.e3), ONB.e1)
         areClose(ONB.e3.cross(ONB.e1), ONB.e2)
@@ -660,7 +660,6 @@ suite "Test renderer.nim":
     var
       renderer = newOnOffRenderer(world = world)
       renderer1 = newFlatRenderer(world = world1)
-
   test "Test OnOffRenderer":
 #[     proc fun(r : Ray) : Color =
       return renderer.render(r) ]#
@@ -676,8 +675,6 @@ suite "Test renderer.nim":
       areClose(tracer.image.getPixel(1, 2), BLACK)
       areClose(tracer.image.getPixel(2, 2), BLACK)
   test "Test FlatRenderer":
-#[     proc fun1(r : Ray) : Color =
-      return renderer1.render(r) ]#
     tracer.fireAllRays(renderer1)
     check:
       areClose(tracer.image.getPixel(0, 0), BLACK)
@@ -689,3 +686,25 @@ suite "Test renderer.nim":
       areClose(tracer.image.getPixel(0, 2), BLACK)
       areClose(tracer.image.getPixel(1, 2), BLACK)
       areClose(tracer.image.getPixel(2, 2), BLACK)
+  test "Test PathTracer (Furnace)":
+    var 
+      pcg = newPCG()
+      ray = newRay(origin = newPoint(0.0,0.0,0.0), dir = newVec(1.0,0.0,0.0))
+    for i in 0..5:
+      var 
+        world : World
+        emitted_radiance = pcg.random_float()
+        reflectance = pcg.random_float()
+        enclosure_material = newMaterial(newDiffuseBRDF(newUniformPigment(newColor(1.0,1.0,1.0) * reflectance)),
+                                                        newUniformPigment(newColor(1.0,1.0,1.0) * emitted_radiance))
+      world.shapes.add(newSphere(material = enclosure_material))
+      var 
+        path_tracer = newPathTracer(world, pcg = pcg, num_of_rays = 1, max_depth = 100, russian_roulette_limit = 101)
+      var 
+        color : Color = path_tracer.render(ray)
+        expected : float = emitted_radiance / (1.0 - reflectance)
+      echo(expected)
+      check:
+        abs(color.r - expected) < 1e-3
+        abs(color.b - expected) < 1e-3
+        abs(color.g - expected) < 1e-3
