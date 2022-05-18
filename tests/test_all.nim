@@ -182,6 +182,7 @@ suite "Test geometry.nim":
       b : Vec = newVec(4.0, 6.0, 8.0)
       p1 : Point = newPoint(1.0, 2.0, 3.0)
       p2 : Point = newPoint(4.0, 6.0, 8.0)
+      pcg : PCG = newPCG()
   test "Test Vec":
     check:
       a.areClose(a)
@@ -207,7 +208,24 @@ suite "Test geometry.nim":
       areClose(p1*2, newPoint(2.0, 4.0, 6.0))
       areClose(p1+b, newPoint(5.0, 8.0, 11.0))
       areClose(p2-p1, newVec(3.0, 4.0, 5.0))
-      areClose(p1-b, newPoint(-3.0, -4.0, -5.0)) 
+      areClose(p1-b, newPoint(-3.0, -4.0, -5.0))
+  test "Test ONB":
+    for i in 0..10000:
+      var normal = newNormal(pcg.random_float(), pcg.random_float(), pcg.random_float())
+      normal = normalization(normal)
+      var ONB = createONBfromZ(normal)
+      check:
+        areClose(VecToNormal(ONB.e3), normal)
+        ONB.e1.squared_norm() - 1 < 1e-6
+        ONB.e2.squared_norm() - 1 < 1e-6
+        ONB.e3.squared_norm() - 1 < 1e-6
+        ONB.e1.dot(ONB.e2) < 1e-6
+        ONB.e2.dot(ONB.e3) < 1e-6
+        ONB.e3.dot(ONB.e1) < 1e-6
+        areClose(ONB.e1.cross(ONB.e2), ONB.e3)
+        areClose(ONB.e2.cross(ONB.e3), ONB.e1)
+        areClose(ONB.e3.cross(ONB.e1), ONB.e2)
+        areClose(ONB.e3.cross(ONB.e2), -ONB.e1)
 
 #####################
 #TEST TRANSFOTMATION#

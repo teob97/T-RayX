@@ -33,6 +33,10 @@ type
     ## Normal object: (x, y, z) floats
     ## Represents a Normal in the 3D space
     x*, y*, z* : float
+  ONB* = object
+    ## Ortho Normal Basis: (x, y, z) floats
+    ## Represents an Orto Normal Basis in the 3D space
+    e1*, e2*, e3* : Vec   
 
 #*********************************** VEC ***********************************
 
@@ -75,7 +79,7 @@ proc newNormal*(x, y, z : float) : Normal =
   result.y = y
   result.z = z
 
-#*********************************** OPERATIONS ***********************************
+#********************************* OPERATIONS *********************************
 
 template define_print_string(t: typedesc) = 
   ## Print the object in the format Obj.type(Obj.x, Obj.y, Obj.z)
@@ -215,3 +219,18 @@ proc `<`*(p1, p2: Point) : bool =
 proc `>`*(p1, p2: Point) : bool =
   ## Comparison `>` between two Points
   return p1.x>p2.x or p1.y>p2.y or p1.z>p2.z
+
+#***************************** ORTHO-NORMAL BASUS *****************************
+
+proc createONBfromZ*(normal : Normal) : ONB =
+  ## Create a ONB from a z-axis rapresented by `normal`
+  var buffer = normal
+  if squared_norm(buffer) != 1:     # check normalization using squared_normal because is faster
+    buffer = normalization(normal)
+  var
+    sign = copySign(1.0, buffer.z)
+    a = -1 / (sign + buffer.z)
+    b = buffer.x * buffer.y * a
+  result.e1 = newVec(1.0 + sign * buffer.x * buffer.x * a, sign * b, -sign * buffer.x)
+  result.e2 = newVec(b, sign + buffer.y * buffer.y * a, -buffer.y)
+  result.e3 = newVec(buffer.x, buffer.y, buffer.z)
