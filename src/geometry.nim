@@ -203,6 +203,11 @@ proc PointToVec*(p: Point) : Vec =
   result.y = p.y
   result.z = p.z
 
+proc normalToVec*(n : Normal) : Vec =
+  result.x = n.x
+  result.y = n.y
+  result.z = n.z
+
 proc `<`*(p1, p2: Point) : bool =
   ## Comparison `<` between two Points
   return p1.x<p2.x or p1.y<p2.y or p1.z<p2.z

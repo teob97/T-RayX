@@ -42,6 +42,9 @@ type
   DiffuseBRDF* = ref object of BRDF
     ## A class representing an ideal diffuse BRDF (also called «Lambertian»)
     reflectance* : float
+  SpecularBRDF* = ref object of BRDF
+    ## A class representing an ideal specular BRDF (mirror)
+    threshold_angle_rad : float
   Material* = object
     ## Material object
     brdf_function* : BRDF
@@ -95,11 +98,25 @@ proc newDiffuseBRDF*(pigment : Pigment = newUniformPigment()): DiffuseBRDF =
   result = DiffuseBRDF.new()
   result.pigment = pigment
 
+proc newSpecularBRDF*(pigment : Pigment = newUniformPigment(), angle : float = PI / 1800.0): SpecularBRDF =
+  result = SpecularBRDF.new()
+  result.pigment = pigment
+  result.threshold_angle_rad = angle
+
 method eval*(brdf : BRDF, normal : Normal; in_dir, out_dir : Vec; uv : Vec2d): Color {.base.} =
   quit "to override"
 
 method eval*(brdf : DiffuseBRDF, normal : Normal; in_dir, out_dir : Vec; uv : Vec2d): Color =
   return brdf.pigment.getColor(uv) * (brdf.reflectance / PI)
+
+method eval*(brdf : SpecularBRDF, normal : Normal, in_dir, out_dir : Vec; uv : Vec2d): Color =
+  let
+    theta_in = arccos(normalToVec(normal).dot(in_dir))
+    theta_out = arccos(normalToVec(normal).dot(out_dir))
+  if abs(theta_in - theta_out) < brdf.threshold_angle_rad:
+    return brdf.pigment.get_color(uv)
+  else:
+    return newColor(0.0, 0.0, 0.0)
 
 #********************************** MATERIAL *******************************
 

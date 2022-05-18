@@ -14,7 +14,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>. ]#
 
-import shapes, basictypes, cameras, materials, options
+import shapes, basictypes, cameras, materials, pcg, geometry
+import options, math
 
 type
   Renderer* = ref object of RootObj
@@ -40,6 +41,43 @@ proc newFlatRenderer*(world : World, backgroung_color : Color = BLACK) : FlatRen
   result = FlatRenderer.new()
   result.world = world 
   result.background_color = backgroung_color
+
+#*********************************************************************************************************************
+
+method scatterRay(brdf_function : BRDF, pcg : var PCG, incoming_dir : Vec, interaction_point : Point, normal : Normal, depth : int): Ray {.base.} =
+  ## Sampling new Ray using the importance sampling. Scattered Rays are generated over the semi-shpere with a specific distribution depending on the BRDF type.
+  quit "to override"
+
+#[ method scatterRay(brdf_function : DiffuseBRDF, pcg : var PCG, incoming_dir : Vec, interaction_point : Point, normal : Normal, depth : int): Ray =
+  var
+    onb : ONB = createONBfromZ(normal) 
+    e1 : Vec = onb.e1
+    e2 : Vec = onb.e2
+    e3 : Vec = onb.e3
+    cos_theta_sq = pcg.random_float()
+    cos_theta = sqrt(cos_theta_sq)
+    sin_theta = sqrt(1.0 - cos_theta_sq)
+    phi = 2.0 * PI * pcg.random_float()
+  result = newRay(origin = interaction_point,
+                  dir = e1 * cos(phi) * cos_theta + e2 * sin(phi) * cos_theta + e3 * sin_theta,
+                  tmin = 1.0e-3,
+                  tmax = Inf,
+                  depth = depth) ]#
+
+method scatterRay(brdf_function : SpecularBRDF, pcg : var PCG, incoming_dir : Vec, interaction_point : Point, normal : Normal, depth : int): Ray =
+  var
+    ray_dir = newVec(incoming_dir.x, incoming_dir.y, incoming_dir.z).normalization()
+    normal = normalToVec(normal).normalization()
+    dot_prod = normal.dot(ray_dir)
+  result = newRay(origin = interaction_point,
+                  dir = ray_dir - normal * 2 * dot_prod,
+                  tmin = 1.0e-5,
+                  tmax = Inf,
+                  depth = depth)
+  
+
+
+#*********************************************************************************************************************
 
 method render*(renderer: Renderer, ray : Ray): Color {.base.} =
   ## Estimate the radiance along a ray.
