@@ -70,17 +70,14 @@ method scatterRay(brdf_function : BRDF, pcg : var PCG, incoming_dir : Vec, inter
   quit "to override"
 
 method scatterRay(brdf_function : DiffuseBRDF, pcg : var PCG, incoming_dir : Vec, interaction_point : Point, normal : Normal, depth : int): Ray =
-  var
+  let
     onb : ONB = createONBfromZ(normal) 
-    e1 : Vec = onb.e1
-    e2 : Vec = onb.e2
-    e3 : Vec = onb.e3
     cos_theta_sq = pcg.random_float()
     cos_theta = sqrt(cos_theta_sq)
     sin_theta = sqrt(1.0 - cos_theta_sq)
     phi = 2.0 * PI * pcg.random_float()
   result = newRay(origin = interaction_point,
-                  dir = e1 * cos(phi) * cos_theta + e2 * sin(phi) * cos_theta + e3 * sin_theta,
+                  dir = onb.e1 * cos(phi) * cos_theta + onb.e2 * sin(phi) * cos_theta + onb.e3 * sin_theta,
                   tmin = 1.0e-3,
                   tmax = Inf,
                   depth = depth)
@@ -122,12 +119,13 @@ method render*(renderer: PathTracer, ray: Ray): Color {.locks: "unknown".} =
   if ray.depth > renderer.max_depth:
     return newColor(0.0, 0.0, 0.0)
   var hit_record = renderer.world.rayIntersection(ray)
-  if hit_record == none(HitRecord):
+  if hit_record.isNone:
     return renderer.background_color
   var
-    hit_material = hit_record.get().material
-    hit_color = hit_material.brdf_function.pigment.getColor(hit_record.get().surface_point)
-    emitted_radiance = hit_material.emitted_radiance.get_color(hit_record.get().surface_point)
+    hit_record_buff = hit_record.get()
+    hit_material = hit_record_buff.material
+    hit_color = hit_material.brdf_function.pigment.getColor(hit_record_buff.surface_point)
+    emitted_radiance = hit_material.emitted_radiance.get_color(hit_record_buff.surface_point)
     hit_color_lum = max(hit_color.r, max(hit_color.g, hit_color.b))
 
   # Russian roulette
@@ -144,7 +142,6 @@ method render*(renderer: PathTracer, ray: Ray): Color {.locks: "unknown".} =
   if hit_color_lum > 0.0:  # Only do costly recursions if it's worth it
     var 
       new_radiance : Color
-      hit_record_buff = hit_record.get()
       new_ray : Ray
     for ray_index in 0..renderer.num_of_rays: 
       new_ray = hit_material.brdf_function.scatterRay(pcg=renderer.pcg,

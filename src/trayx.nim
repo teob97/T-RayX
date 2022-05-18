@@ -18,7 +18,7 @@
     
 import basictypes, pfm, ldr, cameras, imagetracer, shapes, transformation, geometry, materials, renderer
 import docopt
-import std/[strutils, strformat, streams, os]
+import std/[strutils, strformat, streams, os, times]
 when compileOption("profiler"):
   import nimprof
 
@@ -174,6 +174,9 @@ when isMainModule:
   if args["pfm2png"]:
     pfm2png()
   if args["demo"]:
+    let t1 = epochTime()
     demo()
+    let t2 = epochTime()
+    echo("Execution time: ", t2 - t1)
   if args["debug"]:
     debug()

@@ -227,7 +227,7 @@ proc createONBfromZ*(normal : Normal) : ONB =
   var buffer = normal
   if squared_norm(buffer) != 1:     # check normalization using squared_normal because is faster
     buffer = normalization(normal)
-  var
+  let
     sign = copySign(1.0, buffer.z)
     a = -1 / (sign + buffer.z)
     b = buffer.x * buffer.y * a

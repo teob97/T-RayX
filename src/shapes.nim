@@ -302,19 +302,18 @@ method rayIntersection*(plane : Plane, ray : Ray): Option[HitRecord] =
     inv_ray : Ray = ray.transform(plane.transformation.inverse())
   if abs(inv_ray.dir.z) < 1e-5:
     return none(HitRecord)
-  let t = -inv_ray.origin.z / inv_ray.dir.z
+  let t = - inv_ray.origin.z / inv_ray.dir.z
   if (t <= inv_ray.tmin) or (t >= inv_ray.tmax):
     return none(HitRecord)
   else:
-    let hit_point = inv_ray.at(t)
     var normal : Normal
     if inv_ray.dir.z < 0.0:
       normal = newNormal(0.0, 0.0, 1.0)
     else:
       normal = newNormal(0.0, 0.0, -1.0)
-    result = some(newHitRecord(world_point = plane.transformation * hit_point,
+    result = some(newHitRecord(world_point = plane.transformation * inv_ray.at(t),
                                normal = plane.transformation * normal,
-                               surface_point = newVec2d(hit_point.x - floor(hit_point.x), hit_point.y - floor(hit_point.y)),
+                               surface_point = newVec2d(inv_ray.at(t).x - floor(inv_ray.at(t).x), inv_ray.at(t).y - floor(inv_ray.at(t).y)),
                                t = t,
                                ray = ray,
                                material = plane.material))
