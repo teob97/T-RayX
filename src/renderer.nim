@@ -15,7 +15,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>. ]#
 
 import shapes, basictypes, cameras, materials, pcg, geometry
-import options, math
+import std/[math, options]
 
 type
   Renderer* = ref object of RootObj
@@ -30,6 +30,14 @@ type
     ## A «flat» renderer.
     ## This renderer estimates the solution of the rendering equation by neglecting any contribution of the light.
     ## It just uses the pigment of each surface to determine how to compute the final radiance.
+  PathTracer* = ref object of Renderer
+    ## A simple path-tracing renderer.
+    pcg* : PCG
+    num_of_rays* : int
+    max_depth* : int
+    russian_roulette_limit* : int
+
+#**************************************************** CONSTRUCTORS ****************************************************
 
 proc newOnOffRenderer*(world : World, color : Color = WHITE, background_color : Color = BLACK) : OnOffRenderer =
   result = OnOffRenderer.new()
@@ -37,12 +45,25 @@ proc newOnOffRenderer*(world : World, color : Color = WHITE, background_color : 
   result.color = color
   result.background_color = background_color
 
-proc newFlatRenderer*(world : World, backgroung_color : Color = BLACK) : FlatRenderer =
+proc newFlatRenderer*(world : World, background_color : Color = BLACK) : FlatRenderer =
   result = FlatRenderer.new()
   result.world = world 
-  result.background_color = backgroung_color
+  result.background_color = background_color
 
-#*********************************************************************************************************************
+proc newPathTracer*(world: World, background_color: Color = BLACK, pcg: PCG = PCG(), num_of_rays: int = 10,
+                    max_depth: int = 2, russian_roulette_limit = 3) : PathTracer =
+  ## The algorithm implemented here allows the caller to tune number of rays thrown at each iteration, as well as the
+  ## maximum depth. It implements Russian roulette, so in principle it will take a finite time to complete the
+  ## calculation even if you set max_depth to `math.inf`.
+  result = PathTracer.new()
+  result.world = world 
+  result.background_color = background_color
+  result.pcg = pcg
+  result.num_of_rays = num_of_rays
+  result.max_depth = max_depth
+  result.russian_roulette_limit = russian_roulette_limit
+
+#**************************************************** SCATTER RAY ****************************************************
 
 method scatterRay(brdf_function : BRDF, pcg : var PCG, incoming_dir : Vec, interaction_point : Point, normal : Normal, depth : int): Ray {.base.} =
   ## Sampling new Ray using the importance sampling. Scattered Rays are generated over the semi-shpere with a specific distribution depending on the BRDF type.
@@ -74,26 +95,61 @@ method scatterRay(brdf_function : SpecularBRDF, pcg : var PCG, incoming_dir : Ve
                   tmin = 1.0e-5,
                   tmax = Inf,
                   depth = depth)
-  
 
+#**************************************************** RENDERER ****************************************************
 
-#*********************************************************************************************************************
-
-method render*(renderer: Renderer, ray : Ray): Color {.base.} =
+method render*(renderer: Renderer, ray: Ray): Color {.base.} =
   ## Estimate the radiance along a ray.
   quit "to overrride1"
 
-method render*(renderer: OnOffRenderer, ray : Ray): Color =
-  ## Estimate the radiance along a ray.
+method render*(renderer: OnOffRenderer, ray: Ray): Color =
+  ## Estimate the radiance along a ray using OnOffRenderer.
   if renderer.world.rayIntersection(ray).isNone: 
     result = renderer.background_color  
   else:
     result = renderer.color
 
-method render*(renderer: FlatRenderer, ray : Ray): Color =
-  ## Estimate the radiance along a ray.
+method render*(renderer: FlatRenderer, ray: Ray): Color =
+  ## Estimate the radiance along a ray using FlatRenderer.
   var hit = renderer.world.rayIntersection(ray)
   if hit.isNone:
     return renderer.background_color
   var mat = get(hit).material
   return (mat.brdf_function.pigment.getColor(get(hit).surface_point) + mat.emitted_radiance.getColor(get(hit).surface_point))
+
+method render*(renderer: PathTracer, ray: Ray): Color =
+  ## Estimate the radiance along a ray using PathTracer.
+  if ray.depth > renderer.max_depth:
+    return newColor(0.0, 0.0, 0.0)
+  var hit_record = renderer.world.rayIntersection(ray)
+  if hit_record == none(HitRecord):
+    return renderer.background_color
+  var
+    hit_material = hit_record.get().material
+    hit_color = hit_material.brdf_function.pigment.getColor(hit_record.get().surface_point)
+    emitted_radiance = hit_material.emitted_radiance.get_color(hit_record.get().surface_point)
+    hit_color_lum = max(hit_color.r, max(hit_color.g, hit_color.b))
+
+  # Russian roulette
+  if ray.depth >= renderer.russian_roulette_limit:
+    var q = max(0.05, 1 - hit_color_lum)
+    if renderer.pcg.random_float() > q:
+      # Keep the recursion going, but compensate for other potentially discarded rays
+      hit_color =  1.0 / (1.0 - q) * hit_color
+    else:
+      # Terminate prematurely
+      return emitted_radiance
+  # Monte Carlo integration
+  var cum_radiance = newColor(0.0, 0.0, 0.0)
+  if hit_color_lum > 0.0:  # Only do costly recursions if it's worth it
+    for ray_index in 0..renderer.num_of_rays:
+      var 
+        new_ray = hit_material.brdf_function.scatterRay(pcg=renderer.pcg,
+                                                        incoming_dir=hit_record.get().ray.dir,
+                                                        interaction_point=hit_record.get().world_point,
+                                                        normal=hit_record.get().normal,
+                                                        depth=ray.depth + 1)
+        # Recursive call
+        new_radiance : Color = renderer.render(new_ray)
+      cum_radiance = cum_radiance + hit_color * new_radiance
+  return emitted_radiance + cum_radiance * (1.0 / renderer.num_of_rays.float)
