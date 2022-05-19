@@ -70,14 +70,16 @@ in order to create the following image:
 
 <p float="center">
   <img src="output/lawn_a0.6-gamma1.45.png" width="600" />
-
 </p>
 
 It is possible to change the parameters alpha and gamma.
 <p float="left">
   <img src="output/lawn_a0.3-gamma1.45.png" width="270" />
+  <em>alpah = 0.3</em>
   <img src="output/lawn_a0.6-gamma1.45.png" width="270" /> 
+  <em>alpah = 0.6</em>
   <img src="output/lawn_a0.9-gamma1.45.png" width="270" />
+  <em>alpah = 0.p</em>
 </p>
 
 
