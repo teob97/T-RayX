@@ -86,6 +86,9 @@ proc areClose*(h1, h2: HitRecord, epsilon : float = 1e-5) : bool =
 
 #*********************************** WORLD ***********************************
 
+proc newWorld*(shapes : seq[Shape] = newSeq[Shape](0)) : World =
+  result.shapes = shapes
+
 method rayIntersection*(shape : Shape, ray : Ray): Option[HitRecord] {.base.} =
   quit "to override"
 
@@ -187,7 +190,7 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
   ## Return a `HitRecord`, or `None` if no intersection was found.  
   var
     inv_ray : Ray = ray.transform(box.transformation.inverse())
-    origin_vec = PointToVec(inv_ray.origin)
+    origin_vec : Vec = PointToVec(inv_ray.origin)
     tx_min : float = (box.pmin.x - origin_vec.x) / inv_ray.dir.x
     ty_min : float = (box.pmin.y - origin_vec.y) / inv_ray.dir.y
     tz_min : float = (box.pmin.z - origin_vec.z) / inv_ray.dir.z
@@ -302,19 +305,18 @@ method rayIntersection*(plane : Plane, ray : Ray): Option[HitRecord] =
     inv_ray : Ray = ray.transform(plane.transformation.inverse())
   if abs(inv_ray.dir.z) < 1e-5:
     return none(HitRecord)
-  let t = -inv_ray.origin.z / inv_ray.dir.z
+  let t = - inv_ray.origin.z / inv_ray.dir.z
   if (t <= inv_ray.tmin) or (t >= inv_ray.tmax):
     return none(HitRecord)
   else:
-    let hit_point = inv_ray.at(t)
     var normal : Normal
     if inv_ray.dir.z < 0.0:
       normal = newNormal(0.0, 0.0, 1.0)
     else:
       normal = newNormal(0.0, 0.0, -1.0)
-    result = some(newHitRecord(world_point = plane.transformation * hit_point,
+    result = some(newHitRecord(world_point = plane.transformation * inv_ray.at(t),
                                normal = plane.transformation * normal,
-                               surface_point = newVec2d(hit_point.x - floor(hit_point.x), hit_point.y - floor(hit_point.y)),
+                               surface_point = newVec2d(inv_ray.at(t).x - floor(inv_ray.at(t).x), inv_ray.at(t).y - floor(inv_ray.at(t).y)),
                                t = t,
                                ray = ray,
                                material = plane.material))

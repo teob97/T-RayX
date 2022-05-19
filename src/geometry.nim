@@ -212,25 +212,23 @@ proc normalToVec*(n : Normal) : Vec =
   result.y = n.y
   result.z = n.z
 
-proc `<`*(p1, p2: Point) : bool =
-  ## Comparison `<` between two Points
-  return p1.x<p2.x or p1.y<p2.y or p1.z<p2.z
-
-proc `>`*(p1, p2: Point) : bool =
-  ## Comparison `>` between two Points
-  return p1.x>p2.x or p1.y>p2.y or p1.z>p2.z
-
 #***************************** ORTHO-NORMAL BASUS *****************************
 
 proc createONBfromZ*(normal : Normal) : ONB =
   ## Create a ONB from a z-axis rapresented by `normal`
-  var buffer = normal
-  if squared_norm(buffer) != 1:     # check normalization using squared_normal because is faster
+  var buffer : Normal = normal
+  if (squared_norm(buffer) != 1):     # check normalization using squared_normal because is faster
     buffer = normalization(normal)
-  var
+  let
     sign = copySign(1.0, buffer.z)
     a = -1 / (sign + buffer.z)
     b = buffer.x * buffer.y * a
-  result.e1 = newVec(1.0 + sign * buffer.x * buffer.x * a, sign * b, -sign * buffer.x)
-  result.e2 = newVec(b, sign + buffer.y * buffer.y * a, -buffer.y)
-  result.e3 = newVec(buffer.x, buffer.y, buffer.z)
+  result.e1.x = 1.0 + sign * buffer.x * buffer.x * a
+  result.e1.y = sign * b
+  result.e1.z = -sign * buffer.x
+  result.e2.x = b
+  result.e2.y = sign + buffer.y * buffer.y * a
+  result.e2.z = -buffer.y
+  result.e3.x = buffer.x
+  result.e3.y = buffer.y 
+  result.e3.z = buffer.z

@@ -27,12 +27,10 @@ type
 #*********************************** COLOR ***********************************
 
 func newColor*(r : float32 = 0.0; g : float32 = 0.0; b : float32 = 0.0) : Color =
-    ## Constructor of Color, default (0, 0, 0) [Black] 
-    var C : Color
-    C.r = r
-    C.g = g
-    C.b = b
-    return C
+    ## Constructor of Color, default (0, 0, 0) [Black]
+    result.r = r
+    result.g = g
+    result.b = b
 
 const
   BLACK* = newColor(0.0, 0.0, 0.0)
@@ -42,14 +40,13 @@ const
 
 func newHdrImage*(width, height : int) : HdrImage =
     ## Costructor of HdrImage
-    var img : HdrImage
-    var C : Color = newColor(0.0, 0.0, 0.0)
-    img.width = width
-    img.height = height
-    img.pixels = newSeq[Color](width*height)
+    result.width = width
+    result.height = height
+    result.pixels = newSeq[Color](width*height)
     for i in 0..<width*height:
-        img.pixels[i] = C
-    return img
+        result.pixels[i].r = 0.0
+        result.pixels[i].g = 0.0
+        result.pixels[i].b = 0.0
 
 func pixelOffset*(img : HdrImage; x, y : int) : int =
     ## Given (x,y) the coordinates of the pixel, return the corresponding index inside the vector in which the pixel is stored.
