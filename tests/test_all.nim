@@ -686,24 +686,22 @@ suite "Test renderer.nim":
       areClose(tracer.image.getPixel(0, 2), BLACK)
       areClose(tracer.image.getPixel(1, 2), BLACK)
       areClose(tracer.image.getPixel(2, 2), BLACK)
-  test "Test PathTracer (Furnace)":
-    var 
-      pcg = newPCG()
-      ray = newRay(origin = newPoint(0.0,0.0,0.0), dir = newVec(1.0,0.0,0.0))
+suite "Test PathTracer":
+  test "Furnace Test":
+    var pcg : PCG = newPCG()
     for i in 0..5:
       var 
-        world : World
-        emitted_radiance = pcg.random_float()
-        reflectance = pcg.random_float()
-        enclosure_material = newMaterial(newDiffuseBRDF(newUniformPigment(newColor(1.0,1.0,1.0) * reflectance)),
-                                                        newUniformPigment(newColor(1.0,1.0,1.0) * emitted_radiance))
+        world : World = newWorld()
+        ray : Ray = newRay(origin = newPoint(0.0,0.0,0.0), dir = newVec(1.0,0.0,0.0))
+        emitted_radiance : float = pcg.random_float()
+        reflectance : float = pcg.random_float() * 0.9
+        enclosure_material : Material = newMaterial(newDiffuseBRDF(newUniformPigment(newColor(1.0,1.0,1.0) * reflectance)),
+                                                    newUniformPigment(newColor(1.0,1.0,1.0) * emitted_radiance))
       world.shapes.add(newSphere(material = enclosure_material))
-      var 
-        path_tracer = newPathTracer(world, pcg = pcg, num_of_rays = 1, max_depth = 100, russian_roulette_limit = 101)
-      var 
+      let 
+        path_tracer : PathTracer = newPathTracer(world, pcg = pcg, num_of_rays = 1, max_depth = 100, russian_roulette_limit = 101) 
         color : Color = path_tracer.render(ray)
         expected : float = emitted_radiance / (1.0 - reflectance)
-      echo(expected)
       check:
         abs(color.r - expected) < 1e-3
         abs(color.b - expected) < 1e-3

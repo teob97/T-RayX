@@ -86,6 +86,9 @@ proc areClose*(h1, h2: HitRecord, epsilon : float = 1e-5) : bool =
 
 #*********************************** WORLD ***********************************
 
+proc newWorld*(shapes : seq[Shape] = newSeq[Shape](0)) : World =
+  result.shapes = shapes
+
 method rayIntersection*(shape : Shape, ray : Ray): Option[HitRecord] {.base.} =
   quit "to override"
 
@@ -187,7 +190,7 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
   ## Return a `HitRecord`, or `None` if no intersection was found.  
   var
     inv_ray : Ray = ray.transform(box.transformation.inverse())
-    origin_vec = PointToVec(inv_ray.origin)
+    origin_vec : Vec = PointToVec(inv_ray.origin)
     tx_min : float = (box.pmin.x - origin_vec.x) / inv_ray.dir.x
     ty_min : float = (box.pmin.y - origin_vec.y) / inv_ray.dir.y
     tz_min : float = (box.pmin.z - origin_vec.z) / inv_ray.dir.z

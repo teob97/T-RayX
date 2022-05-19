@@ -33,21 +33,19 @@ type
   Camera* = ref object of RootObj
     ## An abstract class representing an observer
     ## Concrete subclasses are `OrthogographicCamera` and `PerspectiveCamera`.
+    aspect_ratio* : float
+    transformation* : Transformation
   OrthogonalCamera* = ref object of Camera
     ## A camera implementing an orthogonal 3D → 2D projection
     ## This class implements an observer seeing the world through an orthogonal projection.
-    aspect_ratio* : float
-    transformation* : Transformation
   PerspectiveCamera* = ref object of Camera
     ## A camera implementing a perespective 3D → 2D projection
     ## This class implements an observer seeing the world through an perespective projection.
     distance* : float
-    aspect_ratio* : float
-    transformation* : Transformation
 
 #*********************************** RAY ***********************************
 
-proc newRay*(origin : Point, dir : Vec, tmin = 1e-5, tmax = Inf, depth = 0): Ray =
+proc newRay*(origin : Point, dir : Vec, tmin = 1e-5, tmax = Inf, depth : int = 0): Ray =
   ## Constructor of `Ray`.
   result.origin = origin
   result.dir = dir
@@ -68,7 +66,11 @@ proc at*(ray : Ray, t : float): Point =
 proc transform*(ray : Ray, t : Transformation) : Ray =
   ## Transform a ray.
   ## This method returns a new ray whose origin and direction are the transformation of the original ray.
-  result = newRay(origin = t*ray.origin, dir = t*ray.dir, tmin = ray.tmin, tmax = ray.tmax, depth = ray.depth)
+  result.origin = t*ray.origin
+  result.dir = t*ray.dir
+  result.tmin = ray.tmin
+  result.tmax = ray.tmax
+  result.depth = ray.depth
 
 proc `*`*(ray : Ray, transformation : Transformation): Ray =
   ## Overload the operator * to transform a Ray object using a Transformation
@@ -86,10 +88,9 @@ proc newOrthogonalCamera*(aspect_ratio : float = 2.0, transformation = newTransf
   ## images, you should probably set `aspect_ratio` to 16/9, as this is the most used aspect ratio
   ## used in modern monitors.
   ## The `transformation` parameter is a `Transformation` object.
-  var cam = OrthogonalCamera.new()
-  cam.aspect_ratio = aspect_ratio
-  cam.transformation = transformation
-  return cam
+  result = OrthogonalCamera.new()
+  result.aspect_ratio = aspect_ratio
+  result.transformation = transformation
 
 proc newPerspectiveCamera*(distance, aspect_ratio : float; transformation = newTransformation()): PerspectiveCamera =
   ## Create a new perespective camera.
@@ -99,11 +100,10 @@ proc newPerspectiveCamera*(distance, aspect_ratio : float; transformation = newT
   ## images, you should probably set `aspect_ratio` to 16/9, as this is the most used aspect ratio
   ## used in modern monitors.
   ## The `transformation` parameter is a `Transformation` object.
-  var cam = PerspectiveCamera.new()
-  cam.distance = distance
-  cam.aspect_ratio = aspect_ratio
-  cam.transformation = transformation
-  return cam
+  result = PerspectiveCamera.new()
+  result.distance = distance
+  result.aspect_ratio = aspect_ratio
+  result.transformation = transformation
 
 method fireRay*(cam : Camera; u,v : float): Ray {.base.} =
   ## Fire a ray through the camera.
@@ -124,9 +124,12 @@ method fireRay*(cam : OrthogonalCamera; u,v : float): Ray =
   ##        |                              |
   ##        +------------------------------+
   ##     (0, 0)                          (1, 0)
-  let origin = newPoint(-1.0, (1.0 - 2 * u) * cam.aspect_ratio, 2 * v - 1)
-  let dir = VEC_X
-  return newRay(origin = origin, dir = dir, tmin = 1.0) * cam.transformation
+  result.origin = newPoint(-1.0, (1.0 - 2 * u) * cam.aspect_ratio, 2 * v - 1)
+  result.dir = VEC_X
+  result.tmin = 1.0
+  result.tmax = Inf
+  result.depth = 0
+  result = result * cam.transformation
 
 method fireRay*(cam : PerspectiveCamera; u,v : float): Ray =
   ## Shoot a ray through the camera's screen.
@@ -140,7 +143,9 @@ method fireRay*(cam : PerspectiveCamera; u,v : float): Ray =
   ##        |                              |
   ##        +------------------------------+
   ##     (0, 0)                          (1, 0)
-  let origin = newPoint(-cam.distance, 0.0, 0.0)
-  let dir = newVec(cam.distance, (1.0 - 2 * u) * cam.aspect_ratio, 2 * v - 1)
-  return newRay(origin = origin, dir = dir, tmin=1.0) * cam.transformation
-
+  result.origin = newPoint(-cam.distance, 0.0, 0.0)
+  result.dir = newVec(cam.distance, (1.0 - 2 * u) * cam.aspect_ratio, 2 * v - 1)
+  result.tmin = 1.0
+  result.tmax = Inf
+  result.depth = 0
+  result = result * cam.transformation

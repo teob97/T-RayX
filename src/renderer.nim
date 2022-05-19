@@ -51,7 +51,7 @@ proc newFlatRenderer*(world : World, background_color : Color = BLACK) : FlatRen
   result.background_color = background_color
 
 proc newPathTracer*(world: World, background_color: Color = BLACK, pcg: PCG = newPCG(), num_of_rays: int = 10,
-                    max_depth: int = 2, russian_roulette_limit = 3) : PathTracer =
+                    max_depth: int = 2, russian_roulette_limit : int = 3) : PathTracer =
   ## The algorithm implemented here allows the caller to tune number of rays thrown at each iteration, as well as the
   ## maximum depth. It implements Russian roulette, so in principle it will take a finite time to complete the
   ## calculation even if you set max_depth to `math.inf`.
@@ -72,9 +72,9 @@ method scatterRay(brdf_function : BRDF, pcg : var PCG, incoming_dir : Vec, inter
 method scatterRay(brdf_function : DiffuseBRDF, pcg : var PCG, incoming_dir : Vec, interaction_point : Point, normal : Normal, depth : int): Ray =
   let
     onb : ONB = createONBfromZ(normal) 
-    cos_theta_sq = pcg.random_float()
-    cos_theta = sqrt(cos_theta_sq)
-    sin_theta = sqrt(1.0 - cos_theta_sq)
+    cos_theta_sq  : float = pcg.random_float()
+    cos_theta : float = sqrt(cos_theta_sq)
+    sin_theta : float = sqrt(1.0 - cos_theta_sq)
     phi = 2.0 * PI * pcg.random_float()
   result = newRay(origin = interaction_point,
                   dir = onb.e1 * cos(phi) * cos_theta + onb.e2 * sin(phi) * cos_theta + onb.e3 * sin_theta,
@@ -83,10 +83,10 @@ method scatterRay(brdf_function : DiffuseBRDF, pcg : var PCG, incoming_dir : Vec
                   depth = depth)
 
 method scatterRay(brdf_function : SpecularBRDF, pcg : var PCG, incoming_dir : Vec, interaction_point : Point, normal : Normal, depth : int): Ray =
-  var
-    ray_dir = newVec(incoming_dir.x, incoming_dir.y, incoming_dir.z).normalization()
-    normal = normalToVec(normal).normalization()
-    dot_prod = normal.dot(ray_dir)
+  let
+    ray_dir : Vec = newVec(incoming_dir.x, incoming_dir.y, incoming_dir.z).normalization()
+    normal : Vec = normalToVec(normal).normalization()
+    dot_prod : float = normal.dot(ray_dir)
   result = newRay(origin = interaction_point,
                   dir = ray_dir - normal * 2 * dot_prod,
                   tmin = 1.0e-5,
@@ -108,26 +108,28 @@ method render*(renderer: OnOffRenderer, ray: Ray): Color {.locks: "unknown".} =
 
 method render*(renderer: FlatRenderer, ray: Ray): Color {.locks: "unknown".} =
   ## Estimate the radiance along a ray using FlatRenderer.
-  var hit = renderer.world.rayIntersection(ray)
+  var hit : Option[HitRecord] = renderer.world.rayIntersection(ray)
   if hit.isNone:
     return renderer.background_color
-  var mat = get(hit).material
+  var mat : Material = get(hit).material
   return (mat.brdf_function.pigment.getColor(get(hit).surface_point) + mat.emitted_radiance.getColor(get(hit).surface_point))
 
 method render*(renderer: PathTracer, ray: Ray): Color {.locks: "unknown".} =
   ## Estimate the radiance along a ray using PathTracer.
+  # Exit Contition
   if ray.depth > renderer.max_depth:
     return newColor(0.0, 0.0, 0.0)
-  var hit_record = renderer.world.rayIntersection(ray)
+  # Find the intersection
+  let hit_record : Option[HitRecord] = renderer.world.rayIntersection(ray)
   if hit_record.isNone:
     return renderer.background_color
+  # Extract all the HitRecord's information
   var
-    hit_record_buff = hit_record.get()
-    hit_material = hit_record_buff.material
-    hit_color = hit_material.brdf_function.pigment.getColor(hit_record_buff.surface_point)
-    emitted_radiance = hit_material.emitted_radiance.get_color(hit_record_buff.surface_point)
-    hit_color_lum = max(hit_color.r, max(hit_color.g, hit_color.b))
-
+    hit_record_buff : HitRecord = hit_record.get()
+    hit_material : Material = hit_record_buff.material
+    hit_color : Color = hit_material.brdf_function.pigment.getColor(hit_record_buff.surface_point)
+    emitted_radiance : Color = hit_material.emitted_radiance.getColor(hit_record_buff.surface_point)
+    hit_color_lum : float = max(hit_color.r, max(hit_color.g, hit_color.b))
   # Russian roulette
   if ray.depth >= renderer.russian_roulette_limit:
     var q : float = max(0.05, 1 - hit_color_lum)
@@ -138,18 +140,18 @@ method render*(renderer: PathTracer, ray: Ray): Color {.locks: "unknown".} =
       # Terminate prematurely
       return emitted_radiance
   # Monte Carlo integration
-  var cum_radiance = newColor(0.0, 0.0, 0.0)
+  var cum_radiance : Color = newColor(0.0, 0.0, 0.0)
   if hit_color_lum > 0.0:  # Only do costly recursions if it's worth it
     var 
       new_radiance : Color
-      new_ray : Ray
     for ray_index in 0..renderer.num_of_rays: 
-      new_ray = hit_material.brdf_function.scatterRay(pcg=renderer.pcg,
-                                                        incoming_dir=hit_record_buff.ray.dir,
-                                                        interaction_point=hit_record_buff.world_point,
-                                                        normal=hit_record_buff.normal,
-                                                        depth=ray.depth + 1)
+      var new_ray : Ray = hit_material.brdf_function.scatterRay(pcg=renderer.pcg,
+                                                      incoming_dir=hit_record_buff.ray.dir,
+                                                      interaction_point=hit_record_buff.world_point,
+                                                      normal=hit_record_buff.normal,
+                                                      depth=ray.depth + 1)
       # Recursive call
       new_radiance = renderer.render(new_ray)
+      echo(new_radiance)
       cum_radiance = cum_radiance + hit_color * new_radiance
   return emitted_radiance + cum_radiance * (1.0 / renderer.num_of_rays.float)

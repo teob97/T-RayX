@@ -91,6 +91,9 @@ proc demo() =
   var 
     tracer : ImageTracer
     translation : Transformation = translation(newVec(-1.0, 0.0, 1.0))
+    world : World
+    strm = newFileStream("output/demo.pfm", fmWrite)
+  const
     width  : int = 960
     height : int = 540
     ratio = width/height
@@ -104,45 +107,18 @@ proc demo() =
       tracer = newImageTracer(newHdrImage(width, height), newPerspectiveCamera(1, ratio, rotation_z(-parseFloat($args["--angle"]))*translation))
     else:
       tracer = newImageTracer(newHdrImage(width, height), newPerspectiveCamera(1, ratio, translation)) 
-  var
-    strm = newFileStream("output/demo.pfm", fmWrite)
-    world : World
-    sky_material = newMaterial(
-        brdf=newDiffuseBRDF(newUniformPigment(newColor(0, 0, 0))),
-        emitted_radiance=newUniformPigment(newColor(1.0, 0.9, 0.5)),
-    )
-    ground_material = newMaterial(
-        brdf=newDiffuseBRDF(
-            pigment=newCheckeredPigment(
-                color1=newColor(0.3, 0.5, 0.1),
-                color2=newColor(0.1, 0.2, 0.5),
-            )
-        )
-    )
-    sphere_material = newMaterial(brdf=newDiffuseBRDF(pigment=newUniformPigment(newColor(0.3, 0.4, 0.8))))
-    mirror_material = newMaterial(brdf=newSpecularBRDF(pigment=newUniformPigment(color=newColor(0.6, 0.2, 0.3))))
+  let
+    sky_material = newMaterial(brdf = newDiffuseBRDF(newUniformPigment(newColor(0, 0, 0))), emitted_radiance = newUniformPigment(newColor(1.0, 0.9, 0.5)))
+    ground_material = newMaterial(brdf = newDiffuseBRDF(pigment = newCheckeredPigment(color1 = newColor(0.3, 0.5, 0.1), color2 = newColor(0.1, 0.2, 0.5))))
+    sphere_material = newMaterial(brdf = newDiffuseBRDF(pigment = newUniformPigment(newColor(0.3, 0.4, 0.8))))
+    mirror_material = newMaterial(brdf = newSpecularBRDF(pigment = newUniformPigment(color = newColor(0.6, 0.2, 0.3))))
   # Add all the shapes in world
-  world.shapes.add(
-      newSphere(
-          material=sky_material,
-          transformation=scaling(newVec(200, 200, 200)) * translation(newVec(0, 0, 0.4))
-      )
-  )
-  world.shapes.add(
-      newPlane(
-          material=ground_material,
-      )
-  )
-  world.shapes.add(newSphere(
-      material=sphere_material,
-      transformation=translation(newVec(0, 0, 1)),
-  ))
-  world.shapes.add(newSphere(
-      material=mirror_material,
-      transformation=translation(newVec(1, 2.5, 0)),
-  ))
+  world.shapes.add(newSphere(material=sky_material, transformation=scaling(newVec(200, 200, 200)) * translation(newVec(0, 0, 0.4))))
+  world.shapes.add(newPlane(material=ground_material))
+  world.shapes.add(newSphere(material=sphere_material, transformation=translation(newVec(0, 0, 1))))
+  world.shapes.add(newSphere(material=mirror_material, transformation=translation(newVec(1, 2.5, 0))))
   #Initiallize the render (future feature : choose from terminal the renderer's types)
-  var renderer = newPathTracer(world)
+  let renderer = newPathTracer(world)
   tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)
   if args["--output"]:
