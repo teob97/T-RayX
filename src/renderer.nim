@@ -117,7 +117,7 @@ method render*(renderer: FlatRenderer, ray: Ray): Color {.locks: "unknown".} =
 method render*(renderer: PathTracer, ray: Ray): Color {.locks: "unknown".} =
   ## Estimate the radiance along a ray using PathTracer.
   # Exit Contition
-  if ray.depth > renderer.max_depth:
+  if ray.depth >= renderer.max_depth:
     return newColor(0.0, 0.0, 0.0)
   # Find the intersection
   let hit_record : Option[HitRecord] = renderer.world.rayIntersection(ray)
@@ -144,7 +144,7 @@ method render*(renderer: PathTracer, ray: Ray): Color {.locks: "unknown".} =
   if hit_color_lum > 0.0:  # Only do costly recursions if it's worth it
     var 
       new_radiance : Color
-    for ray_index in 0..renderer.num_of_rays: 
+    for ray_index in 0..<renderer.num_of_rays: 
       var new_ray : Ray = hit_material.brdf_function.scatterRay(pcg=renderer.pcg,
                                                       incoming_dir=hit_record_buff.ray.dir,
                                                       interaction_point=hit_record_buff.world_point,
@@ -152,6 +152,5 @@ method render*(renderer: PathTracer, ray: Ray): Color {.locks: "unknown".} =
                                                       depth=ray.depth + 1)
       # Recursive call
       new_radiance = renderer.render(new_ray)
-      echo(new_radiance)
       cum_radiance = cum_radiance + hit_color * new_radiance
   return emitted_radiance + cum_radiance * (1.0 / renderer.num_of_rays.float)
