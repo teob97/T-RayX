@@ -139,7 +139,7 @@ proc newPointLight*(position : Point, color : Color, linear_radius : float = 0.0
 #******************************** AXIS-ALIGNED-(BOUNDING)-BOXES ********************************
 #***********************************************************************************************
 
-proc newAABox*(pmin, pmax : Point; transformation : Transformation = newTransformation(), material : Material = newMaterial()) : AABox =
+proc newAABox*(pmin : Point = newPoint(0, 0, 0), pmax : Point = newPoint(1, 1, 1), transformation : Transformation = newTransformation(), material : Material = newMaterial()) : AABox =
   ## Constructor of an Axis Aligned Box with min vertex in pmin and max vertex in pmax
   result = AABox.new()
   result.pmin = pmin
@@ -242,9 +242,9 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
     return none(HitRecord)
   var hit_point : Point = inv_ray.at(t_hit)
   if PointToVec(hit_point).dot(inv_ray.dir) < 0:
-    normal = boxNormal(box, hit_point, inv_ray)
+    normal = box.transformation * boxNormal(box, hit_point, inv_ray)
   else:
-    normal = -boxNormal(box, hit_point, inv_ray)
+    normal = box.transformation * -boxNormal(box, hit_point, inv_ray)
   result = some(newHitRecord(world_point = box.transformation * hit_point,
                       normal = normal,
                       surface_point = newVec2d(0,0), #Incorrect. We don't know the correct parametrisation.

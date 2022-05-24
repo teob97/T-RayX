@@ -18,7 +18,7 @@
     
 import basictypes, pfm, ldr, cameras, imagetracer, shapes, transformation, geometry, materials, renderer
 import docopt
-import std/[strutils, strformat, streams, os, times]
+import std/[strutils, strformat, streams, os, times, options]
 when compileOption("profiler"):
   import nimprof
 
@@ -107,8 +107,6 @@ proc demo() =
       tracer = newImageTracer(newHdrImage(width, height), newPerspectiveCamera(1, ratio, rotation_z(-parseFloat($args["--angle"]))*translation))
     else:
       tracer = newImageTracer(newHdrImage(width, height), newPerspectiveCamera(1, ratio, translation)) 
-  #Activate antialiasing
-  tracer.samples_per_side = 2
   let
     sky_material = newMaterial(brdf = newDiffuseBRDF(newUniformPigment(newColor(0, 0, 0))), emitted_radiance = newUniformPigment(newColor(1.0, 0.9, 0.5)))
     ground_material = newMaterial(brdf = newDiffuseBRDF(pigment = newCheckeredPigment(color1 = newColor(0.3, 0.5, 0.1), color2 = newColor(0.1, 0.2, 0.5))))
