@@ -443,6 +443,7 @@ suite "Test shapes.nim":
       ray2a = newRay(origin = newPoint(0, 3.5, 1.5), dir = VEC_X)
       ray3a = newRay(origin = newPoint(-2, 0.99, 0.99), dir = VEC_X)
       ray4a = newRay(origin = newPoint(0.5, 0.5, -2.5), dir = VEC_Z)
+      ray5a = newRay(origin = newPoint(0.0, -5, 0.2), dir = VEC_Y)
       intersection1 = sphere.rayIntersection(ray1)
       intersection2 = sphere.rayIntersection(ray2)
       intersection3 = sphere.rayIntersection(ray3)
@@ -462,6 +463,7 @@ suite "Test shapes.nim":
       intersection2a = cube.rayIntersection(ray2a)
       intersection3a = cubeTrans.rayIntersection(ray3a)
       intersection4a = cubeTrans.rayIntersection(ray4a)
+      intersection5a = cubeTrans.rayIntersection(ray5a)
   test "Test Sphere Hit":
     check:
       not intersection1.isNone
@@ -541,9 +543,12 @@ suite "Test shapes.nim":
       intersection2a.isNone
       areClose(intersection1a.get().world_point, (newPoint(1.0, 1.5, 1.5)))
   test "Test AABox Transformation":
+    #echo(intersection5a.get().normal)
     check:
       intersection3a.isNone
       not intersection4a.isNone
+      not intersection5a.isNone
+      
 
 ############
 #TEST WORLD#
