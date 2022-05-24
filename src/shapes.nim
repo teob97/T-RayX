@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>. ]#
     
-import geometry, cameras, transformation, materials
+import basictypes, geometry, cameras, transformation, materials
 import std/[math, options]
 
 type
@@ -57,12 +57,21 @@ type
     z_min* : float
     z_max* : float
     phi_max* : float
+  PointLight* = object
+    ## A point light (used by the point-light render). 
+    ## It represents a Dirac's delta in the rendering equation.
+    ## If `linear_radius` is non-zero, it is used to compute the solid angle subtended by 
+    ## the light at a given distance `d` through the formula `(linear_radius/d)^2
+    position* : Point
+    color* : Color
+    linear_radius* : float
   World* = object
     ## A class holding a list of shapes, which make a «world»
     ## You can add shapes to a world using :meth:`.World.add`. Typically, you call
     ## :meth:`.World.rayIntersection` to check whether a light ray intersects any
     ## of the shapes in the world.
     shapes* : seq[Shape]
+    point_lights* : seq[PointLight]
 
 #*********************************** HITRECORD ***********************************
 
@@ -86,8 +95,9 @@ proc areClose*(h1, h2: HitRecord, epsilon : float = 1e-5) : bool =
 
 #*********************************** WORLD ***********************************
 
-proc newWorld*(shapes : seq[Shape] = newSeq[Shape](0)) : World =
+proc newWorld*(shapes : seq[Shape] = newSeq[Shape](0), point_lights : seq[PointLight] = newSeq[PointLight](0)) : World =
   result.shapes = shapes
+  result.point_lights = point_lights
 
 method rayIntersection*(shape : Shape, ray : Ray): Option[HitRecord] {.base.} =
   quit "to override"
@@ -102,6 +112,28 @@ proc rayIntersection*(world : World, ray : Ray): Option[HitRecord] =
     if closest.isNone or intersection.get().t < closest.get().t:
       closest = intersection
   return closest
+
+method quickRayIntersection*(shape : Shape, ray : Ray): bool {.base.} =
+  ## Abstract method. Determine wheter a ray hits the shape or not.
+  ## Used in point-light tracer
+  quit "to override"
+  
+proc is_point_visible*(world : World, point : Point, observer_pos : Point): bool =
+  let
+    direction : Vec = point - observer_pos
+    dir_norm : float = direction.norm()
+    ray : Ray = newRay(origin = observer_pos, dir = direction, tmin = 1e-2 / dir_norm, tmax = 1.0)
+  for shapes in world.shapes:
+    if shapes.quickRayIntersection(ray):
+      return false
+  return true
+
+#*************************************** Point Light *******************************************
+
+proc newPointLight*(position : Point, color : Color, linear_radius : float = 0.0): PointLight =
+  result.position = position
+  result.color = color
+  result.linear_radius = linear_radius
 
 #***********************************************************************************************
 #******************************** AXIS-ALIGNED-(BOUNDING)-BOXES ********************************
@@ -336,7 +368,7 @@ proc newCylinder*(transformation : Transformation = newTransformation(), materia
   result.phi_max = phi_max
   result.bound_box = newAABoundungBox(newPoint(-r, -r, z_min), newPoint(r, r, z_max))
 
-method rayIntersection(cylinder : Cylinder, ray : Ray): Option[HitRecord] =
+method rayIntersection*(cylinder : Cylinder, ray : Ray): Option[HitRecord] =
   ## Checks if a ray intersects the cylinder's lateral surface.
   ## Return a `HitRecord`, or `None` if no intersection was found.
   var
@@ -390,8 +422,42 @@ method rayIntersection(cylinder : Cylinder, ray : Ray): Option[HitRecord] =
       return none(HitRecord)
   #Return the HitRecord
   result = some(newHitRecord(world_point = cylinder.transformation * hit_point,
-                            normal = VecToNormal(newVec(hit_point.x, hit_point.y, 0.0)),
+                            normal =  cylinder.transformation * VecToNormal(newVec(hit_point.x, hit_point.y, 0.0)),
                             surface_point = newVec2d(phi / cylinder.phi_max, (hit_point.z - cylinder.z_min) / (cylinder.z_max - cylinder.z_min)),
                             t = t_hit,
                             ray = ray,
                             material = cylinder.material))
+
+#***********************************************************************************
+#**************************** Quick rayIntersection ********************************
+#***********************************************************************************
+  
+method quickRayIntersection*(sphere : Sphere, ray : Ray): bool =
+  let 
+    inv_ray : Ray = ray.transform(sphere.transformation.inverse())
+    origin_vec = PointToVec(inv_ray.origin)
+    a : float = inv_ray.dir.squared_norm()
+    b : float = 2.0 * origin_vec.dot(inv_ray.dir)
+    c : float = origin_vec.squared_norm() - 1.0
+    delta : float = b * b - 4.0 * a * c
+  if delta <= 0:
+    return false
+  let
+    sqrt_delta : float = sqrt(delta)
+    tmin : float = (-b - sqrt_delta) / (2.0 * a)
+    tmax : float = (-b + sqrt_delta) / (2.0 * a)
+  if (tmin > inv_ray.tmin) and (tmin < inv_ray.tmax):
+    return true
+  elif (tmax > inv_ray.tmin) and (tmax < inv_ray.tmax):
+    return true
+  else:
+    return false
+
+method quickRayIntersection*(plane : Plane, ray : Ray): bool =
+  let
+    inv_ray = ray.transform(plane.transformation.inverse())
+  if abs(inv_ray.dir.z) < 1e-5:
+    return false
+  let t = - inv_ray.origin.z / inv_ray.dir.z
+  return (t > inv_ray.tmin and t < inv_ray.tmax)
+

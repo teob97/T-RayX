@@ -134,13 +134,19 @@ proc debug() =
   var
     tracer : ImageTracer = newImageTracer(newHdrImage(640, 480), newPerspectiveCamera(1, 640/480, translation(newVec(-1,0,0))))
     strm = newFileStream("output/test.pfm", fmWrite)
-    material = newMaterial(newSpecularBRDF())
+    material = newMaterial(newDiffuseBRDF(pigment = newUniformPigment(newColor(0.3, 0.4, 0.8))))
+    sky_material = newMaterial(brdf = newDiffuseBRDF(newUniformPigment(newColor(0, 0, 0))), emitted_radiance = newUniformPigment(newColor(1.0, 0.9, 0.7)))
     s1 = newSphere(translation(newVec(0, 0.5, 0)), material)
     plane = newPlane(translation(newVec(0.0, 0.0, -1.5)), newMaterial(newDiffuseBRDF(newCheckeredPigment(num_of_steps = 2))))
     world : World
+    light : PointLight = newPointLight(newPoint(-20,20,20), newColor(1,1,1))
+  world.shapes.add(newSphere(material=sky_material, transformation=scaling(newVec(200, 200, 200)) * translation(newVec(0, 0, 0.4))))
   world.shapes.add(s1)
   world.shapes.add(plane)
-  var renderer = newFlatRenderer(world)
+  
+  world.point_lights.add(light)
+  var renderer = newPointLightRenderer(world)
+  #var renderer = newFlatRenderer(world)
   tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)    
   tracer.image.writeLdrImage("test.png")

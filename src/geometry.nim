@@ -169,6 +169,7 @@ template define_dot*(type1: typedesc, type2: typedesc) =
 define_dot(Vec, Vec)
 define_dot(Vec, Normal)
 define_dot(Normal, Vec)
+define_dot(Normal, Normal)
 
 template define_squared_norm*(t: typedesc) =
   ## Squared norm of a Vector or a Normal
@@ -211,6 +212,20 @@ proc normalToVec*(n : Normal) : Vec =
   result.x = n.x
   result.y = n.y
   result.z = n.z
+
+template define_normalized_dot*(t1, t2 : typedesc) =
+  ## Apply a dot product to the two arguments after having normalized them.
+  ## The result is the cosine of the angle between the two vectors/normals.
+  proc normalized_dot*(a : t1, b : t2): float =
+    let
+      v1 = a.normalization()
+      v2 = b.normalization()
+    result = v1.dot(v2)
+  
+define_normalized_dot(Vec, Vec)
+define_normalized_dot(Normal, Normal)
+define_normalized_dot(Vec, Normal)
+define_normalized_dot(Normal, Vec)
 
 #***************************** ORTHO-NORMAL BASUS *****************************
 

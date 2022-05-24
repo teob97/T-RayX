@@ -566,7 +566,14 @@ suite "Test World":
       not intersection2.isNone
       areClose(intersection1.get().world_point, (newPoint(1.0, 0.0, 0.0)))
       areClose(intersection2.get().world_point, (newPoint(9.0, 0.0, 0.0)))
-
+  test "Test Quick Ray Intersection":
+    check:
+      not world.is_point_visible(point = newPoint(10.0,0.0,0.0), observer_pos = newPoint(0.0,0.0,0.0))
+      not world.is_point_visible(point = newPoint(5.0,0.0,0.0), observer_pos = newPoint(0.0,0.0,0.0))
+      world.is_point_visible(point = newPoint(5.0,0.0,0.0), observer_pos = newPoint(5.0,0.0,0.0))
+      world.is_point_visible(point = newPoint(0.5,0.0,0.0), observer_pos = newPoint(0.0,0.0,0.0))
+      world.is_point_visible(point = newPoint(0.0,10.0,0.0), observer_pos = newPoint(0.0,0.0,0.0))
+      world.is_point_visible(point = newPoint(0.0,0.0,10.0), observer_pos = newPoint(0.0,0.0,0.0))
 
 ################
 #TEST MATERIALS#
@@ -590,6 +597,9 @@ suite "Test materials.nim":
   test "Test Uniform Pigment":
     check:
       areClose(pigment1.getColor(newVec2d(0.0, 0.0)), color1)
+      areClose(pigment1.getColor(newVec2d(1.0, 0.0)), color1)
+      areClose(pigment1.getColor(newVec2d(0.0, 1.0)), color1)
+      areClose(pigment1.getColor(newVec2d(1.0, 1.0)), color1)
 
   test "Test Image Pigment":
     check:
