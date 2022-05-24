@@ -73,6 +73,19 @@ type
     shapes* : seq[Shape]
     point_lights* : seq[PointLight]
 
+proc eq_2deg_solver*(a,b,c : float): array[2, float] =
+  ## More stable way to compute the solution of a 2nd degree equation: a*x^2 + b*x + c = 0
+  var 
+    delta : float = b*b - 4 * a * c
+    q : float  
+  if b < 0:
+    q = - 0.5 * (b - sqrt(delta))
+  else:
+    q = - 0.5 * (b + sqrt(delta))
+  result[0] = q/a
+  result[1] = c/q
+
+
 #*********************************** HITRECORD ***********************************
 
 proc newHitRecord*(world_point : Point, normal : Normal, surface_point : Vec2d, t : float, ray : Ray, material : Material = newMaterial()) : HitRecord =
