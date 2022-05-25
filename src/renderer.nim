@@ -36,6 +36,9 @@ type
     num_of_rays* : int
     max_depth* : int
     russian_roulette_limit* : int
+  PointLightRenderer* = ref object of Renderer
+    ## A simple point-light renderer.
+    ambient_color* : Color
 
 #**************************************************** CONSTRUCTORS ****************************************************
 
@@ -52,9 +55,6 @@ proc newFlatRenderer*(world : World, background_color : Color = BLACK) : FlatRen
 
 proc newPathTracer*(world: World, background_color: Color = BLACK, pcg: PCG = newPCG(), num_of_rays: int = 10,
                     max_depth: int = 2, russian_roulette_limit : int = 3) : PathTracer =
-  ## The algorithm implemented here allows the caller to tune number of rays thrown at each iteration, as well as the
-  ## maximum depth. It implements Russian roulette, so in principle it will take a finite time to complete the
-  ## calculation even if you set max_depth to `math.inf`.
   result = PathTracer.new()
   result.world = world 
   result.background_color = background_color
@@ -62,6 +62,12 @@ proc newPathTracer*(world: World, background_color: Color = BLACK, pcg: PCG = ne
   result.num_of_rays = num_of_rays
   result.max_depth = max_depth
   result.russian_roulette_limit = russian_roulette_limit
+
+proc newPointLightRenderer*(world : World, background_color : Color = BLACK, ambient_color : Color = newColor(0.1, 0.1, 0.1)) : PointLightRenderer =
+  result = PointLightRenderer.new()
+  result.world = world
+  result.background_color = background_color
+  result.ambient_color = ambient_color
 
 #**************************************************** SCATTER RAY ****************************************************
 
@@ -116,6 +122,9 @@ method render*(renderer: FlatRenderer, ray: Ray): Color {.locks: "unknown".} =
 
 method render*(renderer: PathTracer, ray: Ray): Color {.locks: "unknown".} =
   ## Estimate the radiance along a ray using PathTracer.
+  ## The algorithm implemented here allows the caller to tune number of rays thrown at each iteration, as well as the
+  ## maximum depth. It implements Russian roulette, so in principle it will take a finite time to complete the
+  ## calculation even if you set max_depth to `Inf`.
   # Exit Contition
   if ray.depth >= renderer.max_depth:
     return newColor(0.0, 0.0, 0.0)
@@ -154,3 +163,41 @@ method render*(renderer: PathTracer, ray: Ray): Color {.locks: "unknown".} =
       new_radiance = renderer.render(new_ray)
       cum_radiance = cum_radiance + hit_color * new_radiance
   return emitted_radiance + cum_radiance * (1.0 / renderer.num_of_rays.float)
+
+method render*(renderer : PointLightRenderer, ray : Ray): Color {.locks: "unknown".} =
+  ## Point light renderer.
+  
+  let hit_record_buff : Option[HitRecord] = renderer.world.rayIntersection(ray)
+  if hit_record_buff.isNone():
+    return renderer.background_color
+
+  let 
+    hit_record  : HitRecord = hit_record_buff.get()
+    hit_material : Material = hit_record.material
+  var 
+    result_color : Color = renderer.ambient_color
+    distance_factor : float
+
+  for cur_light in renderer.world.point_lights:
+    if renderer.world.is_point_visible(point = cur_light.position, observer_pos=hit_record.world_point):
+      var
+        distance_vec : Vec = hit_record.world_point - cur_light.position
+        distance : float = distance_vec.norm()
+        in_dir : Vec = distance_vec * (1.0 / distance)
+        cos_theta  : float = max(0.0, normalized_dot(-ray.dir, hit_record.normal))
+      
+      if (cur_light.linear_radius > 0):
+        distance_factor = (cur_light.linear_radius / distance)*(cur_light.linear_radius / distance)
+      else:
+        distance_factor = 1.0
+      
+      var 
+        emitted_color : Color = hit_material.emitted_radiance.get_color(hit_record.surface_point)
+        brdf_color : Color = hit_material.brdf_function.eval(
+          normal=hit_record.normal,
+          in_dir=in_dir,
+          out_dir= -ray.dir,
+          uv=hit_record.surface_point,
+        )
+      result_color = result_color + (emitted_color + brdf_color) * cur_light.color * cos_theta * distance_factor
+  return result_color 

@@ -97,6 +97,7 @@ method getColor*(pig : CheckeredPigment; uv : Vec2d): Color =
 proc newDiffuseBRDF*(pigment : Pigment = newUniformPigment()): DiffuseBRDF =
   result = DiffuseBRDF.new()
   result.pigment = pigment
+  result.reflectance = 1.0
 
 proc newSpecularBRDF*(pigment : Pigment = newUniformPigment(), angle : float = PI / 1800.0): SpecularBRDF =
   result = SpecularBRDF.new()
