@@ -1,6 +1,26 @@
-import basictypes, pfm, ldr, cameras, shapes, transformation, geometry, docopt
-import std/[strutils, strformat, streams, os, options]
+#[  
+  T-RayX: a Nim ray tracing library
+  Copyright (C) 2022 Matteo Baratto, Eleonora Gatti
 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>. 
+]#
+    
+import basictypes, pfm, ldr, cameras, imagetracer, shapes, transformation, geometry, materials, renderer
+import docopt
+import std/[strutils, strformat, streams, os, times]
+when compileOption("profiler"):
+  import nimprof
 
 let doc = """
 T-RayX: a Nim Raytracing Library
@@ -8,6 +28,7 @@ T-RayX: a Nim Raytracing Library
 Usage:
   ./trayx pfm2png <INPUT_FILE.pfm> <alpha> <gamma> <OUTPUT.png>
   ./trayx demo [--angle=<angle-deg>] [--output=<output-file>] [--orthogonal]
+  ./trayx debug
 
 Options:
   -h --help                 Show this screen
@@ -66,43 +87,82 @@ proc pfm2png() =
 #*********************************** DEMO ***********************************
 
 proc demo() =
-  # Demo procedure that generates 10 spheres
-  var tracer : ImageTracer
+  # Demo procedure that generates 10 spheres,  a cube and a checkered plane
+  var 
+    tracer : ImageTracer
+    translation : Transformation = translation(newVec(-1.0, 0.0, 1.0))
+    world : World
+    strm = newFileStream("output/demo.pfm", fmWrite)
+  let
+    width  : int = 960
+    height : int = 540
+    ratio = width/height
   if args["--orthogonal"]:
     if args["--angle"]:
-      tracer = newImageTracer(newHdrImage(640, 480), newOrthogonalCamera(640/480, rotation_z(-parseFloat($args["--angle"]))*translation(newVec(-1,0,0))))
+      tracer = newImageTracer(newHdrImage(width, height), newOrthogonalCamera(ratio, rotation_z(-parseFloat($args["--angle"]))*translation))
     else:
-      tracer = newImageTracer(newHdrImage(640, 480), newOrthogonalCamera(640/480, translation(newVec(-1,0,0))))
-  else:
+      tracer = newImageTracer(newHdrImage(width, height), newOrthogonalCamera(ratio, translation))
+  else:   
     if args["--angle"]:
-      tracer = newImageTracer(newHdrImage(640, 480), newPerspectiveCamera(1, 640/480, rotation_z(-parseFloat($args["--angle"]))*translation(newVec(-1,0,0))))
+      tracer = newImageTracer(newHdrImage(width, height), newPerspectiveCamera(1, ratio, rotation_z(-parseFloat($args["--angle"]))*translation))
     else:
-      tracer = newImageTracer(newHdrImage(640, 480), newPerspectiveCamera(1, 640/480, translation(newVec(-1,0,0))))
-  var
-    strm = newFileStream("output/demo.pfm", fmWrite)
-    scaling = scaling(newVec(1/10, 1/10, 1/10))
-    s1 = newSphere(translation(newVec(0, 0.5, 0))*scaling)
-    s2 = newSphere(translation(newVec(0, 0, -0.5))*scaling)
-    cube = newAABox(newPoint(-0.25,-0.15,-0.15), newPoint(0.25,0.15,0.15), rotation_x(45.0))
-    world : World
-  world.shapes.add(s1)
-  world.shapes.add(s2)
-  world.shapes.add(cube)
-  for i in [-0.5, 0.5]:
-    for j in [-0.5, 0.5]:
-      for k in [-0.5, 0.5]:
-        world.shapes.add(newSphere(translation(newVec(i, j, k))*scaling))
-  proc f(r : Ray) : Color = 
-    if world.rayIntersection(r).isNone: 
-      result = newColor(0.0, 0.0, 0.0)
-    else:
-      result = newColor(1, 1, 1)
-  tracer.fireAllRays(f)
+      tracer = newImageTracer(newHdrImage(width, height), newPerspectiveCamera(1, ratio, translation)) 
+  let
+    sky_material = newMaterial(brdf = newDiffuseBRDF(newUniformPigment(newColor(0, 0, 0))), emitted_radiance = newUniformPigment(newColor(1.0, 0.9, 0.5)))
+    ground_material = newMaterial(brdf = newDiffuseBRDF(pigment = newCheckeredPigment(color1 = newColor(0.3, 0.5, 0.1), color2 = newColor(0.1, 0.2, 0.5))))
+    sphere_material = newMaterial(brdf = newDiffuseBRDF(pigment = newUniformPigment(newColor(0.3, 0.4, 0.8))))
+    mirror_material = newMaterial(brdf = newSpecularBRDF(pigment = newUniformPigment(color = newColor(0.6, 0.2, 0.3))))
+  # Add all the shapes in world
+  world.shapes.add(newSphere(material=sky_material, transformation=scaling(newVec(200, 200, 200)) * translation(newVec(0, 0, 0.4))))
+  world.shapes.add(newPlane(material=ground_material))
+  world.shapes.add(newSphere(material=sphere_material, transformation=translation(newVec(0, 0, 1))))
+  world.shapes.add(newSphere(material=mirror_material, transformation=translation(newVec(1, 2.5, 0))))
+  #Initiallize the render (future feature : choose from terminal the renderer's types)
+  let renderer = newPathTracer(world, max_depth = 2)
+  tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)
   if args["--output"]:
     tracer.image.writeLdrImage($args["--output"])
   else:
     tracer.image.writeLdrImage("demo.png")
+
+#*************************************DEBUG*************************************************
+
+proc debug() =
+  var
+    tracer : ImageTracer = newImageTracer(newHdrImage(640, 480), newPerspectiveCamera(1, 640/480, translation(newVec(-1,0,1))))
+    strm = newFileStream("output/test.pfm", fmWrite)
+    check_material = newMaterial(brdf = newDiffuseBRDF(pigment = newCheckeredPigment(color1 = newColor(0.2, 0.2, 0.8), color2 = newColor(0.8, 0.6, 0.2))))
+    sky_material = newMaterial(brdf = newDiffuseBRDF(newUniformPigment(newColor(0, 0, 0))), emitted_radiance = newUniformPigment(newColor(1.0, 0.9, 0.5)))
+    mirror_material = newMaterial(brdf = newSpecularBRDF(pigment = newUniformPigment(color = newColor(0.6, 0.2, 0.3))))
+    ground_material = newMaterial(brdf = newDiffuseBRDF(pigment = newCheckeredPigment(color1 = newColor(0.3, 0.5, 0.1), color2 = newColor(0.1, 0.2, 0.5))))
+    sphere_material = newMaterial(brdf = newDiffuseBRDF(pigment = newUniformPigment(newColor(0.3, 0.4, 0.8))))
+    neon_material = newMaterial(brdf = newDiffuseBRDF(pigment = newUniformPigment(newColor(0.22, 1, 0.078))), emitted_radiance = newUniformPigment(newColor(1,1,1)))
+    plane = newPlane(translation(newVec(0.0, 0.0, -1.5)), sky_material)
+    world : World
+  tracer.samples_per_side = 2
+#[ 
+  # diffusive sky
+  world.shapes.add(newSphere(material=sky_material, transformation=scaling(newVec(200, 200, 200)) * translation(newVec(0, 0, 0.4))))
+  # checkered ground
+  world.shapes.add(newPlane(material=ground_material))
+  # checkered cube
+#[   world.shapes.add(newAABox(transformation = translation(newVec(-0.5, 1, 0))*scaling(newVec(0.3,0.3,0.3)),
+                  material=check_material)) ]#
+  # mirror cube
+  world.shapes.add(newSphere(material=sphere_material, transformation=scaling(newVec(0.5,0.5,0.5))*translation(newVec(0, 0, 1))))
+  world.shapes.add(newAABox(material=mirror_material, transformation=scaling(newVec(0.6,0.6,0.6))*translation(newVec(3, 5, 0))))
+ ]#
+  world.shapes.add(newSphere(material=sky_material, transformation=scaling(newVec(200, 200, 200)) * translation(newVec(0, 0, 0.4))))
+  world.shapes.add(newPlane(material=ground_material))
+  world.shapes.add(newCylinder(material=neon_material, r = 0.2, z_min = 0, z_max = 5))
+  #world.shapes.add(newSphere(material=sphere_material, transformation=scaling(newVec(0.3,0.3,0.3))*translation(newVec(0, 0, 1))))
+  world.shapes.add(newAABox(material=mirror_material, transformation=translation(newVec(0, 2.5, 0))))
+  var renderer = newPathTracer(world, max_depth = 4)
+  tracer.fireAllRays(renderer)
+  tracer.image.writePfmImage(strm)    
+  tracer.image.writeLdrImage("test.png")
+
 
 #*********************************** MAIN ***********************************
 
@@ -110,4 +170,9 @@ when isMainModule:
   if args["pfm2png"]:
     pfm2png()
   if args["demo"]:
+    let t1 = epochTime()
     demo()
+    let t2 = epochTime()
+    echo("Execution time: ", t2 - t1)
+  if args["debug"]:
+    debug()

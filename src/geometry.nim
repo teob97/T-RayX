@@ -1,18 +1,47 @@
+#[  T-RayX: a Nim ray tracing library
+    Copyright (C) 2022 Matteo Baratto, Eleonora Gatti
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>. ]#
+
 import std/math
 
 type 
   Vec* = object
+    ## Vec object: (x, y, z) floats
+    ## Represents a Vec in the 3D space
     x*, y*, z* : float
   Vec2d* = object
+    ## Vec2d object: (u,v) floats
+    ## ## Represents a Vec in the 2D space
     u*, v* : float
   Point* = object
+    ## Point object: (x, y, z) floats
+    ## Represents a Point in the 3D space
     x*, y*, z* : float
   Normal* = object
+    ## Normal object: (x, y, z) floats
+    ## Represents a Normal in the 3D space
     x*, y*, z* : float
+  ONB* = object
+    ## Ortho Normal Basis: (x, y, z) floats
+    ## Represents an Orto Normal Basis in the 3D space
+    e1*, e2*, e3* : Vec   
 
 #*********************************** VEC ***********************************
 
 proc newVec*(x, y, z : float) : Vec =
+  ## Constructor of Vec
   result.x = x
   result.y = y
   result.z = z
@@ -24,6 +53,7 @@ proc areClose*(v1, v2 : Vec2d, epsilon : float = 1e-5) : bool =
 #*********************************** VEC2D ***********************************
 
 proc newVec2d*(u, v : float) : Vec2d =
+  ## Constructor for Vec2d
   result.u = u
   result.v = v
 
@@ -36,6 +66,7 @@ const VEC_Z* : Vec = newVec(0.0, 0.0, 1.0)
 #*********************************** POINT ***********************************
 
 proc newPoint*(x, y, z : float) : Point =
+  ## Constructor of Point
   result.x = x
   result.y = y
   result.z = z
@@ -43,11 +74,12 @@ proc newPoint*(x, y, z : float) : Point =
 #*********************************** NORMAL ***********************************
 
 proc newNormal*(x, y, z : float) : Normal =
+  ## Constructor of Normal
   result.x = x
   result.y = y
   result.z = z
 
-#*********************************** OPERATIONS ***********************************
+#********************************* OPERATIONS *********************************
 
 template define_print_string(t: typedesc) = 
   ## Print the object in the format Obj.type(Obj.x, Obj.y, Obj.z)
@@ -137,6 +169,7 @@ template define_dot*(type1: typedesc, type2: typedesc) =
 define_dot(Vec, Vec)
 define_dot(Vec, Normal)
 define_dot(Normal, Vec)
+define_dot(Normal, Normal)
 
 template define_squared_norm*(t: typedesc) =
   ## Squared norm of a Vector or a Normal
@@ -175,8 +208,42 @@ proc PointToVec*(p: Point) : Vec =
   result.y = p.y
   result.z = p.z
 
-proc `<`*(p1, p2:Point):bool=
-  return p1.x<p2.x or p1.y<p2.y or p1.z<p2.z
+proc normalToVec*(n : Normal) : Vec =
+  result.x = n.x
+  result.y = n.y
+  result.z = n.z
 
-proc `>`*(p1, p2:Point):bool=
-  return p1.x>p2.x or p1.y>p2.y or p1.z>p2.z
+template define_normalized_dot*(t1, t2 : typedesc) =
+  ## Apply a dot product to the two arguments after having normalized them.
+  ## The result is the cosine of the angle between the two vectors/normals.
+  proc normalized_dot*(a : t1, b : t2): float =
+    let
+      v1 = a.normalization()
+      v2 = b.normalization()
+    result = v1.dot(v2)
+  
+define_normalized_dot(Vec, Vec)
+define_normalized_dot(Normal, Normal)
+define_normalized_dot(Vec, Normal)
+define_normalized_dot(Normal, Vec)
+
+#***************************** ORTHO-NORMAL BASUS *****************************
+
+proc createONBfromZ*(normal : Normal) : ONB =
+  ## Create a ONB from a z-axis rapresented by `normal`
+  var buffer : Normal = normal
+  if (squared_norm(buffer) != 1):     # check normalization using squared_normal because is faster
+    buffer = normalization(normal)
+  let
+    sign = copySign(1.0, buffer.z)
+    a = -1 / (sign + buffer.z)
+    b = buffer.x * buffer.y * a
+  result.e1.x = 1.0 + sign * buffer.x * buffer.x * a
+  result.e1.y = sign * b
+  result.e1.z = -sign * buffer.x
+  result.e2.x = b
+  result.e2.y = sign + buffer.y * buffer.y * a
+  result.e2.z = -buffer.y
+  result.e3.x = buffer.x
+  result.e3.y = buffer.y 
+  result.e3.z = buffer.z

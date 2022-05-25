@@ -1,3 +1,19 @@
+#[  T-RayX: a Nim ray tracing library
+    Copyright (C) 2022 Matteo Baratto, Eleonora Gatti
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>. ]#
+    
 import std/math
 import geometry
 
@@ -6,8 +22,10 @@ const IDENTITY_MATRIX4x4 = [1.0, 0.0, 0.0, 0.0,
                             0.0, 0.0, 1.0, 0.0,
                             0.0, 0.0, 0.0, 1.0]
 type
-  ## Affine transformation.
   Transformation* = object
+    ## An affine transformation.
+    ## This class encodes an affine transformation. It has been designed with the aim of making
+    ## the calculation of the inverse transformation particularly efficient.
     m* : array[16, float]
     invm* : array[16, float]
 
@@ -66,10 +84,11 @@ proc `*`*(T: Transformation, v: Vec) : Vec =
 proc `*`*(T: Transformation, p: Point) : Point =
   ## Multiplication between a Transformation object and a Point object.
   ## Return a Point object
-  var newp : Point = newPoint(x = T.m[0]*p.x + T.m[1]*p.y + T.m[2]*p.z + T.m[3],
+  let 
+    newp : Point = newPoint(x = T.m[0]*p.x + T.m[1]*p.y + T.m[2]*p.z + T.m[3],
                            y = T.m[4]*p.x + T.m[5]*p.y + T.m[6]*p.z + T.m[7],
                            z = T.m[8]*p.x + T.m[9]*p.y + T.m[10]*p.z + T.m[11])
-  var w : float = T.m[12]*p.x + T.m[13]*p.y + T.m[14]*p.z + T.m[15]
+    w : float = T.m[12]*p.x + T.m[13]*p.y + T.m[14]*p.z + T.m[15]
   if w == 1.0:
     return newp
   else:
@@ -118,8 +137,8 @@ proc rotation_x*(angle_deg: float) : Transformation =
   ## Return a `Transformation` object encoding a rotation around the X axis.
   ## The parameter `angle_deg` specifies the rotation angle (in degrees).
   ## The positive sign is given by the right-hand rule.
-  var sinang: float = sin(degToRad(angle_deg))
-  var cosang: float = cos(degToRad(angle_deg))
+  let sinang: float = sin(degToRad(angle_deg))
+  let cosang: float = cos(degToRad(angle_deg))
   result.m = [1.0, 0.0, 0.0, 0.0,
               0.0, cosang, -sinang, 0.0,
               0.0, sinang, cosang, 0.0,
@@ -133,8 +152,8 @@ proc rotation_y*(angle_deg: float) : Transformation =
   ## Return a `Transformation` object encoding a rotation around the Y axis.
   ## The parameter `angle_deg` specifies the rotation angle (in degrees).
   ## The positive sign is given by the right-hand rule.
-  var sinang: float = sin(degToRad(angle_deg))
-  var cosang: float = cos(degToRad(angle_deg))
+  let sinang: float = sin(degToRad(angle_deg))
+  let cosang: float = cos(degToRad(angle_deg))
   result.m = [cosang, 0.0, sinang, 0.0,
               0.0, 1.0, 0.0, 0.0,
               -sinang, 0.0, cosang, 0.0,
@@ -148,8 +167,8 @@ proc rotation_z*(angle_deg: float) : Transformation =
   ## Return a `Transformation` object encoding a rotation around the Z axis.
   ## The parameter `angle_deg` specifies the rotation angle (in degrees).
   ## The positive sign is given by the right-hand rule.
-  var sinang: float = sin(degToRad(angle_deg))
-  var cosang: float = cos(degToRad(angle_deg))
+  let sinang: float = sin(degToRad(angle_deg))
+  let cosang: float = cos(degToRad(angle_deg))
   result.m = [cosang, -sinang, 0.0, 0.0,
               sinang, cosang, 0.0, 0.0,
               0.0, 0.0, 1.0, 0.0,

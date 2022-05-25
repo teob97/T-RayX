@@ -4,7 +4,11 @@ import ../src/ldr
 import ../src/geometry
 import ../src/transformation
 import ../src/cameras
+import ../src/imagetracer
 import ../src/shapes
+import ../src/materials
+import ../src/pcg
+import ../src/renderer
 import std/[options, unittest, streams]
 
 #################
@@ -178,6 +182,7 @@ suite "Test geometry.nim":
       b : Vec = newVec(4.0, 6.0, 8.0)
       p1 : Point = newPoint(1.0, 2.0, 3.0)
       p2 : Point = newPoint(4.0, 6.0, 8.0)
+      pcg : PCG = newPCG()
   test "Test Vec":
     check:
       a.areClose(a)
@@ -203,7 +208,24 @@ suite "Test geometry.nim":
       areClose(p1*2, newPoint(2.0, 4.0, 6.0))
       areClose(p1+b, newPoint(5.0, 8.0, 11.0))
       areClose(p2-p1, newVec(3.0, 4.0, 5.0))
-      areClose(p1-b, newPoint(-3.0, -4.0, -5.0)) 
+      areClose(p1-b, newPoint(-3.0, -4.0, -5.0))
+  test "Test ONB":
+    for i in 0..10000:
+      var normal = newNormal(pcg.random_float(), pcg.random_float(), pcg.random_float())
+      normal = normalization(normal)
+      var ONB = createONBfromZ(normal)
+      check:
+        areClose(VecToNormal(ONB.e3), normal)
+        abs(ONB.e1.squared_norm() - 1) < 1e-6
+        abs(ONB.e2.squared_norm() - 1) < 1e-6
+        abs(ONB.e3.squared_norm() - 1) < 1e-6
+        abs(ONB.e1.dot(ONB.e2)) < 1e-6
+        abs(ONB.e2.dot(ONB.e3)) < 1e-6
+        abs(ONB.e3.dot(ONB.e1)) < 1e-6
+        areClose(ONB.e1.cross(ONB.e2), ONB.e3)
+        areClose(ONB.e2.cross(ONB.e3), ONB.e1)
+        areClose(ONB.e3.cross(ONB.e1), ONB.e2)
+        areClose(ONB.e3.cross(ONB.e2), -ONB.e1)
 
 #####################
 #TEST TRANSFOTMATION#
@@ -379,7 +401,10 @@ suite "Test cameras.nim":
     check:
       areClose(ray1t, ray2t)
     var f = proc (r: Ray): Color = newColor(1.0, 2.0, 3.0)
-    fireAllRays(tracer, f)
+    var
+      w : World
+      renderer : OnOffRenderer = newOnOffRenderer(w, newColor(1.0, 2.0, 3.0), newColor(1.0, 2.0, 3.0))
+    tracer.fireAllRays(renderer)
     for row in 0..<(tracer.image.height):
       for col in 0..<(tracer.image.width):
         check:
@@ -418,6 +443,7 @@ suite "Test shapes.nim":
       ray2a = newRay(origin = newPoint(0, 3.5, 1.5), dir = VEC_X)
       ray3a = newRay(origin = newPoint(-2, 0.99, 0.99), dir = VEC_X)
       ray4a = newRay(origin = newPoint(0.5, 0.5, -2.5), dir = VEC_Z)
+      ray5a = newRay(origin = newPoint(0.0, -5, 0.2), dir = VEC_Y)
       intersection1 = sphere.rayIntersection(ray1)
       intersection2 = sphere.rayIntersection(ray2)
       intersection3 = sphere.rayIntersection(ray3)
@@ -437,6 +463,7 @@ suite "Test shapes.nim":
       intersection2a = cube.rayIntersection(ray2a)
       intersection3a = cubeTrans.rayIntersection(ray3a)
       intersection4a = cubeTrans.rayIntersection(ray4a)
+      intersection5a = cubeTrans.rayIntersection(ray5a)
   test "Test Sphere Hit":
     check:
       not intersection1.isNone
@@ -516,9 +543,12 @@ suite "Test shapes.nim":
       intersection2a.isNone
       areClose(intersection1a.get().world_point, (newPoint(1.0, 1.5, 1.5)))
   test "Test AABox Transformation":
+    #echo(intersection5a.get().normal)
     check:
       intersection3a.isNone
       not intersection4a.isNone
+      not intersection5a.isNone
+      
 
 ############
 #TEST WORLD#
@@ -541,3 +571,153 @@ suite "Test World":
       not intersection2.isNone
       areClose(intersection1.get().world_point, (newPoint(1.0, 0.0, 0.0)))
       areClose(intersection2.get().world_point, (newPoint(9.0, 0.0, 0.0)))
+  test "Test Quick Ray Intersection":
+    check:
+      not world.is_point_visible(point = newPoint(10.0,0.0,0.0), observer_pos = newPoint(0.0,0.0,0.0))
+      not world.is_point_visible(point = newPoint(5.0,0.0,0.0), observer_pos = newPoint(0.0,0.0,0.0))
+      world.is_point_visible(point = newPoint(5.0,0.0,0.0), observer_pos = newPoint(5.0,0.0,0.0))
+      world.is_point_visible(point = newPoint(0.5,0.0,0.0), observer_pos = newPoint(0.0,0.0,0.0))
+      world.is_point_visible(point = newPoint(0.0,10.0,0.0), observer_pos = newPoint(0.0,0.0,0.0))
+      world.is_point_visible(point = newPoint(0.0,0.0,10.0), observer_pos = newPoint(0.0,0.0,0.0))
+
+################
+#TEST MATERIALS#
+################
+
+suite "Test materials.nim":
+  setup:
+    var
+      color1 = newColor(1.0, 2.0, 3.0)
+      color2 = newColor(10.0, 20.0, 30.0)
+      image1 = newHdrImage(width=2, height=2)
+    image1.set_pixel(0, 0, newColor(1.0, 2.0, 3.0))
+    image1.set_pixel(1, 0, newColor(2.0, 3.0, 1.0))
+    image1.set_pixel(0, 1, newColor(2.0, 1.0, 3.0))
+    image1.set_pixel(1, 1, newColor(3.0, 2.0, 1.0))
+    var
+      pigment1 = newUniformPigment(color = color1)
+      pigment2 = newImagePigment(image1)
+      pigment3 = newCheckeredPigment(color1 = color1, color2 = color2, num_of_steps = 2)
+
+  test "Test Uniform Pigment":
+    check:
+      areClose(pigment1.getColor(newVec2d(0.0, 0.0)), color1)
+      areClose(pigment1.getColor(newVec2d(1.0, 0.0)), color1)
+      areClose(pigment1.getColor(newVec2d(0.0, 1.0)), color1)
+      areClose(pigment1.getColor(newVec2d(1.0, 1.0)), color1)
+
+  test "Test Image Pigment":
+    check:
+      areClose(pigment2.getColor(newVec2d(0.0, 0.0)), newColor(1.0, 2.0, 3.0))
+      areClose(pigment2.getColor(newVec2d(1.0, 0.0)), newColor(2.0, 3.0, 1.0))
+      areClose(pigment2.getColor(newVec2d(0.0, 1.0)), newColor(2.0, 1.0, 3.0))
+      areClose(pigment2.getColor(newVec2d(1.0, 1.0)), newColor(3.0, 2.0, 1.0))
+
+  test "Test Checkered Pigment":
+    check:
+      # With num_of_steps == 2, the pattern should be the following:
+      #
+      #              (0.5, 0)
+      #   (0, 0) +------+------+ (1, 0)
+      #          |      |      |
+      #          | col1 | col2 |
+      #          |      |      |
+      # (0, 0.5) +------+------+ (1, 0.5)
+      #          |      |      |
+      #          | col2 | col1 |
+      #          |      |      |
+      #   (0, 1) +------+------+ (1, 1)
+      #              (0.5, 1)
+      areClose(pigment3.getColor(newVec2d(0.25, 0.25)), color1)
+      areClose(pigment3.getColor(newVec2d(0.75, 0.25)), color2)
+      areClose(pigment3.getColor(newVec2d(0.25, 0.75)), color2)
+      areClose(pigment3.getColor(newVec2d(0.75, 0.75)), color1)
+
+##########
+#TEST PCG#
+##########
+
+suite "Test pcg.nim":
+  setup:
+    var
+      pcg = newPCG()
+      expected = [2707161783.uint32, 2068313097.uint32,
+                  3122475824.uint32, 2211639955.uint32, 
+                  3215226955.uint32, 3421331566.uint32]
+  test "Test PCG generator":
+    check:
+      pcg.state == uint64(1753877967969059832)
+      pcg.inc == uint64(109)
+  test "Test PCG usage":
+    for k in expected:
+      check:
+        k == pcg.random()
+
+###############
+#TEST RENDERER#
+###############
+
+suite "Test renderer.nim":
+  setup:
+    var
+      sphere_color = newColor(1.0, 2.0, 3.0)
+      sphere = newSphere(transformation = translation(newVec(2, 0, 0))*scaling(newVec(0.2, 0.2, 0.2)),
+                         material = newMaterial(brdf = newDiffuseBRDF(pigment = newUniformPigment(WHITE))))
+      sphere1 = newSphere(transformation = translation(newVec(2, 0, 0))*scaling(newVec(0.2, 0.2, 0.2)),
+                          material = newMaterial(brdf = newDiffuseBRDF(pigment = newUniformPigment(sphere_color))))
+      image = newHdrImage(width = 3, height = 3)
+      camera = newOrthogonalCamera()
+      tracer = newImageTracer(image = image, camera = camera)
+      world : World
+      world1 : World
+    world.shapes.add(sphere)
+    world1.shapes.add(sphere1)
+    var
+      renderer = newOnOffRenderer(world = world)
+      renderer1 = newFlatRenderer(world = world1)
+  test "Test OnOffRenderer":
+#[     proc fun(r : Ray) : Color =
+      return renderer.render(r) ]#
+    tracer.fireAllRays(renderer)
+    check:
+      areClose(tracer.image.getPixel(0, 0), BLACK)
+      areClose(tracer.image.getPixel(1, 0), BLACK)
+      areClose(tracer.image.getPixel(2, 0), BLACK)
+      areClose(tracer.image.getPixel(0, 1), BLACK)
+      areClose(tracer.image.getPixel(1, 1), WHITE)
+      areClose(tracer.image.getPixel(2, 1), BLACK)
+      areClose(tracer.image.getPixel(0, 2), BLACK)
+      areClose(tracer.image.getPixel(1, 2), BLACK)
+      areClose(tracer.image.getPixel(2, 2), BLACK)
+  test "Test FlatRenderer":
+    tracer.fireAllRays(renderer1)
+    check:
+      areClose(tracer.image.getPixel(0, 0), BLACK)
+      areClose(tracer.image.getPixel(1, 0), BLACK)
+      areClose(tracer.image.getPixel(2, 0), BLACK)
+      areClose(tracer.image.getPixel(0, 1), BLACK)
+      areClose(tracer.image.getPixel(1, 1), sphere_color)
+      areClose(tracer.image.getPixel(2, 1), BLACK)
+      areClose(tracer.image.getPixel(0, 2), BLACK)
+      areClose(tracer.image.getPixel(1, 2), BLACK)
+      areClose(tracer.image.getPixel(2, 2), BLACK)
+suite "Test PathTracer":
+  test "Furnace Test":
+    var pcg : PCG = newPCG()
+    for i in 0..5:
+      var 
+        world : World = newWorld()
+        ray : Ray = newRay(origin = newPoint(0.0,0.0,0.0), dir = newVec(1.0,0.0,0.0))
+        emitted_radiance : float = pcg.random_float()
+        reflectance : float = pcg.random_float() * 0.9
+        enclosure_material : Material = newMaterial(newDiffuseBRDF(newUniformPigment(newColor(1.0,1.0,1.0) * reflectance)),
+                                                    newUniformPigment(newColor(1.0,1.0,1.0) * emitted_radiance))
+      world.shapes.add(newSphere(material = enclosure_material))
+      let 
+        path_tracer : PathTracer = newPathTracer(world, pcg = pcg, num_of_rays = 1, max_depth = 100, russian_roulette_limit = 101) 
+        color : Color = path_tracer.render(ray)
+        expected : float = emitted_radiance / (1.0 - reflectance)
+      check:
+        abs(color.r - expected) < 1e-3
+        abs(color.b - expected) < 1e-3
+        abs(color.g - expected) < 1e-3

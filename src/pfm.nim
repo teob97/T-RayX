@@ -1,3 +1,19 @@
+#[  T-RayX: a Nim ray tracing library
+    Copyright (C) 2022 Matteo Baratto, Eleonora Gatti
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>. ]#
+    
 import std/[endians, streams, strutils, strformat]
 import basictypes
 
@@ -7,7 +23,7 @@ type
 #*********************************** READING ***********************************
 
 proc readFloat*(stream: Stream, endianness: float) : float32 =
-    ## Reading 4 byte sequence in a 32 bit floating-point taking endianness into account
+    ## Reading 4 byte sequence in a 32 bit floating-point taking endianness into account.
     var num: float32
     var x = stream.readUint32()
     if endianness > 0:
@@ -17,7 +33,7 @@ proc readFloat*(stream: Stream, endianness: float) : float32 =
     return num
 
 proc parseImgSize*(line: string): (int,int) =
-    ## Take the string containing width x height and return a tuple of int
+    ## Take the string containing width x height and return a tuple of int.
     var 
         elements = split(line)
         width : int
@@ -45,8 +61,9 @@ proc parseEndianness*(line: string) : float32 =
     else: raise newException(InvalidPfmFileFormat, "invalid endianness specification")
 
 proc readPfmImage*(stream: Stream) : HdrImage =
-    ## Read a pfm image as a stream and return HdrImage type
-    # Check if the file is a pfm image reading the first line
+    ## Read a pfm image as a stream.
+    ## Return a ``HdrImage`` object containing the image. If an error occurs, raise a
+    ## ``InvalidPfmFileFormat`` exception.
     let magic = stream.readLine()
     if magic != "PF":
         raise newException(InvalidPfmFileFormat, "invalid magic in PFM file")
@@ -72,7 +89,7 @@ proc readPfmImage*(stream: Stream) : HdrImage =
 #*********************************** WRITING ***********************************
 
 proc writeFloat*(stream : Stream, color : float32, endianness: float32) =
-    ## Write a float32 into a stream with the right endianness
+    ## Write a float32 into a stream with the right endianness.
     if endianness == -1.0:
         stream.write(color)
     else:
@@ -82,7 +99,9 @@ proc writeFloat*(stream : Stream, color : float32, endianness: float32) =
         stream.write(val2)
 
 proc writePfmImage*(img: HdrImage, stream: Stream, endianness: float32 = -1.0) =
-    ## Print a PFM image into a stream
+    ## Write the image in a PFM file.
+    ## The `stream` parameter must be a I/O stream. The parameter `endianness` specifies the byte endianness
+    ## to be used in the file.
     var endianness_string : string
     if endianness == -1.0: endianness_string = "-1.0"
     else: endianness_string = "1.0"

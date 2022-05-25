@@ -3,6 +3,10 @@
 !*.*
 
 output/demo/img*
+output/test*
+.vscode
+profile_result*
+callgrind*
 
 .DS_Store
 *~
