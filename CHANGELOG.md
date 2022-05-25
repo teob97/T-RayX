@@ -1,5 +1,7 @@
 # HEAD
 
+# Version 0.2.0
+
 -   Added Point Light Tracer [#6](https://github.com/teob97/T-RayX/pull/6)
 -   Added Antialiasing [#6](https://github.com/teob97/T-RayX/pull/6)
 -   Added the possibility to deploy differents shapes: Axis Aligned Boxes and Cylinders [#6](https://github.com/teob97/T-RayX/pull/6)
