@@ -59,7 +59,7 @@ proc newTransformation*(m=IDENTITY_MATRIX4x4, invm=IDENTITY_MATRIX4x4) : Transfo
   result.m = m
   result.invm = invm
 
-proc srse*(T: Transformation) : Transformation =
+proc inverse*(T: Transformation) : Transformation =
   ## Return the inverse of a Transformation.
   result.m = T.invm
   result.invm = T.m

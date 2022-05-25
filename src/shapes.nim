@@ -121,6 +121,28 @@ proc newAABoundungBox(pmin, pmax : Point): AABoundingBox =
   result.pmin = pmin
   result.pmax = pmax
 
+proc AABoxPointToUV*(point: Point) : Vec2d =
+  ## Convert a 3D point on the surface of the cube with p_min(0,0,0) and p_max(1,1,1)
+  ## into a (u, v) 2D point.
+  # face (0, y, z) [0]
+  if point.x == 0:
+    result = newVec2d((1 + point.y) / 4, (1 + point.z) / 3)
+  # face (x, 1, z) [1]
+  elif point.y == 1:
+    result = newVec2d((1 - point.x) / 4, (1 + point.z) / 3)
+  # face (x, 0, z) [4]
+  elif point.y == 0:
+    result = newVec2d((2 + point.x) / 4, (1 + point.z) / 3)
+  # face (1, y, z) [5]
+  elif point.x == 1:
+    result = newVec2d((3 + point.x) / 4, (1 + point.z) / 3)
+  # face (x, y, 0) [3] 
+  elif point.z == 0:
+    result = newVec2d((1 + point.y) / 4, (1 - point.x) / 3)
+  # face (x, y, 1) [2] 
+  elif point.z == 1:
+    result = newVec2d((1 + point.y) / 4, (2 + point.x) / 3)
+
 proc checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max: float): Option[float] =
   ## Check if the intersection is "real".
   var 
@@ -212,10 +234,10 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
   if PointToVec(hit_point).dot(inv_ray.dir) < 0:
     normal = box.transformation * boxNormal(box, hit_point, inv_ray)
   else:
-    normal = box.transformation * -boxNormal(box, hit_point, inv_ray)
+    normal = box.transformation * (-boxNormal(box, hit_point, inv_ray))
   result = some(newHitRecord(world_point = box.transformation * hit_point,
                       normal = normal,
-                      surface_point = newVec2d(0,0), #Incorrect. We don't know the correct parametrisation.
+                      surface_point = AABoxPointToUV(hit_point),
                       t = t_hit,
                       ray = ray,
                       material = box.material))

@@ -18,7 +18,7 @@
     
 import basictypes, pfm, ldr, cameras, imagetracer, shapes, transformation, geometry, materials, renderer
 import docopt
-import std/[strutils, strformat, streams, os, times, options]
+import std/[strutils, strformat, streams, os, times]
 when compileOption("profiler"):
   import nimprof
 
@@ -130,15 +130,36 @@ proc demo() =
 
 proc debug() =
   var
-    tracer : ImageTracer = newImageTracer(newHdrImage(640, 480), newPerspectiveCamera(1, 640/480, translation(newVec(-1,0,0))))
+    tracer : ImageTracer = newImageTracer(newHdrImage(640, 480), newPerspectiveCamera(1, 640/480, translation(newVec(-1,0,1))))
     strm = newFileStream("output/test.pfm", fmWrite)
     material = newMaterial(newSpecularBRDF())
+    check_material = newMaterial(brdf = newDiffuseBRDF(pigment = newCheckeredPigment(color1 = newColor(0.2, 0.2, 0.8), color2 = newColor(0.8, 0.6, 0.2))))
+    sky_material = newMaterial(brdf = newDiffuseBRDF(newUniformPigment(newColor(0, 0, 0))), emitted_radiance = newUniformPigment(newColor(1.0, 0.9, 0.5)))
+    mirror_material = newMaterial(brdf = newSpecularBRDF(pigment = newUniformPigment(color = newColor(0.6, 0.2, 0.3))))
+    ground_material = newMaterial(brdf = newDiffuseBRDF(pigment = newCheckeredPigment(color1 = newColor(0.3, 0.5, 0.1), color2 = newColor(0.1, 0.2, 0.5))))
+    sphere_material = newMaterial(brdf = newDiffuseBRDF(pigment = newUniformPigment(newColor(0.3, 0.4, 0.8))))
+
     s1 = newSphere(translation(newVec(0, 0.5, 0)), material)
-    plane = newPlane(translation(newVec(0.0, 0.0, -1.5)), newMaterial(newDiffuseBRDF(newCheckeredPigment(num_of_steps = 2))))
+    plane = newPlane(translation(newVec(0.0, 0.0, -1.5)), sky_material)
     world : World
-  world.shapes.add(s1)
-  world.shapes.add(plane)
-  var renderer = newFlatRenderer(world)
+#[ 
+  # diffusive sky
+  world.shapes.add(newSphere(material=sky_material, transformation=scaling(newVec(200, 200, 200)) * translation(newVec(0, 0, 0.4))))
+  # checkered ground
+  world.shapes.add(newPlane(material=ground_material))
+  # checkered cube
+#[   world.shapes.add(newAABox(transformation = translation(newVec(-0.5, 1, 0))*scaling(newVec(0.3,0.3,0.3)),
+                  material=check_material)) ]#
+  # mirror cube
+  world.shapes.add(newSphere(material=sphere_material, transformation=scaling(newVec(0.5,0.5,0.5))*translation(newVec(0, 0, 1))))
+  world.shapes.add(newAABox(material=mirror_material, transformation=scaling(newVec(0.6,0.6,0.6))*translation(newVec(3, 5, 0))))
+ ]#
+  world.shapes.add(newSphere(material=sky_material, transformation=scaling(newVec(200, 200, 200)) * translation(newVec(0, 0, 0.4))))
+  world.shapes.add(newPlane(material=ground_material))
+  world.shapes.add(newSphere(material=sphere_material, transformation=scaling(newVec(0.3,0.3,0.3))*translation(newVec(0, 0, 1))))
+  world.shapes.add(newAABox(material=mirror_material, transformation=translation(newVec(1, 2.5, 0))))
+ 
+  var renderer = newPathTracer(world)
   tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)    
   tracer.image.writeLdrImage("test.png")
