@@ -251,6 +251,31 @@ proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
     result = VecToNormal(cross(e-f, g-f))
   elif hit_point.z == box.pmax.z:
     result = VecToNormal(cross(c-d, e-d))
+  
+  if PointToVec(hit_point).dot(ray.dir) > 0:
+    result = - result
+
+#[ proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
+  ## Check in which face of the cube there is the intersection and calculate the normal knowing pmin and pmax.
+  ## Default : pmin = (0,0,0) ; pmax = (1,1,1)
+  if hit_point.x == box.pmin.x: # if hit_point.x == 0
+    result = newNormal(-1, 0, 0)
+  elif hit_point.y == box.pmin.y:
+    # xz face
+    result = newNormal(0, -1, 0)
+  elif hit_point.z == box.pmin.z:
+    # xy face
+    result = newNormal(0,0,-1)
+  elif hit_point.x == box.pmax.x:
+    result = newNormal(1,0,0)
+  elif hit_point.y == box.pmax.y:
+    result = newNormal(0,1,0)
+  elif hit_point.z == box.pmax.z:
+    result = newNormal(0,0,1)
+  
+  if PointToVec(hit_point).dot(ray.dir) > 0:
+    result = - result ]#
+
 
 method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
   ## Checks if a ray intersects the AAB
@@ -265,7 +290,6 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
     ty_max : float = (box.pmax.y - origin_vec.y) / inv_ray.dir.y
     tz_max : float = (box.pmax.z - origin_vec.z) / inv_ray.dir.z
     t_hit : float
-    normal : Normal
   if tx_min > tx_max: swap(tx_min, tx_max)
   if ty_min > ty_max: swap(ty_min, ty_max)
   if tz_min > tz_max: swap(tz_min, tz_max)
@@ -276,12 +300,8 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
   if (t_hit <= inv_ray.tmin) or (t_hit >= inv_ray.tmax):
     return none(HitRecord)
   var hit_point : Point = inv_ray.at(t_hit)
-  if PointToVec(hit_point).dot(inv_ray.dir) < 0:
-    normal = box.transformation * boxNormal(box, hit_point, inv_ray)
-  else:
-    normal = box.transformation * (-boxNormal(box, hit_point, inv_ray))
   result = some(newHitRecord(world_point = box.transformation * hit_point,
-                      normal = normal,
+                      normal = box.transformation * box.boxNormal(hit_point, inv_ray),
                       surface_point = AABoxPointToUV(hit_point),
                       t = t_hit,
                       ray = ray,

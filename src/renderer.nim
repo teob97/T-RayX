@@ -126,7 +126,7 @@ method render*(renderer: PathTracer, ray: Ray): Color {.locks: "unknown".} =
   ## maximum depth. It implements Russian roulette, so in principle it will take a finite time to complete the
   ## calculation even if you set max_depth to `Inf`.
   # Exit Contition
-  if ray.depth >= renderer.max_depth:
+  if ray.depth > renderer.max_depth:
     return newColor(0.0, 0.0, 0.0)
   # Find the intersection
   let hit_record : Option[HitRecord] = renderer.world.rayIntersection(ray)

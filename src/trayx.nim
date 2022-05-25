@@ -93,7 +93,7 @@ proc demo() =
     translation : Transformation = translation(newVec(-1.0, 0.0, 1.0))
     world : World
     strm = newFileStream("output/demo.pfm", fmWrite)
-  const
+  let
     width  : int = 960
     height : int = 540
     ratio = width/height
@@ -118,7 +118,7 @@ proc demo() =
   world.shapes.add(newSphere(material=sphere_material, transformation=translation(newVec(0, 0, 1))))
   world.shapes.add(newSphere(material=mirror_material, transformation=translation(newVec(1, 2.5, 0))))
   #Initiallize the render (future feature : choose from terminal the renderer's types)
-  let renderer = newPathTracer(world)
+  let renderer = newPathTracer(world, max_depth = 2)
   tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)
   if args["--output"]:
@@ -137,9 +137,10 @@ proc debug() =
     mirror_material = newMaterial(brdf = newSpecularBRDF(pigment = newUniformPigment(color = newColor(0.6, 0.2, 0.3))))
     ground_material = newMaterial(brdf = newDiffuseBRDF(pigment = newCheckeredPigment(color1 = newColor(0.3, 0.5, 0.1), color2 = newColor(0.1, 0.2, 0.5))))
     sphere_material = newMaterial(brdf = newDiffuseBRDF(pigment = newUniformPigment(newColor(0.3, 0.4, 0.8))))
+    neon_material = newMaterial(brdf = newDiffuseBRDF(pigment = newUniformPigment(newColor(0.22, 1, 0.078))), emitted_radiance = newUniformPigment(newColor(1,1,1)))
     plane = newPlane(translation(newVec(0.0, 0.0, -1.5)), sky_material)
     world : World
-
+  tracer.samples_per_side = 2
 #[ 
   # diffusive sky
   world.shapes.add(newSphere(material=sky_material, transformation=scaling(newVec(200, 200, 200)) * translation(newVec(0, 0, 0.4))))
@@ -154,9 +155,10 @@ proc debug() =
  ]#
   world.shapes.add(newSphere(material=sky_material, transformation=scaling(newVec(200, 200, 200)) * translation(newVec(0, 0, 0.4))))
   world.shapes.add(newPlane(material=ground_material))
-  world.shapes.add(newSphere(material=sphere_material, transformation=scaling(newVec(0.3,0.3,0.3))*translation(newVec(0, 0, 1))))
-  world.shapes.add(newAABox(material=mirror_material, transformation=translation(newVec(1, 2.5, 0))))
-  var renderer = newPathTracer(world)
+  world.shapes.add(newCylinder(material=neon_material, r = 0.2, z_min = 0, z_max = 5))
+  #world.shapes.add(newSphere(material=sphere_material, transformation=scaling(newVec(0.3,0.3,0.3))*translation(newVec(0, 0, 1))))
+  world.shapes.add(newAABox(material=mirror_material, transformation=translation(newVec(0, 2.5, 0))))
+  var renderer = newPathTracer(world, max_depth = 4)
   tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)    
   tracer.image.writeLdrImage("test.png")
