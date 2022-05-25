@@ -721,3 +721,12 @@ suite "Test PathTracer":
         abs(color.r - expected) < 1e-3
         abs(color.b - expected) < 1e-3
         abs(color.g - expected) < 1e-3
+
+##################
+#TEST SCENE FILES#
+##################
+
+suite "Test scene file":
+  setup:
+    let stream : Stream = newStreamStream("abc   \nd\nef")
+  test "Test input file":
