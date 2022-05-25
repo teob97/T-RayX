@@ -1,9 +1,6 @@
 include streams, options, tables
 
 type
-    GrammarError* = object of CatchableError
-
-type
   SourceLocation* = object 
     file_name : string
     line_num : int
@@ -14,12 +11,24 @@ type
     saved_char : Option[char]
     saved_location : SourceLocation
     tabulation : int
+  GrammarError* = object of CatchableError
+    location* : SourceLocation
+    message* : string
 
+#*************************************** SOURCE LOCATION *******************************************
 
 proc newSourceLocation*(file_name : string = "", line_num = 0, col_num = 0): SourceLocation =
   result.file_name = file_name
   result.line_num = line_num
   result.col_num = col_num
+
+#*************************************** GRAMMAR ERROR *******************************************
+
+proc newGrammarError*(location : SourceLocation, message : string): GrammarError =
+  result.location = location
+  result.message = message
+
+#***************************************** INPUT STREAM *********************************************
 
 proc newInputStream*(stream : Stream, file_name : string = "", tabulation = 4): InputStream =
   result.stream = stream
@@ -39,7 +48,7 @@ proc updatePos*(strm : var InputStream, ch : Option[char]) =
   else:
     strm.location.col_num = strm.location.col_num + 1
 
-proc read_char*(strm : var InputStream) : Option[char] =
+proc readChar*(strm : var InputStream) : Option[char] =
   if not strm.saved_char.isNone:
     result = strm.saved_char
     strm.saved_char = none(char)
@@ -48,15 +57,30 @@ proc read_char*(strm : var InputStream) : Option[char] =
   strm.saved_location = strm.location
   strm.updatePos(result)
 
-proc unread_char*(strm : var InputStream, ch : Option[char]) =
+proc unreadChar*(strm : var InputStream, ch : Option[char]) =
   assert strm.saved_char.isNone
   strm.saved_char = ch
   strm.location = strm.saved_location
 
-#***********************************************************************+
+proc parseStringToken*(strm : var InputStream, token_location : SourceLocation) : StringToken =
+  var token = ""
+  var ch : Option[char]
+  while true:
+    ch = strm.readChar()
+    if ch.get() == '"':
+      break
+    if ch.isNone:
+      raise newGrammarError(token_location, "unterminated string")
+    token = token + ch.get()
+
+
+
+
+
+#*************************************** TOKEN *******************************************
 
 type
-  KeywordEnum = enum
+  KeywordEnum* = enum
     NEW = 1,
     MATERIAL = 2,
     PLANE = 3,

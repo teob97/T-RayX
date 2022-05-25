@@ -725,8 +725,9 @@ suite "Test PathTracer":
 ##################
 #TEST SCENE FILES#
 ##################
-
+#[ 
 suite "Test scene file":
   setup:
     let stream : Stream = newStreamStream("abc   \nd\nef")
   test "Test input file":
+ ]#
