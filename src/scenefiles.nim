@@ -1,4 +1,4 @@
-include std/[options, tables, streams]
+import std/[options, tables, streams]
 
 type
     GrammarError* = object of CatchableError

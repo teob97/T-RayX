@@ -740,24 +740,17 @@ suite "Test scene file":
       stream.read_char().get() == 'a'
       stream.location.line_num == 1
       stream.location.col_num == 2
-
-    stream.unread_char('A')
+    stream.unread_char(some('A'))
     check:
       stream.location.line_num == 1
       stream.location.col_num == 1
-
-    stream.read_char() == "A"
-    check:
+      stream.read_char().get() == 'A'
       stream.location.line_num == 1
       stream.location.col_num == 2
-
-    stream.read_char() == "b"
-    check:
+      stream.read_char().get() == 'b'
       stream.location.line_num == 1
       stream.location.col_num == 3
-
-    stream.read_char() == "c"
-    check:
+      stream.read_char().get() == 'c'
       stream.location.line_num == 1
       stream.location.col_num == 4
 
