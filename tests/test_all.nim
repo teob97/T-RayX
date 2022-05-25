@@ -1,3 +1,4 @@
+import std/[unittest, options, streams]
 import ../src/basictypes
 import ../src/pfm
 import ../src/ldr
@@ -9,7 +10,7 @@ import ../src/shapes
 import ../src/materials
 import ../src/pcg
 import ../src/renderer
-import std/[options, unittest, streams]
+import ../src/scenefiles
 
 #################
 #TEST BASICTYPES#
@@ -88,7 +89,7 @@ suite "Test pfm.nim":
   test "Test readPfmImage_le":
     var
       buffer = toString(le_ref_bytes)
-      stream = newStringStream(buffer)
+      stream = streams.newStringStream(buffer)
       img = readPfmImage(stream)
     check:
       img.width == 3
@@ -102,7 +103,7 @@ suite "Test pfm.nim":
   test "Test readPfmImage_be":
     var
       buffer = toString(be_ref_bytes)
-      stream = newStringStream(buffer)
+      stream = streams.newStringStream(buffer)
       img = readPfmImage(stream)
     check:
       img.width == 3
@@ -113,9 +114,10 @@ suite "Test pfm.nim":
       img.getPixel(0, 1).areClose(newColor(1.0e2, 2.0e2, 3.0e2))
       img.getPixel(1, 1).areClose(newColor(4.0e2, 5.0e2, 6.0e2))
       img.getPixel(2, 1).areClose(newColor(7.0e2, 8.0e2, 9.0e2))
+    stream.close()
   test "Test readPfmImage_execption":
     expect InvalidPfmFileFormat :
-      let buf = newStringStream("PokoF\n3 2\n-1.0\nstop")
+      let buf = streams.newStringStream("PokoF\n3 2\n-1.0\nstop")
       var img_2 = readPfmImage(buf)
   test "Test writePfmImage":
     img_test.setPixel(0, 0, newColor(1.0e1, 2.0e1, 3.0e1)) 
@@ -125,7 +127,7 @@ suite "Test pfm.nim":
     img_test.setPixel(1, 1, newColor(4.0e2, 5.0e2, 6.0e2))
     img_test.setPixel(2, 1, newColor(7.0e2, 8.0e2, 9.0e2))
     var
-      stream = newStringStream("")
+      stream = streams.newStringStream("")
       buffer = be_ref_bytes
     writePfmImage(img_test, stream, 1.0)
     stream.setPosition(0)
@@ -157,7 +159,7 @@ suite "Test ldr.nim":
   test "Test normalizeImage":
     setPixel(img, 0, 0, newColor(5.0, 10.0, 15.0))
     setPixel(img, 1, 0, newColor(500.0, 1000.0, 1500.0))
-    normalizeImage(img, factor=1000.0, luminosity=some(100.0))
+    normalizeImage(img, factor=1000.0, luminosity=options.some(100.0))
     check:
       areClose(getPixel(img, 0, 0), newColor(0.5e2, 1.0e2, 1.5e2))
       areClose(getPixel(img, 1, 0), newColor(0.5e4, 1.0e4, 1.5e4))
@@ -728,5 +730,53 @@ suite "Test PathTracer":
 
 suite "Test scene file":
   setup:
-    let stream : Stream = newStreamStream("abc   \nd\nef")
+    var buffer = streams.newStringStream("abc   \nd\nef")
+    buffer.setPosition(0)
+    var stream = newInputStream(stream = buffer)
   test "Test input file":
+    check:
+      stream.location.line_num == 1
+      stream.location.col_num == 1
+      stream.read_char().get() == 'a'
+      stream.location.line_num == 1
+      stream.location.col_num == 2
+
+    stream.unread_char('A')
+    check:
+      stream.location.line_num == 1
+      stream.location.col_num == 1
+
+    stream.read_char() == "A"
+    check:
+      stream.location.line_num == 1
+      stream.location.col_num == 2
+
+    stream.read_char() == "b"
+    check:
+      stream.location.line_num == 1
+      stream.location.col_num == 3
+
+    stream.read_char() == "c"
+    check:
+      stream.location.line_num == 1
+      stream.location.col_num == 4
+
+#[     stream.skip_whitespaces_and_comments()
+
+    assert stream.read_char() == "d"
+    assert stream.location.line_num == 2
+    assert stream.location.col_num == 2
+
+    assert stream.read_char() == "\n"
+    assert stream.location.line_num == 3
+    assert stream.location.col_num == 1
+
+    assert stream.read_char() == "e"
+    assert stream.location.line_num == 3
+    assert stream.location.col_num == 2
+
+    assert stream.read_char() == "f"
+    assert stream.location.line_num == 3
+    assert stream.location.col_num == 3
+
+    assert stream.read_char() == "" ]#
