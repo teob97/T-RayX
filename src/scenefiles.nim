@@ -5,20 +5,21 @@ const SYMBOLS* = ['(', ')', '[', ']', '<', '>', '*']
 
 type
   GrammarError* = object of CatchableError
-    #location* : SourceLocation
-    #message* : string
+
+#*************************************** SOURCE LOCATION *******************************************
+
+type
   SourceLocation* = object 
     file_name* : string
     line_num* : int
     col_num* : int
-  InputStream* = object
-    stream* : Stream
-    location* : SourceLocation
-    saved_char* : char
-    saved_location* : SourceLocation
-    tabulation* : int
 
-#*************************************** TOKEN *******************************************
+proc newSourceLocation*(file_name : string = "", line_num = 0, col_num = 0): SourceLocation =
+  result.file_name = file_name
+  result.line_num = line_num
+  result.col_num = col_num
+
+#******************************************** TOKEN ************************************************
 
 type
   KeywordEnum* = enum
@@ -85,16 +86,18 @@ type
     of SymbolToken:
       symbol* : string
     of StopToken:
-      useless_thing* : bool
-
-#*************************************** SOURCE LOCATION *******************************************
-
-proc newSourceLocation*(file_name : string = "", line_num = 0, col_num = 0): SourceLocation =
-  result.file_name = file_name
-  result.line_num = line_num
-  result.col_num = col_num
+      flag* : bool
 
 #***************************************** INPUT STREAM *********************************************
+
+type
+  InputStream* = object
+    stream* : Stream
+    location* : SourceLocation
+    saved_char* : char
+    saved_location* : SourceLocation
+    tabulation* : int
+    saved_token* : Token
 
 proc newInputStream*(stream : Stream, file_name : string = "", tabulation = 4): InputStream =
   result.stream = stream
@@ -102,6 +105,7 @@ proc newInputStream*(stream : Stream, file_name : string = "", tabulation = 4): 
   result.saved_char = '\0'
   result.saved_location = result.location
   result.tabulation = tabulation
+  # result.saved_token = ???
 
 proc updatePos*(strm : var InputStream, ch : char) =
   if ch == '\0':
@@ -173,7 +177,6 @@ proc parseFloatToken*(strm : var InputStream, first_char : string, token_locatio
 
 
 proc parseKeywordOrIdentifierToken*(strm : var InputStream, first_char : string, token_location : SourceLocation) : Token =
-#Union[KeywordToken, IdentifierToken] =
   var
     token = first_char
     ch : char
@@ -191,12 +194,51 @@ proc parseKeywordOrIdentifierToken*(strm : var InputStream, first_char : string,
     # If we got KeyError, it is not a keyword and thus it must be an identifier
     result = Token(location : token_location, kind : IdentifierToken, identifier : token)
 
-#[ 
 
-  # in InputStream manca saved_token che è un option e qui serve
 
-proc readToken*(strm : InputStream) : Token =
+  # in InputStream manca inizializzazione di saved_token che è un option. Bisogna capire come gestirlo
+
+proc readToken*(strm : var InputStream) : Token =
   ## Read a token from the stream
   ## Raise `ParserError` if a lexical error is found.
+#[   if strm.saved_token != none:
+    ecc ]#
+  strm.skipWhitespacesAndComments()
+  # At this point we're sure that ch does *not* contain a whitespace character
+  var ch = strm.readChar()
+  if ch == '\0':
+    # No more characters in the file, so return a StopToken
+    result = Token(location : strm.location, kind : StopToken, flag : true) # Bisogna sistemare, il "flag" non ha nessun senso serve
+                                                                            # solo per evitare problemi nella definizione di StopToken
+
+  # At this point we must check what kind of token begins with the "ch" character (which has been
+  # put back in the stream with self.unread_char). First, we save the position in the stream
+  
+  # result.location = strm.location --> a cosa servirebbe questo comando?
+  
+  if ch in SYMBOLS:
+    # One-character symbol, like '(' or ','
+    result = Token(location : strm.location, kind : SymbolToken, symbol : $ch)
+  elif ch == '"':
+    # A literal string (used for file names)
+    result = strm.parseStringToken(strm.location)
+  elif ch.isDigit() or ch in ['+', '-', '.']:
+    # A floating-point number
+    result = strm.parseFloatToken(first_char = $ch, token_location = strm.location)
+  elif ch.isAlphaAscii() or ch == '_':
+    # Since it begins with an alphabetic character, it must either be a keyword or a identifier
+    result = strm.parseKeywordOrIdentifierToken(first_char = $ch, token_location = strm.location)
+  else:
+    # We got some weird character, like '@` or `&`
+    let error_string = "Invalid character: "&ch
+    raise newException(GrammarError, error_string)
+
+
+#[ 
+proc unreadToken*(strm : var InputStream, token : Token) =
+  ## Make as if `token` were never read from `input_file`
+  # assert not strm.saved_token ???
+  strm.saved_token = token
+
 
  ]#
