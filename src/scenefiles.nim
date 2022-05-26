@@ -171,12 +171,26 @@ proc parseFloatToken*(strm : var InputStream, first_char : string, token_locatio
       raise newException(GrammarError, error_string)
   result = Token(location : token_location, kind : LiteralNumberToken, value : value) 
 
-#[
-  proc parseKeywordOrIdentifierToken*(strm : var InputStream, first_char : string, token_location : SourceLocation) : Union[KeywordToken, IdentifierToken] =
- ]#
+
+proc parseKeywordOrIdentifierToken*(strm : var InputStream, first_char : string, token_location : SourceLocation) : Token =
+#Union[KeywordToken, IdentifierToken] =
+  var
+    token = first_char
+    ch : char
+  while true:
+    ch = strm.readChar()
+    # Note that here we do not call "isAlpha" but "isAlphaNumeric": digits are ok after the first character ??????
+    if not (ch.isAlphaNumeric() or ch=='_'):
+      strm.unreadChar(ch)
+      break
+    token = token & ch
+  try:
+    # If it is a keyword, it must be listed in the KEYWORDS dictionary
+    result = Token(location : token_location, kind : KeywordToken, keyword : KEYWORDS[token])
+  except KeyError:
+    # If we got KeyError, it is not a keyword and thus it must be an identifier
+    result = Token(location : token_location, kind : IdentifierToken, identifier : token)
 
 
 
 
-
- 
