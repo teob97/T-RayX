@@ -118,7 +118,7 @@ proc demo() =
   world.shapes.add(newSphere(material=sphere_material, transformation=translation(newVec(0, 0, 1))))
   world.shapes.add(newSphere(material=mirror_material, transformation=translation(newVec(1, 2.5, 0))))
   #Initiallize the render (future feature : choose from terminal the renderer's types)
-  let renderer = newPathTracer(world, max_depth = 2)
+  let renderer = newPathTracer(world)
   tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)
   if args["--output"]:

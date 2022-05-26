@@ -63,7 +63,7 @@ proc unread_char*(strm : var InputStrm, ch : Option[char]) =
   strm.saved_char = ch
   strm.location = strm.saved_location
 
-#[ proc parseStringToken*(strm : var InputStream, token_location : SourceLocation) : StringToken =
+proc parseStringToken*(strm : var InputStream, token_location : SourceLocation) : StringToken =
   var token = ""
   var ch : Option[char]
   while true:
@@ -72,7 +72,7 @@ proc unread_char*(strm : var InputStrm, ch : Option[char]) =
       break
     if ch.isNone:
       raise newGrammarError(token_location, "unterminated string")
-    token = token + ch.get() ]#
+    token = token + ch.get()
 
 
 
