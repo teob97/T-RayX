@@ -1,82 +1,19 @@
-import std/[options, tables, streams]
+import std/[options, tables, streams, strutils]
 
 type
   GrammarError* = object of CatchableError
-    location* : SourceLocation
-    message* : string
+    #location* : SourceLocation
+    #message* : string
   SourceLocation* = object 
     file_name* : string
     line_num* : int
     col_num* : int
-  InputStrm* = object
-    strm* : Stream
+  InputStream* = object
+    stream* : Stream
     location* : SourceLocation
     saved_char* : Option[char]
     saved_location* : SourceLocation
     tabulation* : int
-
-
-#*************************************** SOURCE LOCATION *******************************************
-
-proc newSourceLocation*(file_name : string = "", line_num = 0, col_num = 0): SourceLocation =
-  result.file_name = file_name
-  result.line_num = line_num
-  result.col_num = col_num
-
-#*************************************** GRAMMAR ERROR *******************************************
-
-proc newGrammarError*(location : SourceLocation, message : string): GrammarError =
-  result.location = location
-  result.message = message
-
-#***************************************** INPUT STREAM *********************************************
-
-proc newInputStream*(stream : Stream, file_name : string = "", tabulation = 4): InputStrm =
-  result.strm = stream
-  result.location = newSourceLocation(file_name = file_name, line_num = 1, col_num = 1)
-  result.saved_char = none(char)
-  result.saved_location = result.location
-  result.tabulation = tabulation
-
-proc updatePos*(strm : var InputStrm, ch : Option[char]) =
-  if ch.isNone:
-    return
-  elif ch.get() == '\n':
-    strm.location.line_num = strm.location.line_num + 1
-    strm.location.col_num = strm.location.col_num + 1
-  elif ch.get() == '\t':
-    strm.location.col_num = strm.location.col_num + 1
-  else:
-    strm.location.col_num = strm.location.col_num + 1
-
-proc read_char*(strm : var InputStrm) : Option[char] =
-  if not strm.saved_char.isNone:
-    result = strm.saved_char
-    strm.saved_char = none(char)
-  else:
-    result = some(strm.strm.readChar())
-  strm.saved_location = strm.location
-  strm.updatePos(result)
-
-proc unread_char*(strm : var InputStrm, ch : Option[char]) =
-  assert strm.saved_char.isNone
-  strm.saved_char = ch
-  strm.location = strm.saved_location
-
-proc parseStringToken*(strm : var InputStream, token_location : SourceLocation) : StringToken =
-  var token = ""
-  var ch : Option[char]
-  while true:
-    ch = strm.readChar()
-    if ch.get() == '"':
-      break
-    if ch.isNone:
-      raise newGrammarError(token_location, "unterminated string")
-    token = token + ch.get()
-
-
-
-
 
 #*************************************** TOKEN *******************************************
 
@@ -130,19 +67,80 @@ type
     LiteralNumberToken,
     SymbolToken,
     StopToken
-  
-  Token* = object
-    location: SourceLocation
-    case kind: TokenKind
+  Token* = ref TokenValue
+  TokenValue* = object
+    location*: SourceLocation
+    case kind*: TokenKind
     of KeywordToken:
-      keyword: KeywordEnum
+      keyword*: KeywordEnum
     of IdentifierToken:
-      identifier : string
+      identifier* : string
     of StringToken:
-      s : string
+      s* : string
     of LiteralNumberToken:
-      value : float
+      value* : float
     of SymbolToken:
-      symbol : string
+      symbol* : string
     of StopToken:
-      useless_thing : bool
+      useless_thing* : bool
+
+#*************************************** SOURCE LOCATION *******************************************
+
+proc newSourceLocation*(file_name : string = "", line_num = 0, col_num = 0): SourceLocation =
+  result.file_name = file_name
+  result.line_num = line_num
+  result.col_num = col_num
+
+#*************************************** GRAMMAR ERROR *******************************************
+
+#[ proc newGrammarError*(location : SourceLocation): GrammarError =
+  result = GrammarError.new()
+  result.location = location
+  #result.message = message ]#
+
+#***************************************** INPUT STREAM *********************************************
+
+proc newInputStream*(stream : Stream, file_name : string = "", tabulation = 4): InputStream =
+  result.stream = stream
+  result.location = newSourceLocation(file_name = file_name, line_num = 1, col_num = 1)
+  result.saved_char = none(char)
+  result.saved_location = result.location
+  result.tabulation = tabulation
+
+proc updatePos*(strm : var InputStream, ch : Option[char]) =
+  if ch.isNone:
+    return
+  elif ch.get() == '\n':
+    strm.location.line_num = strm.location.line_num + 1
+    strm.location.col_num = strm.location.col_num + 1
+  elif ch.get() == '\t':
+    strm.location.col_num = strm.location.col_num + 1
+  else:
+    strm.location.col_num = strm.location.col_num + 1
+
+proc read_char*(strm : var InputStream) : Option[char] =
+  if not strm.saved_char.isNone:
+    result = strm.saved_char
+    strm.saved_char = none(char)
+  else:
+    result = some(strm.stream.readChar())
+  strm.saved_location = strm.location
+  strm.updatePos(result)
+
+proc unread_char*(strm : var InputStream, ch : Option[char]) =
+  assert strm.saved_char.isNone
+  strm.saved_char = ch
+  strm.location = strm.saved_location
+
+proc parseStringToken*(strm : var InputStream, token_location : SourceLocation) : Token =
+  var token = ""
+  var ch : Option[char]
+  while true:
+    ch = strm.readChar()
+    if ch.get() == '"':
+      break
+    if ch.isNone:
+      let error_string = "Unterminated string. Missing `\"` at position: row "&intToStr(strm.location.line_num)&", column "&intToStr(strm.location.col_num)
+      raise newException(GrammarError, error_string)
+    token = token & $ch.get()
+  result = Token(location : token_location, kind : StringToken, s : token)
