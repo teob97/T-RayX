@@ -737,39 +737,19 @@ suite "Test scene file":
     check:
       stream.location.line_num == 1
       stream.location.col_num == 1
-      stream.read_char().get() == 'a'
+      stream.read_char() == 'a'
       stream.location.line_num == 1
       stream.location.col_num == 2
-    stream.unread_char(some('A'))
+    stream.unread_char('A')
     check:
       stream.location.line_num == 1
       stream.location.col_num == 1
-      stream.read_char().get() == 'A'
+      stream.read_char() == 'A'
       stream.location.line_num == 1
       stream.location.col_num == 2
-      stream.read_char().get() == 'b'
+      stream.read_char() == 'b'
       stream.location.line_num == 1
       stream.location.col_num == 3
-      stream.read_char().get() == 'c'
+      stream.read_char() == 'c'
       stream.location.line_num == 1
       stream.location.col_num == 4
-
-#[     stream.skip_whitespaces_and_comments()
-
-    assert stream.read_char() == "d"
-    assert stream.location.line_num == 2
-    assert stream.location.col_num == 2
-
-    assert stream.read_char() == "\n"
-    assert stream.location.line_num == 3
-    assert stream.location.col_num == 1
-
-    assert stream.read_char() == "e"
-    assert stream.location.line_num == 3
-    assert stream.location.col_num == 2
-
-    assert stream.read_char() == "f"
-    assert stream.location.line_num == 3
-    assert stream.location.col_num == 3
-
-    assert stream.read_char() == "" ]#

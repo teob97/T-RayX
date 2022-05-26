@@ -1,4 +1,7 @@
-import std/[options, tables, streams, strutils]
+import std/[tables, streams, strutils]
+
+const WHITESPACE* = ['\0', '\t', '\n', '\r']
+const SYMBOLS* = ['(', ')', '[', ']', '<', '>', '*']
 
 type
   GrammarError* = object of CatchableError
@@ -11,7 +14,7 @@ type
   InputStream* = object
     stream* : Stream
     location* : SourceLocation
-    saved_char* : Option[char]
+    saved_char* : char
     saved_location* : SourceLocation
     tabulation* : int
 
@@ -91,56 +94,89 @@ proc newSourceLocation*(file_name : string = "", line_num = 0, col_num = 0): Sou
   result.line_num = line_num
   result.col_num = col_num
 
-#*************************************** GRAMMAR ERROR *******************************************
-
-#[ proc newGrammarError*(location : SourceLocation): GrammarError =
-  result = GrammarError.new()
-  result.location = location
-  #result.message = message ]#
-
 #***************************************** INPUT STREAM *********************************************
 
 proc newInputStream*(stream : Stream, file_name : string = "", tabulation = 4): InputStream =
   result.stream = stream
   result.location = newSourceLocation(file_name = file_name, line_num = 1, col_num = 1)
-  result.saved_char = none(char)
+  result.saved_char = '\0'
   result.saved_location = result.location
   result.tabulation = tabulation
 
-proc updatePos*(strm : var InputStream, ch : Option[char]) =
-  if ch.isNone:
+proc updatePos*(strm : var InputStream, ch : char) =
+  if ch == '\0':
     return
-  elif ch.get() == '\n':
+  elif ch == '\n':
     strm.location.line_num = strm.location.line_num + 1
     strm.location.col_num = strm.location.col_num + 1
-  elif ch.get() == '\t':
+  elif ch == '\t':
     strm.location.col_num = strm.location.col_num + 1
   else:
     strm.location.col_num = strm.location.col_num + 1
 
-proc read_char*(strm : var InputStream) : Option[char] =
-  if not strm.saved_char.isNone:
+proc readChar*(strm : var InputStream) : char =
+  if strm.saved_char != '\0':
     result = strm.saved_char
-    strm.saved_char = none(char)
+    strm.saved_char = '\0'
   else:
-    result = some(strm.stream.readChar())
+    result = strm.stream.readChar()
   strm.saved_location = strm.location
   strm.updatePos(result)
 
-proc unread_char*(strm : var InputStream, ch : Option[char]) =
-  assert strm.saved_char.isNone
+proc unreadChar*(strm : var InputStream, ch : char) =
+  assert strm.saved_char == '\0'
   strm.saved_char = ch
   strm.location = strm.saved_location
 
+proc skipWhitespacesAndComments*(strm : var InputStream) =
+  var ch = strm.readChar()
+  while (ch in WHITESPACE) or ch == '#':
+    if ch == '#':
+      while not (strm.readChar() in ['\r', '\n', '\0']):
+        discard
+    ch = strm.readChar()
+    if ch == '\0':
+      return
+  # Put the non-whitespace character back
+  strm.unreadChar(ch)
+
 proc parseStringToken*(strm : var InputStream, token_location : SourceLocation) : Token =
   var token = ""
-  var ch : Option[char]
+  var ch : char
   while true:
     ch = strm.readChar()
-    if ch.get() == '"':
+    if ch == '"':
       break
-    if ch.isNone:
-      let error_string = "Unterminated string. Missing `\"` at position: row "&intToStr(strm.location.line_num)&", column "&intToStr(strm.location.col_num)
+    if ch == '\0':
+      let error_string = "Unterminated string. Missing `\"` at position: row: "&intToStr(strm.location.line_num)&", column: "&intToStr(strm.location.col_num)
       raise newException(GrammarError, error_string)
-    token = token & $ch.get()
+    token = token & ch
   result = Token(location : token_location, kind : StringToken, s : token)
+
+proc parseFloatToken*(strm : var InputStream, first_char : string, token_location : SourceLocation) : Token =
+  var
+    token = first_char
+    ch : char
+    value : float
+  while true:
+    ch = strm.readChar()
+    if not (ch.isDigit() or ch == '.' or ch in ['e', 'E']):
+      strm.unreadChar(ch)
+      break
+    token = token & ch
+  try:
+    value = token.parseFloat
+  except ValueError:
+      let error_string = "Location: row: "&intToStr(strm.location.line_num)&", column: "&intToStr(strm.location.col_num)&"\n"& $value&"is an invalid floating-point number"
+      raise newException(GrammarError, error_string)
+  result = Token(location : token_location, kind : LiteralNumberToken, value : value) 
+
+#[
+  proc parseKeywordOrIdentifierToken*(strm : var InputStream, first_char : string, token_location : SourceLocation) : Union[KeywordToken, IdentifierToken] =
+ ]#
+
+
+
+
+
+ 
