@@ -4,6 +4,7 @@
 
 output/demo/img*
 output/test*
+stc/csg.nim
 .vscode
 profile_result*
 callgrind*
