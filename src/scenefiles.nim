@@ -191,6 +191,12 @@ proc parseKeywordOrIdentifierToken*(strm : var InputStream, first_char : string,
     # If we got KeyError, it is not a keyword and thus it must be an identifier
     result = Token(location : token_location, kind : IdentifierToken, identifier : token)
 
+#[ 
 
+  # in InputStream manca saved_token che è un option e qui serve
 
+proc readToken*(strm : InputStream) : Token =
+  ## Read a token from the stream
+  ## Raise `ParserError` if a lexical error is found.
 
+ ]#
