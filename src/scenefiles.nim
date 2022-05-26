@@ -1,6 +1,6 @@
 import std/[tables, streams, strutils, options]
 
-const WHITESPACE* = ['\0', '\t', '\n', '\r']
+const WHITESPACE* = ['\0', '\t', '\n', '\r', ' ']
 const SYMBOLS* = ['(', ')', '[', ']', '<', '>', '*']
 
 type
@@ -110,11 +110,13 @@ proc newInputStream*(stream : Stream, file_name : string = "", tabulation = 4): 
 proc updatePos*(strm : var InputStream, ch : char) =
   if ch == '\0':
     return
+  elif ch == ' ':
+    strm.location.col_num = strm.location.col_num + 1
   elif ch == '\n':
     strm.location.line_num = strm.location.line_num + 1
-    strm.location.col_num = strm.location.col_num + 1
+    strm.location.col_num = 1
   elif ch == '\t':
-    strm.location.col_num = strm.location.col_num + 1
+    strm.location.col_num = strm.location.col_num + strm.tabulation
   else:
     strm.location.col_num = strm.location.col_num + 1
 
@@ -133,8 +135,9 @@ proc unreadChar*(strm : var InputStream, ch : char) =
   strm.location = strm.saved_location
 
 proc skipWhitespacesAndComments*(strm : var InputStream) =
+  ## Keep reading characters until a non-whitespace/non-comment character is found
   var ch = strm.readChar()
-  while (ch in WHITESPACE) or ch == '#':
+  while (ch in WHITESPACE) or (ch == '#'):
     if ch == '#':
       while not (strm.readChar() in ['\r', '\n', '\0']):
         discard

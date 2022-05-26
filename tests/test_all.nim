@@ -737,19 +737,35 @@ suite "Test scene file":
     check:
       stream.location.line_num == 1
       stream.location.col_num == 1
-      stream.read_char() == 'a'
+      stream.readChar() == 'a'
       stream.location.line_num == 1
       stream.location.col_num == 2
-    stream.unread_char('A')
+    stream.unreadChar('A')
     check:
       stream.location.line_num == 1
       stream.location.col_num == 1
-      stream.read_char() == 'A'
+      stream.readChar() == 'A'
       stream.location.line_num == 1
       stream.location.col_num == 2
-      stream.read_char() == 'b'
+      stream.readChar() == 'b'
       stream.location.line_num == 1
       stream.location.col_num == 3
-      stream.read_char() == 'c'
+      stream.readChar() == 'c'
       stream.location.line_num == 1
       stream.location.col_num == 4
+    stream.skipWhitespacesAndComments()
+    check:
+      stream.readChar() == 'd'
+      stream.location.line_num == 2
+      stream.location.col_num == 2
+      stream.readChar() == '\n'
+      stream.location.line_num == 3
+      stream.location.col_num == 1
+      stream.readChar() == 'e'
+      stream.location.line_num == 3
+      stream.location.col_num == 2
+      stream.readChar() == 'f'
+      stream.location.line_num == 3
+      stream.location.col_num == 3
+      stream.readChar() == '\0'
+
