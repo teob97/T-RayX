@@ -1,4 +1,4 @@
-import std/[tables, streams, strutils]
+import std/[tables, streams, strutils, options]
 
 const WHITESPACE* = ['\0', '\t', '\n', '\r']
 const SYMBOLS* = ['(', ')', '[', ']', '<', '>', '*']
@@ -97,7 +97,7 @@ type
     saved_char* : char
     saved_location* : SourceLocation
     tabulation* : int
-    saved_token* : Token
+    saved_token* : Option[Token]
 
 proc newInputStream*(stream : Stream, file_name : string = "", tabulation = 4): InputStream =
   result.stream = stream
@@ -105,7 +105,7 @@ proc newInputStream*(stream : Stream, file_name : string = "", tabulation = 4): 
   result.saved_char = '\0'
   result.saved_location = result.location
   result.tabulation = tabulation
-  # result.saved_token = ???
+  result.saved_token = none(Token)
 
 proc updatePos*(strm : var InputStream, ch : char) =
   if ch == '\0':
@@ -171,10 +171,9 @@ proc parseFloatToken*(strm : var InputStream, first_char : string, token_locatio
   try:
     value = token.parseFloat
   except ValueError:
-      let error_string = "Location: row: "&intToStr(strm.location.line_num)&", column: "&intToStr(strm.location.col_num)&"\n"& $value&"is an invalid floating-point number"
+      let error_string = "Location: row: "&intToStr(strm.location.line_num)&", column: "&intToStr(strm.location.col_num)&"\n"&($value)&"is an invalid floating-point number"
       raise newException(GrammarError, error_string)
   result = Token(location : token_location, kind : LiteralNumberToken, value : value) 
-
 
 proc parseKeywordOrIdentifierToken*(strm : var InputStream, first_char : string, token_location : SourceLocation) : Token =
   var
@@ -194,15 +193,14 @@ proc parseKeywordOrIdentifierToken*(strm : var InputStream, first_char : string,
     # If we got KeyError, it is not a keyword and thus it must be an identifier
     result = Token(location : token_location, kind : IdentifierToken, identifier : token)
 
-
-
-  # in InputStream manca inizializzazione di saved_token che è un option. Bisogna capire come gestirlo
-
 proc readToken*(strm : var InputStream) : Token =
   ## Read a token from the stream
   ## Raise `ParserError` if a lexical error is found.
-#[   if strm.saved_token != none:
-    ecc ]#
+  if not strm.saved_token.isNone:
+    var res = strm.saved_token.get()
+    strm.saved_token = none(Token)
+    return res
+
   strm.skipWhitespacesAndComments()
   # At this point we're sure that ch does *not* contain a whitespace character
   var ch = strm.readChar()
@@ -233,12 +231,8 @@ proc readToken*(strm : var InputStream) : Token =
     let error_string = "Invalid character: "&ch
     raise newException(GrammarError, error_string)
 
-
-#[ 
 proc unreadToken*(strm : var InputStream, token : Token) =
   ## Make as if `token` were never read from `input_file`
-  # assert not strm.saved_token ???
-  strm.saved_token = token
+  assert strm.saved_token.isNone
+  strm.saved_token = some(token)
 
-
- ]#
