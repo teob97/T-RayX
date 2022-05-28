@@ -209,7 +209,7 @@ proc readToken*(strm : var InputStream) : Token =
   var ch = strm.readChar()
   if ch == '\0':
     # No more characters in the file, so return a StopToken
-    result = Token(location : strm.location, kind : StopToken, flag : true) # Bisogna sistemare, il "flag" non ha nessun senso serve
+    result = Token(location : strm.location, kind : StopToken) # Bisogna sistemare, il "flag" non ha nessun senso serve
                                                                             # solo per evitare problemi nella definizione di StopToken
 
   # At this point we must check what kind of token begins with the "ch" character (which has been

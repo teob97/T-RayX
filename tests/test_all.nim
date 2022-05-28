@@ -728,11 +728,40 @@ suite "Test PathTracer":
 #TEST SCENE FILES#
 ##################
 
+#Some useful function
+
+proc assert_is_keyword(token : Token, keyword : KeywordEnum): bool =
+  return token.kind == KeywordToken and token.keyword == keyword 
+
+proc assert_is_identifier(token : Token, identifier : string): bool =
+  return token.kind == IdentifierToken and token.identifier == identifier
+
+proc assert_is_symbol(token : Token, symbol : string): bool =
+  return token.kind == SymbolToken and token.symbol == symbol
+
+proc assert_is_number(token : Token, number : float): bool =
+  return token.kind == LiteralNumberToken and token.value == number
+
+proc assert_is_string(token : Token, s : string): bool =
+  return token.kind == StringToken and token.s == s
+
 suite "Test scene file":
   setup:
-    var buffer = streams.newStringStream("abc   \nd\nef")
+    var 
+      buffer = newStringStream("abc   \nd\nef")
+      buffer1 = newStringStream("""
+        # This is a comment
+        # This is another comment
+        new material sky_material(
+            diffuse(image("my_file.pfm")),
+            <5.0, 500.0, 300.0>
+        ) # Comment at the end of the line
+        """)
     buffer.setPosition(0)
-    var stream = newInputStream(stream = buffer)
+    buffer1.setPosition(0)
+    var 
+      stream = newInputStream(stream = buffer)
+      input_file = newInputStream(buffer1)
   test "Test input file":
     check:
       stream.location.line_num == 1
@@ -768,4 +797,17 @@ suite "Test scene file":
       stream.location.line_num == 3
       stream.location.col_num == 3
       stream.readChar() == '\0'
+  test "Test Lexer":
+    check:
+      assert_is_keyword(input_file.readToken(), KeywordEnum.NEW)
+      assert_is_keyword(input_file.readToken(), KeywordEnum.MATERIAL)
+      assert_is_identifier(input_file.readToken(), "sky_material")
+      assert_is_symbol(input_file.readToken(), "(")
+      assert_is_keyword(input_file.readToken(), KeywordEnum.DIFFUSE)
+      assert_is_symbol(input_file.readToken(), "(")
+      assert_is_keyword(input_file.readToken(), KeywordEnum.IMAGE)
+      assert_is_symbol(input_file.readToken(), "(")
+      assert_is_string(input_file.readToken(), "my_file.pfm")
+      assert_is_symbol(input_file.readToken(), ")")
+
 
