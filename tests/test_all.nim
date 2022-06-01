@@ -745,6 +745,28 @@ proc assert_is_number(token : Token, number : float): bool =
 proc assert_is_string(token : Token, s : string): bool =
   return token.kind == StringToken and token.s == s
 
+method get_paramiters_test(pig : Pigment): seq[Color] {.base.} =
+  quit "to override"
+
+method get_paramiters_test(pig : UniformPigment): seq[Color] =
+  result.add(pig.color)
+
+method get_paramiters_test(pig : CheckeredPigment): seq[Color] =
+  result.add(pig.color1)
+  result.add(pig.color2)
+
+method get_num_step_test(pig: Pigment): int {.base.}=
+  quit "to override"
+
+method get_num_step_test(pig: CheckeredPigment): int =
+  return pig.num_of_steps
+  
+method get_cam_distance_test(cam: cameras.Camera): float {.base.} =
+  quit "to override"
+
+method get_cam_distance_test(cam: PerspectiveCamera): float =
+  return cam.distance
+
 suite "Test scene file":
   setup:
     var 
@@ -860,50 +882,31 @@ suite "Test scene file":
     check:
       sky_material.brdf_function of DiffuseBRDF
       sky_material.brdf_function.pigment of UniformPigment
-      areClose(sky_material.brdf_function.pigment.getColor(newVec2d(0.5,0.5)), newColor(0, 0, 0)) # Specify newVec2d(0.5,0.5) IN THIS CASE is useless because the pigmant is uniform.
+      areClose(sky_material.brdf_function.pigment.get_paramiters_test[0], newColor(0, 0, 0))
       ground_material.brdf_function of DiffuseBRDF
       ground_material.brdf_function.pigment of CheckeredPigment
-      # Errori di compilazione perchè deve valutare in runtime il tipo di pigmanto, in fase di compile time non ha idea che sia a scacchi e quindi non sa cosa sia color1 e color2...
-      #ground_material.brdf_function.pigment.color2.areClose(newColor(0.3, 0.5, 0.1))
-      #ground_material.brdf_function.pigment.color2.areClose(newColor(0.1, 0.2, 0.5))
-      #ground_material.brdf_function.pigment.num_of_steps == 4
-
-# Implementazione di Tomasi
-#[ 
- def test_parser(self):
-
-
-
-
-
-        
-
-        assert isinstance(sphere_material.brdf, SpecularBRDF)
-        assert isinstance(sphere_material.brdf.pigment, UniformPigment)
-        assert sphere_material.brdf.pigment.color.is_close(Color(0.5, 0.5, 0.5))
-
-        assert isinstance(sky_material.emitted_radiance, UniformPigment)
-        assert sky_material.emitted_radiance.color.is_close(Color(0.7, 0.5, 1.0))
-        assert isinstance(ground_material.emitted_radiance, UniformPigment)
-        assert ground_material.emitted_radiance.color.is_close(Color(0, 0, 0))
-        assert isinstance(sphere_material.emitted_radiance, UniformPigment)
-        assert sphere_material.emitted_radiance.color.is_close(Color(0, 0, 0))
-
-        # Check that the shapes are ok
-
-        assert len(scene.world.shapes) == 3
-        assert isinstance(scene.world.shapes[0], Plane)
-        assert scene.world.shapes[0].transformation.is_close(translation(Vec(0, 0, 100)) * rotation_y(150.0))
-        assert isinstance(scene.world.shapes[1], Plane)
-        assert scene.world.shapes[1].transformation.is_close(Transformation())
-        assert isinstance(scene.world.shapes[2], Sphere)
-        assert scene.world.shapes[2].transformation.is_close(translation(Vec(0, 0, 1)))
-
-        # Check that the camera is ok
-
-        assert isinstance(scene.camera, PerspectiveCamera)
-        assert scene.camera.transformation.is_close(rotation_z(30) * translation(Vec(-4, 0, 1)))
-        assert pytest.approx(1.0) == scene.camera.aspect_ratio
-        assert pytest.approx(2.0) == scene.camera.screen_distance
-
- ]#
+      ground_material.brdf_function.pigment.get_paramiters_test[0].areClose(newColor(0.3, 0.5, 0.1))
+      ground_material.brdf_function.pigment.get_paramiters_test[1].areClose(newColor(0.1, 0.2, 0.5))
+      ground_material.brdf_function.pigment.get_num_step_test == 4 # check the num_of_steps
+      sphere_material.brdf_function of SpecularBRDF
+      sphere_material.brdf_function.pigment of UniformPigment
+      sphere_material.brdf_function.pigment.getColor(newVec2d(0.5,0.5)).areClose(newColor(0.5, 0.5, 0.5))
+      sky_material.emitted_radiance of UniformPigment
+      sky_material.emitted_radiance.get_paramiters_test[0].areClose(newColor(0.7, 0.5, 1.0))
+      ground_material.emitted_radiance of UniformPigment
+      ground_material.emitted_radiance.get_paramiters_test[0].areClose(newColor(0, 0, 0))
+      sphere_material.emitted_radiance of UniformPigment
+      sphere_material.emitted_radiance.get_paramiters_test[0].areClose(newColor(0, 0, 0))
+      # Check that the shapes are ok
+      len(scene.world.shapes) == 3
+      scene.world.shapes[0] of shapes.Plane
+      scene.world.shapes[0].transformation.isClose(translation(newVec(0, 0, 100)) * rotation_y(150.0))
+      scene.world.shapes[1] of shapes.Plane
+      scene.world.shapes[1].transformation.isClose(newTransformation())
+      scene.world.shapes[2] of shapes.Sphere
+      scene.world.shapes[2].transformation.isClose(translation(newVec(0, 0, 1)))
+      # Check that the camera is ok
+      scene.camera.get() of PerspectiveCamera
+      scene.camera.get().transformation.isClose(rotation_z(30) * translation(newVec(-4, 0, 1)))
+      abs(scene.camera.get().aspect_ratio - 1.0) < 1e-8
+      abs(scene.camera.get().get_cam_distance_test() - 2.0) < 1e-8
