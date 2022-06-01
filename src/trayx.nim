@@ -16,9 +16,9 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>. 
 ]#
     
-import basictypes, pfm, ldr, cameras, imagetracer, shapes, transformation, geometry, materials, renderer
+import basictypes, pfm, ldr, cameras, imagetracer, shapes, transformation, geometry, materials, renderer, scenefiles
 import docopt
-import std/[strutils, strformat, streams, os, times]
+import std/[strutils, strformat, streams, os, times, options]
 when compileOption("profiler"):
   import nimprof
 
@@ -26,9 +26,9 @@ let doc = """
 T-RayX: a Nim Raytracing Library
 
 Usage:
+  ./trayx render <SCENE_FILE.txt> <width> <height> [--output = <output-file>]
   ./trayx pfm2png <INPUT_FILE.pfm> <alpha> <gamma> <OUTPUT.png>
-  ./trayx demo [--angle=<angle-deg>] [--output=<output-file>] [--orthogonal]
-  ./trayx debug
+  ./trayx demo [--angle = <angle-deg>] [--output = <output-file>] [--orthogonal]
 
 Options:
   -h --help                 Show this screen
@@ -73,8 +73,9 @@ proc pfm2png() =
   except IOError:
     echo ("Error: wrong parameters. See --help.")
     return
-  var impf = openFileStream(param.input_pfm_file_name)
-  var img : HdrImage = readPfmImage(impf)
+  var 
+    impf = openFileStream(param.input_pfm_file_name)
+    img : HdrImage = readPfmImage(impf)
   impf.close()
   echo (fmt"File {param.input_pfm_file_name} has been read from disk.")
   img.normalize_image(factor=param.factor)
@@ -128,40 +129,28 @@ proc demo() =
 
 #*************************************DEBUG*************************************************
 
-proc debug() =
+proc render() =
+  var 
+    file_stream : FileStream = newFileStream($args["<SCENE_FILE.txt>"], fmRead)
+    input_stream : InputStream = newInputStream(file_stream)
+    scene : Scene = parseScene(input_stream) #Qui la possibilità di passare una tabella di variabili se si desidera passarle da linea di comando.
+  file_stream.close()
+  let
+    width  : int = parseInt($args["<width>"])
+    height : int = parseInt($args["<height>"])
+    #ratio = width/height
+    world : World = scene.world
   var
-    tracer : ImageTracer = newImageTracer(newHdrImage(640, 480), newPerspectiveCamera(1, 640/480, translation(newVec(-1,0,1))))
-    strm = newFileStream("output/test.pfm", fmWrite)
-    check_material = newMaterial(brdf = newDiffuseBRDF(pigment = newCheckeredPigment(color1 = newColor(0.2, 0.2, 0.8), color2 = newColor(0.8, 0.6, 0.2))))
-    sky_material = newMaterial(brdf = newDiffuseBRDF(newUniformPigment(newColor(0, 0, 0))), emitted_radiance = newUniformPigment(newColor(1.0, 0.9, 0.5)))
-    mirror_material = newMaterial(brdf = newSpecularBRDF(pigment = newUniformPigment(color = newColor(0.6, 0.2, 0.3))))
-    ground_material = newMaterial(brdf = newDiffuseBRDF(pigment = newCheckeredPigment(color1 = newColor(0.3, 0.5, 0.1), color2 = newColor(0.1, 0.2, 0.5))))
-    sphere_material = newMaterial(brdf = newDiffuseBRDF(pigment = newUniformPigment(newColor(0.3, 0.4, 0.8))))
-    neon_material = newMaterial(brdf = newDiffuseBRDF(pigment = newUniformPigment(newColor(0.22, 1, 0.078))), emitted_radiance = newUniformPigment(newColor(1,1,1)))
-    plane = newPlane(translation(newVec(0.0, 0.0, -1.5)), sky_material)
-    world : World
-  tracer.samples_per_side = 2
-#[ 
-  # diffusive sky
-  world.shapes.add(newSphere(material=sky_material, transformation=scaling(newVec(200, 200, 200)) * translation(newVec(0, 0, 0.4))))
-  # checkered ground
-  world.shapes.add(newPlane(material=ground_material))
-  # checkered cube
-#[   world.shapes.add(newAABox(transformation = translation(newVec(-0.5, 1, 0))*scaling(newVec(0.3,0.3,0.3)),
-                  material=check_material)) ]#
-  # mirror cube
-  world.shapes.add(newSphere(material=sphere_material, transformation=scaling(newVec(0.5,0.5,0.5))*translation(newVec(0, 0, 1))))
-  world.shapes.add(newAABox(material=mirror_material, transformation=scaling(newVec(0.6,0.6,0.6))*translation(newVec(3, 5, 0))))
- ]#
-  world.shapes.add(newSphere(material=sky_material, transformation=scaling(newVec(200, 200, 200)) * translation(newVec(0, 0, 0.4))))
-  world.shapes.add(newPlane(material=ground_material))
-  world.shapes.add(newCylinder(material=neon_material, r = 0.2, z_min = 0, z_max = 5))
-  #world.shapes.add(newSphere(material=sphere_material, transformation=scaling(newVec(0.3,0.3,0.3))*translation(newVec(0, 0, 1))))
-  world.shapes.add(newAABox(material=mirror_material, transformation=translation(newVec(0, 2.5, 0))))
-  var renderer = newPathTracer(world, max_depth = 4)
+    tracer : ImageTracer = newImageTracer(newHdrImage(width, height), scene.camera.get())
+  let 
+    renderer = newPathTracer(world)
   tracer.fireAllRays(renderer)
-  tracer.image.writePfmImage(strm)    
-  tracer.image.writeLdrImage("test.png")
+  if args["--output"]:
+    tracer.image.writeLdrImage($args["--output"])
+  else:
+    tracer.image.writeLdrImage("result.png")
+
+# Verificare che ci sia effettivamente salvata una camera in scene ed eventuali angoli passati da linea di comando
 
 
 #*********************************** MAIN ***********************************
@@ -174,5 +163,5 @@ when isMainModule:
     demo()
     let t2 = epochTime()
     echo("Execution time: ", t2 - t1)
-  if args["debug"]:
-    debug()
+  if args["render"]:
+    render()
