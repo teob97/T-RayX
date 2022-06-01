@@ -1,4 +1,4 @@
-import std/[unittest, options, streams]
+import std/[unittest, options, streams, tables]
 import ../src/basictypes
 import ../src/pfm
 import ../src/ldr
@@ -757,11 +757,44 @@ suite "Test scene file":
             <5.0, 500.0, 300.0>
         ) # Comment at the end of the line
         """)
+      buffer_parser = newStringStream(
+        """
+        float clock(150)
+    
+        material sky_material(
+            diffuse(uniform(<0, 0, 0>)),
+            uniform(<0.7, 0.5, 1>)
+        )
+    
+        # Here is a comment
+    
+        material ground_material(
+            diffuse(checkered(<0.3, 0.5, 0.1>,
+                              <0.1, 0.2, 0.5>, 4)),
+            uniform(<0, 0, 0>)
+        )
+    
+        material sphere_material(
+            specular(uniform(<0.5, 0.5, 0.5>)),
+            uniform(<0, 0, 0>)
+        )
+    
+        plane (sky_material, translation([0, 0, 100]) * rotation_y(clock))
+
+        plane (ground_material, identity)
+    
+        sphere(sphere_material, translation([0, 0, 1]))
+    
+        camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 2.0) 
+        """)
     buffer.setPosition(0)
     buffer1.setPosition(0)
+    buffer_parser.setPosition(0)
     var 
       stream = newInputStream(stream = buffer)
       input_file = newInputStream(buffer1)
+      stream_parser = newInputStream(buffer_parser)
+      scene : Scene = parseScene(stream_parser)
   test "Test input file":
     check:
       stream.location.line_num == 1
@@ -809,5 +842,68 @@ suite "Test scene file":
       assert_is_symbol(input_file.readToken(), "(")
       assert_is_string(input_file.readToken(), "my_file.pfm")
       assert_is_symbol(input_file.readToken(), ")")
+  test "Test Parser":
+    check:
+      # Check that the float variables are ok
+      len(scene.float_variables) == 1
+      scene.float_variables.hasKey("clock")
+      scene.float_variables["clock"] == 150.0
+      # Check that the materials are ok
+      len(scene.materials) == 3
+      scene.materials.hasKey("sphere_material")
+      scene.materials.hasKey("sky_material")
+      scene.materials.hasKey("ground_material")
+    let
+      sphere_material = scene.materials["sphere_material"]
+      sky_material = scene.materials["sky_material"]
+      ground_material = scene.materials["ground_material"]
+    check:
+      sky_material.brdf_function of DiffuseBRDF
+      sky_material.brdf_function.pigment of UniformPigment
+      areClose(sky_material.brdf_function.pigment.getColor(newVec2d(0.5,0.5)), newColor(0, 0, 0)) # Specify newVec2d(0.5,0.5) IN THIS CASE is useless because the pigmant is uniform.
+      ground_material.brdf_function of DiffuseBRDF
+      ground_material.brdf_function.pigment of CheckeredPigment
+      # Errori di compilazione perchè deve valutare in runtime il tipo di pigmanto, in fase di compile time non ha idea che sia a scacchi e quindi non sa cosa sia color1 e color2...
+      #ground_material.brdf_function.pigment.color2.areClose(newColor(0.3, 0.5, 0.1))
+      #ground_material.brdf_function.pigment.color2.areClose(newColor(0.1, 0.2, 0.5))
+      #ground_material.brdf_function.pigment.num_of_steps == 4
+
+# Implementazione di Tomasi
+#[ 
+ def test_parser(self):
 
 
+
+
+
+        
+
+        assert isinstance(sphere_material.brdf, SpecularBRDF)
+        assert isinstance(sphere_material.brdf.pigment, UniformPigment)
+        assert sphere_material.brdf.pigment.color.is_close(Color(0.5, 0.5, 0.5))
+
+        assert isinstance(sky_material.emitted_radiance, UniformPigment)
+        assert sky_material.emitted_radiance.color.is_close(Color(0.7, 0.5, 1.0))
+        assert isinstance(ground_material.emitted_radiance, UniformPigment)
+        assert ground_material.emitted_radiance.color.is_close(Color(0, 0, 0))
+        assert isinstance(sphere_material.emitted_radiance, UniformPigment)
+        assert sphere_material.emitted_radiance.color.is_close(Color(0, 0, 0))
+
+        # Check that the shapes are ok
+
+        assert len(scene.world.shapes) == 3
+        assert isinstance(scene.world.shapes[0], Plane)
+        assert scene.world.shapes[0].transformation.is_close(translation(Vec(0, 0, 100)) * rotation_y(150.0))
+        assert isinstance(scene.world.shapes[1], Plane)
+        assert scene.world.shapes[1].transformation.is_close(Transformation())
+        assert isinstance(scene.world.shapes[2], Sphere)
+        assert scene.world.shapes[2].transformation.is_close(translation(Vec(0, 0, 1)))
+
+        # Check that the camera is ok
+
+        assert isinstance(scene.camera, PerspectiveCamera)
+        assert scene.camera.transformation.is_close(rotation_z(30) * translation(Vec(-4, 0, 1)))
+        assert pytest.approx(1.0) == scene.camera.aspect_ratio
+        assert pytest.approx(2.0) == scene.camera.screen_distance
+
+ ]#

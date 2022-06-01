@@ -1,8 +1,8 @@
-import std/[tables, streams, strutils, options]
+import std/[tables, streams, strutils, options, sets]
 import shapes, geometry, basictypes, materials, pfm, transformation, cameras
 
 const WHITESPACE* = ['\0', '\t', '\n', '\r', ' ']
-const SYMBOLS* = ['(', ')', '[', ']', '<', '>', '*']
+const SYMBOLS* = ['(', ')', '[', ']', '<', '>', '*', ',']
 
 type
   GrammarError* = object of CatchableError
@@ -89,10 +89,22 @@ type
       value* : float
     of SymbolToken:
       symbol* : string
-    of StopToken:
+    of StopToken: #Forse qua si può anche omettere stop token perchè tanto è già definito sopra.
       flag* : bool
 
-#***************************************** INPUT STREAM *********************************************
+#***************************************** SCENE ***************************************************
+
+type
+  Scene* = object 
+    world* : World
+    materials* : Table[string, materials.Material]
+    camera* : Option[cameras.Camera]
+    float_variables* : Table[string, float]
+    overridden_variables* : HashSet[string]
+
+#***************************************************************************************************
+#***************************************** INPUT STREAM ********************************************
+#***************************************************************************************************
 
 type
   InputStream* = object
@@ -126,10 +138,11 @@ proc updatePos*(strm : var InputStream, ch : char) =
 
 proc readChar*(strm : var InputStream) : char =
   if strm.saved_char != '\0':
+  #if strm.stream.atEnd():
     result = strm.saved_char
     strm.saved_char = '\0'
   else:
-    result = strm.stream.readChar()
+    result = streams.readChar(strm.stream)
   strm.saved_location = strm.location
   strm.updatePos(result)
 
@@ -152,14 +165,14 @@ proc skipWhitespacesAndComments*(strm : var InputStream) =
   strm.unreadChar(ch)
 
 proc parseStringToken*(strm : var InputStream, token_location : SourceLocation) : Token =
-  var token = ""
+  var token : string = ""
   var ch : char
   while true:
     ch = strm.readChar()
     if ch == '"':
       break
     if ch == '\0':
-      let error_string = "Unterminated string. Missing `\"` at position: row: "&intToStr(strm.location.line_num)&", column: "&intToStr(strm.location.col_num)
+      let error_string : string = "Unterminated string. Missing `\"` at position: row: "&intToStr(strm.location.line_num)&", column: "&intToStr(strm.location.col_num)
       raise newException(GrammarError, error_string)
     token = token & ch
   result = Token(location : token_location, kind : StringToken, s : token)
@@ -211,31 +224,31 @@ proc readToken*(strm : var InputStream) : Token =
   strm.skipWhitespacesAndComments()
   # At this point we're sure that ch does *not* contain a whitespace character
   var ch = strm.readChar()
+
   if ch == '\0':
     # No more characters in the file, so return a StopToken
-    result = Token(location : strm.location, kind : StopToken) # Bisogna sistemare, il "flag" non ha nessun senso serve
-                                                                            # solo per evitare problemi nella definizione di StopToken
+    return Token(location : strm.location, kind : StopToken)
 
   # At this point we must check what kind of token begins with the "ch" character (which has been
   # put back in the stream with self.unread_char). First, we save the position in the stream
   
-  # result.location = strm.location --> a cosa servirebbe questo comando?
+  let tkn_location = strm.location # --> a cosa servirebbe questo comando?
   
   if ch in SYMBOLS:
     # One-character symbol, like '(' or ','
-    result = Token(location : strm.location, kind : SymbolToken, symbol : $ch)
+    result = Token(location : tkn_location, kind : SymbolToken, symbol : $ch)
   elif ch == '"':
     # A literal string (used for file names)
-    result = strm.parseStringToken(strm.location)
+    result = strm.parseStringToken(tkn_location)
   elif ch.isDigit() or ch in ['+', '-', '.']:
     # A floating-point number
-    result = strm.parseFloatToken(first_char = $ch, token_location = strm.location)
+    result = strm.parseFloatToken(first_char = $ch, token_location = tkn_location)
   elif ch.isAlphaAscii() or ch == '_':
     # Since it begins with an alphabetic character, it must either be a keyword or a identifier
-    result = strm.parseKeywordOrIdentifierToken(first_char = $ch, token_location = strm.location)
+    result = strm.parseKeywordOrIdentifierToken(first_char = $ch, token_location = tkn_location)
   else:
     # We got some weird character, like '@` or `&`
-    let error_string = "Invalid character: "&ch
+    let error_string = "Invalid character: `"&ch&"` "&($strm.location)
     raise newException(GrammarError, error_string)
 
 proc unreadToken*(strm : var InputStream, token : Token) =
@@ -243,112 +256,113 @@ proc unreadToken*(strm : var InputStream, token : Token) =
   assert strm.saved_token.isNone
   strm.saved_token = some(token)
 
-#******************************************** SCENE ************************************************
+#***************************************************************************************************
+#**************************************** EXPECT FUNCTION ******************************************
+#***************************************************************************************************
+# Read the token and check if the input is the expected one.
 
-type
-  Scene* = object 
-    materials* : Table[string, Material]
-    world* : World
-    camera* : Option[Camera]
-    float_variables* : Table[string, float]
-    #overridden_variables* : CAPIRE COME GESTIRE
-
-proc expectSymbol(input_file: var InputStream, symbol: string) =
+proc expectSymbol*(input_file: var InputStream, symbol: string) =
   ## Read a token from `input_file` and check that it matches `symbol`.
-  let token = input_file.readToken()
-  if not (token.kind == SymbolToken) or (token.symbol != symbol): # non certa che funzioni, c'è la keyword "of" ma da errori
-    let error_string = $input_file.location&"Got: "&($token.symbol)&" instead of "&($symbol)
+  let token : Token = input_file.readToken()
+  if not (token.kind == SymbolToken) or not (token.symbol == symbol): # non certa che funzioni, c'è la keyword "of" ma da errori
+    let error_string = $input_file.location&" Got: "&($token.symbol)&" instead of "&($symbol)
     raise newException(GrammarError, error_string)
 
-proc expectKeywords(input_file: var InputStream, keywords: seq[KeywordEnum]) : KeywordEnum=
+proc expectKeywords*(input_file: var InputStream, keywords: seq[KeywordEnum]) : KeywordEnum=
   ## Read a token from `input_file` and check that it is one of the keywords in `keywords`.
   ## Return the keyword as a `KeywordEnum` object.
-  let token = input_file.readToken()
+  let token : Token = input_file.readToken()
   if not (token.kind == KeywordToken):
-    let error_string = $input_file.location&"Expected a keyword"
+    let error_string = $input_file.location&" Expected a keyword"
     raise newException(GrammarError, error_string)
   if not (token.keyword in keywords):
-    let error_string = $input_file.location&"Expected one of the keywords [...] instead of "&($token.keyword) # sistemare messaggio di errore
+    let error_string = $input_file.location&" Expected one of the keywords [...] instead of "&($token.keyword) # sistemare messaggio di errore
     raise newException(GrammarError, error_string)
-    result = token.keyword
+  result = token.keyword
 
-proc expectNumber(input_file: var InputStream, scene: Scene) : float =
+proc expectNumber*(input_file: var InputStream, scene: Scene) : float =
   ## Read a token from `input_file` and check that it is either a literal number or a variable in `scene`.
   ## Return the number as a ``float``.
-  let token = input_file.readToken()
+  let token : Token = input_file.readToken()
   if (token.kind == LiteralNumberToken):
     return token.value
   elif (token.kind == IdentifierToken):
-    let variable_name = token.identifier
+    let variable_name : string = token.identifier
     if not (variable_name in scene.float_variables):
-      let error_string = $input_file.location&"Unknown variable" # sistemare messaggio di errore
+      let error_string : string = $input_file.location&" Unknown variable" # sistemare messaggio di errore
       raise newException(GrammarError, error_string)
-    result = scene.float_variables[variable_name]
-  let error_string = $input_file.location&"Number expected" # sistemare messaggio di errore
-  raise newException(GrammarError, error_string)
+    return scene.float_variables[variable_name]
+  else:
+    let error_string : string = $input_file.location&" Number expected" # sistemare messaggio di errore
+    raise newException(GrammarError, error_string)
 
-proc expectString(input_file: var InputStream) : string =
+proc expectString*(input_file: var InputStream) : string =
   ## Read a token from `input_file` and check that it is a literal string.
   ## Return the value of the string (a ``str``).
-  let token = input_file.readToken()
+  let token : Token = input_file.readToken()
   if not (token.kind == StringToken):
     let error_string = $input_file.location&"Expected a string"
     raise newException(GrammarError, error_string)
   return token.s
 
-proc expectIdentifier(input_file: var InputStream) : string =
+proc expectIdentifier*(input_file: var InputStream) : string =
   ## Read a token from `input_file` and check that it is an identifier.
   ## Return the name of the identifier.
-  let token = input_file.readToken()
+  let token : Token = input_file.readToken()
   if not (token.kind == IdentifierToken):
     let error_string = $input_file.location&"Expected an identifier"
     raise newException(GrammarError, error_string)
   return token.identifier
 
-proc parseVector(input_file: var InputStream, scene: Scene) : Vec =
+#***************************************************************************************************
+#********************************** PARSE FUNCTIONS ************************************************
+#***************************************************************************************************
+
+proc parseVector*(input_file: var InputStream, scene: Scene) : Vec =
   expectSymbol(input_file, "[")
-  let  x = expectNumber(input_file, scene)
+  let  x : float = expectNumber(input_file, scene)
   expectSymbol(input_file, ",")
-  let  y = expectNumber(input_file, scene)
+  let  y : float = expectNumber(input_file, scene)
   expectSymbol(input_file, ",")
-  let  z = expectNumber(input_file, scene)
-  expectSymbol(input_file, "]")
+  let  z : float = expectNumber(input_file, scene)
+  expectSymbol(input_file, "]")  
   return Vec(x: x, y: y, z: z)
 
-proc parseColor(input_file: var InputStream, scene: Scene) : Color =
+proc parseColor*(input_file: var InputStream, scene: Scene) : Color =
   expectSymbol(input_file, "<")
-  let  r = expectNumber(input_file, scene)
+  let  r : float = expectNumber(input_file, scene)
   expectSymbol(input_file, ",")
-  let  g = expectNumber(input_file, scene)
+  let  g : float = expectNumber(input_file, scene)
   expectSymbol(input_file, ",")
-  let  b = expectNumber(input_file, scene)
+  let  b : float = expectNumber(input_file, scene)
   expectSymbol(input_file, ">")
   return Color(r: r, g: g, b: b)
 
-proc parsePigment(input_file: var InputStream, scene: Scene) : Pigment =
-  let keyword = expectKeywords(input_file, @[KeywordEnum.UNIFORM, KeywordEnum.CHECKERED, KeywordEnum.IMAGE])
+proc parsePigment*(input_file: var InputStream, scene: Scene) : Pigment =
+  let keyword : KeywordEnum = expectKeywords(input_file, @[KeywordEnum.UNIFORM, KeywordEnum.CHECKERED, KeywordEnum.IMAGE])
   expectSymbol(input_file, "(")
   if keyword == KeywordEnum.UNIFORM:
     result = UniformPigment(color : parseColor(input_file, scene))
   elif keyword == KeywordEnum.CHECKERED:
-    let c1 = parseColor(input_file, scene)
+    let c1 : Color = parseColor(input_file, scene)
     expectSymbol(input_file, ",")
-    let c2 = parseColor(input_file, scene)
+    let c2 : Color = parseColor(input_file, scene)
     expectSymbol(input_file, ",")
-    let nstep = expectNumber(input_file, scene).toInt
+    # Magari aggiungere un if con un errore se non riceve un int!!!!!!!!!!!!!!!1
+    let nstep : int = expectNumber(input_file, scene).toInt
     result = CheckeredPigment(color1: c1, color2: c2, num_of_steps: nstep)
   elif keyword == KeywordEnum.IMAGE:
-    let impf = openFileStream(expectString(input_file))
+    let impf : Stream = openFileStream(expectString(input_file))
     let img : HdrImage = readPfmImage(impf)
     result = ImagePigment(image: img)
   else:
     assert false, "This line should be unreachable"
   expectSymbol(input_file, ")")
 
-proc parseBRDF(input_file: var InputStream, scene: Scene) : BRDF =
-  let brdf_keyword = expectKeywords(input_file, @[KeywordEnum.DIFFUSE, KeywordEnum.SPECULAR])
+proc parseBRDF*(input_file: var InputStream, scene: Scene) : BRDF =
+  let brdf_keyword : KeywordEnum = expectKeywords(input_file, @[KeywordEnum.DIFFUSE, KeywordEnum.SPECULAR])
   expectSymbol(input_file, "(")
-  let pigment = parsePigment(input_file, scene)
+  let pigment : Pigment = parsePigment(input_file, scene)
   expectSymbol(input_file, ")")
   if brdf_keyword == KeywordEnum.DIFFUSE:
     return DiffuseBRDF(pigment: pigment)
@@ -356,7 +370,7 @@ proc parseBRDF(input_file: var InputStream, scene: Scene) : BRDF =
     return SpecularBRDF(pigment: pigment)
   assert false, "This line should be unreachable"
 
-proc parseMaterial(input_file: var InputStream, scene: Scene) : (string, Material) = # (...) -> tuples
+proc parseMaterial*(input_file: var InputStream, scene: Scene) : (string, Material) = # (...) -> tuples
   let name = expectIdentifier(input_file)
   expectSymbol(input_file, "(")
   let brdf = parseBRDF(input_file, scene)
@@ -365,10 +379,10 @@ proc parseMaterial(input_file: var InputStream, scene: Scene) : (string, Materia
   expectSymbol(input_file, ")")
   return (name, Material(brdf_function: brdf, emitted_radiance: emitted_radiance))
 
-proc parseTransformation(input_file: var InputStream, scene: Scene) : Transformation =
-  var result = newTransformation()
+proc parseTransformation*(input_file: var InputStream, scene: Scene) : Transformation =
+  result = newTransformation()
   while true:
-    var transformation_kw = expectKeywords(input_file, @[KeywordEnum.IDENTITY,
+    let transformation_kw : KeywordEnum = expectKeywords(input_file, @[KeywordEnum.IDENTITY,
                                                          KeywordEnum.TRANSLATION,
                                                          KeywordEnum.ROTATION_X,
                                                          KeywordEnum.ROTATION_Y,
@@ -398,27 +412,26 @@ proc parseTransformation(input_file: var InputStream, scene: Scene) : Transforma
       expectSymbol(input_file, ")")
     # We must peek the next token to check if there is another transformation that is being
     # chained or if the sequence ends. Thus, this is a LL(1) parser.
-    let next_kw = input_file.readToken()
+    let next_kw : Token = input_file.readToken()
     if not (next_kw.kind == SymbolToken) or (next_kw.symbol != "*"):
       # Pretend you never read this token and put it back!
       input_file.unreadToken(next_kw)
       break
-  return result
+  #return result
 
-proc parseSphere(input_file: var InputStream, scene: Scene) : Sphere =
+proc parseSphere*(input_file: var InputStream, scene: Scene) : Sphere =
   expectSymbol(input_file, "(")
-  let material_name = expectIdentifier(input_file)
+  let material_name : string = expectIdentifier(input_file)
   if not scene.materials.hasKey(material_name):
     # We raise the exception here because input_file is pointing to the end of the wrong identifier
-    let error_string = $input_file.location&"Unknown material "&($material_name)
+    let error_string = $input_file.location&" Unknown material "&($material_name)
     raise newException(GrammarError, error_string)
   expectSymbol(input_file, ",")
   let transformation = parseTransformation(input_file, scene)
-  expectSymbol(input_file, ",")
-  scene.materials[material_name] # non gli piace tanto, dovrebbe essere un Material ma per lui è altro
+  expectSymbol(input_file, ")")
   return Sphere(transformation : transformation, material : scene.materials[material_name])
 
-proc parsePlane(input_file: var InputStream, scene: Scene) : Plane =
+proc parsePlane*(input_file: var InputStream, scene: Scene) : Plane =
   expectSymbol(input_file, "(")
   let material_name = expectIdentifier(input_file)
   if not scene.materials.hasKey(material_name):
@@ -427,10 +440,10 @@ proc parsePlane(input_file: var InputStream, scene: Scene) : Plane =
     raise newException(GrammarError, error_string)
   expectSymbol(input_file, ",")
   let transformation = parseTransformation(input_file, scene)
-  expectSymbol(input_file, ",")
+  expectSymbol(input_file, ")")
   return Plane(transformation: transformation, material: scene.materials[material_name])
 
-proc parseCamera(input_file: var InputStream, scene: Scene) : Camera =
+proc parseCamera*(input_file: var InputStream, scene: Scene) : Camera =
   expectSymbol(input_file, "(")
   let type_kw = expectKeywords(input_file, @[KeywordEnum.PERSPECTIVE, KeywordEnum.ORTHOGONAL])
   expectSymbol(input_file, ",")
@@ -445,11 +458,11 @@ proc parseCamera(input_file: var InputStream, scene: Scene) : Camera =
   if type_kw == KeywordEnum.ORTHOGONAL:
     result = OrthogonalCamera(aspect_ratio : aspect_ratio, transformation : transformation)
 
-proc parseScene(input_file: var InputStream, variables: Table[string, float]) : Scene =
+proc parseScene*(input_file: var InputStream, variables: Table[string, float] = initTable[string, float]()) : Scene =
   ## Read a scene description from a stream and return a `.Scene` object
-  var scene : Scene
-  scene.float_variables = variables
-  #scene.overridden_variables = set(variables.keys())  !!!! Bisogna capire come gestire i set
+  result.float_variables = variables
+  for k in variables.keys:
+    result.overridden_variables.incl(k)
   while true:
     let what = input_file.readToken()
     if what.kind == StopToken:
@@ -458,31 +471,31 @@ proc parseScene(input_file: var InputStream, variables: Table[string, float]) : 
       let error_string = $input_file.location&"Expected a keyword."
       raise newException(GrammarError, error_string)
     if what.keyword == KeywordEnum.FLOAT:
-      let variable_name = expectIdentifier(input_file)
+      let variable_name : string = expectIdentifier(input_file)
       # Save this for the error message
       let variable_loc = input_file.location
       expectSymbol(input_file, "(")
-      let variable_value = expectNumber(input_file, scene)
+      let variable_value = expectNumber(input_file, result)
       expect_symbol(input_file, ")")
-      if (variable_name in scene.float_variables) and not (variable_name in scene.overridden_variables):
-        let error_string = $variable_loc&"Variable "&($variable_name)&" cannot be redefined."
+      if (variable_name in result.float_variables) and not (variable_name in result.overridden_variables):
+        let error_string = $variable_loc&" Variable "&($variable_name)&" cannot be redefined."
         raise newException(GrammarError, error_string) 
-      if not variable_name in scene.overridden_variables:
+      if not result.overridden_variables.contains(variable_name):
         # Only define the variable if it was not defined by the user *outside* the scene file
         # (e.g., from the command line)
-        scene.float_variables[variable_name] = variable_value
+        result.float_variables[variable_name] = variable_value
     elif what.keyword == KeywordEnum.SPHERE:
-      scene.world.shapes.add(parseSphere(input_file, scene))
+      result.world.shapes.add(parseSphere(input_file, result))
     elif what.keyword == KeywordEnum.PLANE:
-      scene.world.shapes.add(parsePlane(input_file, scene))
+      result.world.shapes.add(parsePlane(input_file, result))
     elif what.keyword == KeywordEnum.CAMERA:
-      if not scene.camera.isNone:
+      if not result.camera.isNone:
         let error_string = $what.location&"You cannot define more than one camera"
         raise newException(GrammarError, error_string)
-      scene.camera = some(parseCamera(input_file, scene))
+      result.camera = some(parseCamera(input_file, result))
     elif what.keyword == KeywordEnum.MATERIAL:
-      var (name, material) = parse_material(input_file, scene)
-      scene.materials[name] = material
+      var (name, material) = parseMaterial(input_file, result)
+      result.materials[name] = material
 
 
 
