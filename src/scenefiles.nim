@@ -417,7 +417,6 @@ proc parseTransformation*(input_file: var InputStream, scene: Scene) : Transform
       # Pretend you never read this token and put it back!
       input_file.unreadToken(next_kw)
       break
-  #return result
 
 proc parseSphere*(input_file: var InputStream, scene: Scene) : Sphere =
   expectSymbol(input_file, "(")
@@ -429,7 +428,7 @@ proc parseSphere*(input_file: var InputStream, scene: Scene) : Sphere =
   expectSymbol(input_file, ",")
   let transformation = parseTransformation(input_file, scene)
   expectSymbol(input_file, ")")
-  return Sphere(transformation : transformation, material : scene.materials[material_name])
+  return newSphere(transformation = transformation, material = scene.materials[material_name])
 
 proc parsePlane*(input_file: var InputStream, scene: Scene) : Plane =
   expectSymbol(input_file, "(")
@@ -441,7 +440,7 @@ proc parsePlane*(input_file: var InputStream, scene: Scene) : Plane =
   expectSymbol(input_file, ",")
   let transformation = parseTransformation(input_file, scene)
   expectSymbol(input_file, ")")
-  return Plane(transformation: transformation, material: scene.materials[material_name])
+  return newPlane(transformation = transformation, material = scene.materials[material_name])
 
 proc parseCamera*(input_file: var InputStream, scene: Scene) : Camera =
   expectSymbol(input_file, "(")
@@ -454,9 +453,9 @@ proc parseCamera*(input_file: var InputStream, scene: Scene) : Camera =
   let distance = expectNumber(input_file, scene)
   expectSymbol(input_file, ")")
   if type_kw == KeywordEnum.PERSPECTIVE:
-    result = PerspectiveCamera(distance : distance, aspect_ratio : aspect_ratio, transformation : transformation)
+    result = newPerspectiveCamera(distance = distance, aspect_ratio = aspect_ratio, transformation = transformation)
   if type_kw == KeywordEnum.ORTHOGONAL:
-    result = OrthogonalCamera(aspect_ratio : aspect_ratio, transformation : transformation)
+    result = newOrthogonalCamera(aspect_ratio = aspect_ratio, transformation = transformation)
 
 proc parseScene*(input_file: var InputStream, variables: Table[string, float] = initTable[string, float]()) : Scene =
   ## Read a scene description from a stream and return a `.Scene` object
@@ -468,7 +467,7 @@ proc parseScene*(input_file: var InputStream, variables: Table[string, float] = 
     if what.kind == StopToken:
       break
     if not (what.kind == KeywordToken):
-      let error_string = $input_file.location&"Expected a keyword."
+      let error_string = $input_file.location&" Expected a keyword."
       raise newException(GrammarError, error_string)
     if what.keyword == KeywordEnum.FLOAT:
       let variable_name : string = expectIdentifier(input_file)

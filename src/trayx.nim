@@ -26,19 +26,19 @@ let doc = """
 T-RayX: a Nim Raytracing Library
 
 Usage:
-  ./trayx render <SCENE_FILE.txt> <width> <height> [--output = <output-file>]
+  ./trayx render <SCENE_FILE.txt> <width> <height> [options]
   ./trayx pfm2png <INPUT_FILE.pfm> <alpha> <gamma> <OUTPUT.png>
-  ./trayx demo [--angle = <angle-deg>] [--output = <output-file>] [--orthogonal]
+  ./trayx demo [options]
 
 Options:
+  --renderer=<type>         Renderer's type: onoff, flat, pathtracing, pointlight. Default: pathtracing.
+  --clock=<angle-deg>       Angle in degree. Use it to rotate camera.
+  --output=<output-file>    Output file.png
   -h --help                 Show this screen
   --version                 Show version
-  --angle=<angle-deg>       Angle in degree
-  --orthogonal              Camera type. Default = perspective
-  --output=<output-file>    Output file.png
 """
 
-let args = docopt(doc, version = "0.1.0" )
+let args = docopt(doc, version = "1.0.0")
 
 #*********************************** PFM2PNG ***********************************
 
@@ -88,62 +88,68 @@ proc pfm2png() =
 #*********************************** DEMO ***********************************
 
 proc demo() =
-  # Demo procedure that generates 10 spheres,  a cube and a checkered plane
-  var 
-    tracer : ImageTracer
-    translation : Transformation = translation(newVec(-1.0, 0.0, 1.0))
-    world : World
-    strm = newFileStream("output/demo.pfm", fmWrite)
   let
     width  : int = 960
     height : int = 540
-    ratio = width/height
-  if args["--orthogonal"]:
-    if args["--angle"]:
-      tracer = newImageTracer(newHdrImage(width, height), newOrthogonalCamera(ratio, rotation_z(-parseFloat($args["--angle"]))*translation))
-    else:
-      tracer = newImageTracer(newHdrImage(width, height), newOrthogonalCamera(ratio, translation))
-  else:   
-    if args["--angle"]:
-      tracer = newImageTracer(newHdrImage(width, height), newPerspectiveCamera(1, ratio, rotation_z(-parseFloat($args["--angle"]))*translation))
-    else:
-      tracer = newImageTracer(newHdrImage(width, height), newPerspectiveCamera(1, ratio, translation)) 
+    ratio : float = width/height
+  var 
+    translation : Transformation = translation(newVec(-1.0, 0.0, 1.0))
+    world : World
+    strm : FileStream = newFileStream("output/demo.pfm", fmWrite)
+    tracer : ImageTracer = newImageTracer(newHdrImage(width, height), newPerspectiveCamera(1, ratio, translation))      
   let
-    sky_material = newMaterial(brdf = newDiffuseBRDF(newUniformPigment(newColor(0, 0, 0))), emitted_radiance = newUniformPigment(newColor(1.0, 0.9, 0.5)))
-    ground_material = newMaterial(brdf = newDiffuseBRDF(pigment = newCheckeredPigment(color1 = newColor(0.3, 0.5, 0.1), color2 = newColor(0.1, 0.2, 0.5))))
-    sphere_material = newMaterial(brdf = newDiffuseBRDF(pigment = newUniformPigment(newColor(0.3, 0.4, 0.8))))
-    mirror_material = newMaterial(brdf = newSpecularBRDF(pigment = newUniformPigment(color = newColor(0.6, 0.2, 0.3))))
+    sky_material: Material = newMaterial(brdf = newDiffuseBRDF(newUniformPigment(newColor(0, 0, 0))), emitted_radiance = newUniformPigment(newColor(1.0, 0.9, 0.5)))
+    ground_material: Material = newMaterial(brdf = newDiffuseBRDF(pigment = newCheckeredPigment(color1 = newColor(0.3, 0.5, 0.1), color2 = newColor(0.1, 0.2, 0.5))))
+    sphere_material: Material = newMaterial(brdf = newDiffuseBRDF(pigment = newUniformPigment(newColor(0.3, 0.4, 0.8))))
+    mirror_material: Material = newMaterial(brdf = newSpecularBRDF(pigment = newUniformPigment(color = newColor(0.6, 0.2, 0.3))))
   # Add all the shapes in world
   world.shapes.add(newSphere(material=sky_material, transformation=scaling(newVec(200, 200, 200)) * translation(newVec(0, 0, 0.4))))
   world.shapes.add(newPlane(material=ground_material))
   world.shapes.add(newSphere(material=sphere_material, transformation=translation(newVec(0, 0, 1))))
   world.shapes.add(newSphere(material=mirror_material, transformation=translation(newVec(1, 2.5, 0))))
-  #Initiallize the render (future feature : choose from terminal the renderer's types)
-  let renderer = newPathTracer(world)
+  #Initiallize the render and fire the rays
+  let renderer : Renderer = newPathTracer(world)
   tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)
-  if args["--output"]:
-    tracer.image.writeLdrImage($args["--output"])
-  else:
-    tracer.image.writeLdrImage("demo.png")
+  tracer.image.writeLdrImage("demo.png")
 
-#*************************************DEBUG*************************************************
+#*************************************RENDER*************************************************
 
 proc render() =
+  # Check is the variable `clock` has been defined through the CLI
+  var variables = initTable[string, float]()
+  if args["--clock"]:
+    variables["clock"] = parseFloat($args["--clock"]) 
   var 
     file_stream : FileStream = newFileStream($args["<SCENE_FILE.txt>"], fmRead)
     input_stream : InputStream = newInputStream(file_stream)
-    scene : Scene = parseScene(input_stream) #Qui la possibilità di passare una tabella di variabili se si desidera passarle da linea di comando.
+    scene : Scene = parseScene(input_stream, variables) #Qui la possibilità di passare una tabella di variabili se si desidera passarle da linea di comando.
+    renderer : Renderer
   file_stream.close()
-  let
+  # Check is the renderer's type has been defined through the CLI
+  if args["--renderer"]:
+    case $args["--renderer"]:
+      of "onoff":
+        renderer = newOnOffRenderer(scene.world)
+      of "flat":
+        renderer = newFlatRenderer(scene.world)
+      of "pointlight":
+        renderer = newPointLightRenderer(scene.world)
+      of "pathtracing":
+        renderer = newPathTracer(scene.world)
+      else:
+        raise newException(IOError, "Invalid type of renderer.")
+  else: # Default type
+    renderer = newPathTracer(scene.world)
+  var
     width  : int = parseInt($args["<width>"])
     height : int = parseInt($args["<height>"])
-    #ratio = width/height
-    world : World = scene.world
-  var
+
+
+# Aggiungere l'utilizzo del parametro clock che sarà una cosa del tipo scene.camera = scene.camera * rotation_z(clock)
+
+
     tracer : ImageTracer = newImageTracer(newHdrImage(width, height), scene.camera.get())
-  let 
-    renderer = newPathTracer(world)
   tracer.fireAllRays(renderer)
   if args["--output"]:
     tracer.image.writeLdrImage($args["--output"])

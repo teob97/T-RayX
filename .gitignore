@@ -4,9 +4,11 @@
 
 output/demo/img*
 output/test*
+output/result*
 .vscode
 profile_result*
 callgrind*
+exampleInput.txt
 
 .DS_Store
 *~
