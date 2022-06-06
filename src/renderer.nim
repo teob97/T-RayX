@@ -40,6 +40,12 @@ type
     ## A simple point-light renderer.
     ambient_color* : Color
 
+method set_num_of_rays*(x : var Renderer, n : int) {.base.} =
+  quit "To override"
+  
+method set_num_of_rays*(x : var PathTracer, n : int) =
+  x.num_of_rays = n
+
 #**************************************************** CONSTRUCTORS ****************************************************
 
 proc newOnOffRenderer*(world : World, color : Color = WHITE, background_color : Color = BLACK) : OnOffRenderer =

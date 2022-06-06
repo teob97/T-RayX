@@ -28,17 +28,22 @@ T-RayX: a Nim Raytracing Library
 Usage:
   ./trayx render <SCENE_FILE.txt> <width> <height> [options]
   ./trayx pfm2png <INPUT_FILE.pfm> <alpha> <gamma> <OUTPUT.png>
-  ./trayx demo [options]
+  ./trayx demo
 
 Options:
-  --renderer=<type>         Renderer's type: onoff, flat, pathtracing, pointlight. Default: pathtracing.
-  --clock=<angle-deg>       Angle in degree. Use it to rotate camera.
-  --output=<output-file>    Output file.png
-  -h --help                 Show this screen
-  --version                 Show version
+  --renderer=<type>             Renderer's type: onoff, flat, pathtracing, pointlight. Default: pathtracing.
+  --clock=<angle-deg>           Angle in degree. Use it to rotate camera.
+  --output=<output-file>        Output file.png
+  --numberOfRays=<nRay>         Number of rays departing from each surface point. (Only aviable in pathTracer)
+  --maxDepth=<depth>
+  --initState=<seed>
+  --initSeq=<seq-seed>
+  --samplePerPixel=<n_sample>     
+  -h --help                     Show this screen
+  --version                     Show version
 """
 
-let args = docopt(doc, version = "1.0.0")
+let args = docopt(doc, version = "1.0.0") #find a way to automatize versioning
 
 #*********************************** PFM2PNG ***********************************
 
@@ -116,48 +121,55 @@ proc demo() =
 #*************************************RENDER*************************************************
 
 proc render() =
-  # Check is the variable `clock` has been defined through the CLI
+  # Check is the variable `clock` has been defined through the CLI.
+
+  # FARE IN MODO COME FA TOMASI DI GENERARE UNA TABELLA GENERICA NEL CASO SI VOLESSERO DEFINIRE PIÙ PARAMETRI.
+
   var variables = initTable[string, float]()
   if args["--clock"]:
     variables["clock"] = parseFloat($args["--clock"]) 
+
+  # Define all the basic components.
   var 
     file_stream : FileStream = newFileStream($args["<SCENE_FILE.txt>"], fmRead)
     input_stream : InputStream = newInputStream(file_stream)
-    scene : Scene = parseScene(input_stream, variables) #Qui la possibilità di passare una tabella di variabili se si desidera passarle da linea di comando.
+    img_scene : Scene = parseScene(input_stream, variables) #Qui la possibilità di passare una tabella di variabili se si desidera passarle da linea di comando.
     renderer : Renderer
   file_stream.close()
   # Check is the renderer's type has been defined through the CLI
   if args["--renderer"]:
     case $args["--renderer"]:
       of "onoff":
-        renderer = newOnOffRenderer(scene.world)
+        renderer = newOnOffRenderer(img_scene.world)
       of "flat":
-        renderer = newFlatRenderer(scene.world)
+        renderer = newFlatRenderer(img_scene.world)
       of "pointlight":
-        renderer = newPointLightRenderer(scene.world)
+        renderer = newPointLightRenderer(img_scene.world)
       of "pathtracing":
-        renderer = newPathTracer(scene.world)
+        renderer = newPathTracer(img_scene.world)
       else:
         raise newException(IOError, "Invalid type of renderer.")
   else: # Default type
-    renderer = newPathTracer(scene.world)
+    renderer = newPathTracer(img_scene.world)
+  
+  if args["--numberOfRays"] and (renderer of PathTracer):
+    renderer.set_num_of_rays(parseInt($args["--numberOfRays"]))
+
+
+
   var
     width  : int = parseInt($args["<width>"])
     height : int = parseInt($args["<height>"])
 
+  if "clock" in img_scene.float_variables:
+    img_scene.camera.get().transformation = img_scene.camera.get().transformation * rotation_z(img_scene.float_variables["clock"])
 
-# Aggiungere l'utilizzo del parametro clock che sarà una cosa del tipo scene.camera = scene.camera * rotation_z(clock)
-
-
-    tracer : ImageTracer = newImageTracer(newHdrImage(width, height), scene.camera.get())
+  var tracer : ImageTracer = newImageTracer(newHdrImage(width, height), img_scene.camera.get())
   tracer.fireAllRays(renderer)
   if args["--output"]:
     tracer.image.writeLdrImage($args["--output"])
   else:
     tracer.image.writeLdrImage("result.png")
-
-# Verificare che ci sia effettivamente salvata una camera in scene ed eventuali angoli passati da linea di comando
-
 
 #*********************************** MAIN ***********************************
 
