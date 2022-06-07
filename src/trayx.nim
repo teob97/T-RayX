@@ -16,7 +16,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>. 
 ]#
     
-import basictypes, pfm, ldr, cameras, imagetracer, shapes, transformation, geometry, materials, renderer, scenefiles
+import basictypes, pfm, ldr, cameras, imagetracer, shapes, transformation, geometry, materials, renderer, scenefiles, pcg
 import docopt
 import std/[strutils, strformat, streams, os, times, options]
 when compileOption("profiler"):
@@ -34,11 +34,11 @@ Options:
   --renderer=<type>             Renderer's type: onoff, flat, pathtracing, pointlight. Default: pathtracing.
   --clock=<angle-deg>           Angle in degree. Use it to rotate camera.
   --output=<output-file>        Output file.png
-  --numberOfRays=<nRay>         Number of rays departing from each surface point. (Only aviable in pathTracer)
-  --maxDepth=<depth>
-  --initState=<seed>
-  --initSeq=<seq-seed>
-  --samplePerPixel=<n_sample>     
+  --numberOfRays=<nRay>         Number of rays departing from each surface point (only applicable with --algorithm=pathtracing).
+  --maxDepth=<depth>            Maximum allowed ray depth (only applicable with --algorithm=pathtracing).
+  --initState=<seed>            Initial seed for the random number generator (positive number).
+  --initSeq=<seq-seed>          Identifier of the sequence produced by the random number generator (positive number)."
+  --samplePerPixel=<n_sample>   Number of samples per pixel (must be a perfect square, e.g., 16).
   -h --help                     Show this screen
   --version                     Show version
 """
@@ -128,8 +128,7 @@ proc render() =
   var variables = initTable[string, float]()
   if args["--clock"]:
     variables["clock"] = parseFloat($args["--clock"]) 
-
-  # Define all the basic components.
+  # Define all the basic components
   var 
     file_stream : FileStream = newFileStream($args["<SCENE_FILE.txt>"], fmRead)
     input_stream : InputStream = newInputStream(file_stream)
@@ -151,11 +150,17 @@ proc render() =
         raise newException(IOError, "Invalid type of renderer.")
   else: # Default type
     renderer = newPathTracer(img_scene.world)
-  
+  # Check if parameters are defined through the CLI
   if args["--numberOfRays"] and (renderer of PathTracer):
-    renderer.set_num_of_rays(parseInt($args["--numberOfRays"]))
-
-
+    renderer.setNumOfRays(parseInt($args["--numberOfRays"]))
+  if args["--maxDepth"] and (renderer of PathTracer):
+    renderer.setMaxDepth(parseInt($args["--maxDepth"]))
+  if args["--initState"] and (renderer of PathTracer):
+    renderer.setInitStatePCG(n = (parseUInt($args["--initState"])))
+  if args["--initSeq"] and (renderer of PathTracer):
+    renderer.setInitSeqPCG(n = (parseUInt($args["--initSeq"])))
+  if args["--initState"] and args["--initSeq"] and (renderer of PathTracer):
+    renderer.setPCG(s1 = (parseUInt($args["--initState"])), s2 = (parseUInt($args["--initSeq"])))
 
   var
     width  : int = parseInt($args["<width>"])

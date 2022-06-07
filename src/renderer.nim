@@ -40,11 +40,36 @@ type
     ## A simple point-light renderer.
     ambient_color* : Color
 
-method set_num_of_rays*(x : var Renderer, n : int) {.base.} =
+# Methods necessary for "render" procedure in trayx.nim
+method setNumOfRays*(x : var Renderer, n : int) {.base.} =
   quit "To override"
-  
-method set_num_of_rays*(x : var PathTracer, n : int) =
+
+method setMaxDepth*(x : var Renderer, n : int) {.base.} =
+  quit "To override"
+
+method setInitStatePCG*(x : var Renderer, n : uint64) {.base.} =
+  quit "To override"
+
+method setInitSeqPCG*(x : var Renderer, n : uint64) {.base.} =
+  quit "To override"
+
+method setPCG*(x : var Renderer, s1 : uint64, s2 : uint64) {.base.} =
+  quit "To override"
+
+method setNumOfRays*(x : var PathTracer, n : int) =
   x.num_of_rays = n
+
+method setMaxDepth*(x : var PathTracer, n : int) =
+  x.max_depth = n
+
+method setInitStatePCG*(x : var PathTracer, n : uint64) =
+  x.pcg = newPCG(init_state = n)
+
+method setInitSeqPCG*(x : var PathTracer, n : uint64) =
+  x.pcg = newPCG(init_seq = n)
+
+method setPCG*(x : var PathTracer, s1 : uint64, s2 : uint64) =
+  x.pcg = newPCG(init_state = s1, init_seq = s2)
 
 #**************************************************** CONSTRUCTORS ****************************************************
 
