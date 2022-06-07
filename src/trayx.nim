@@ -156,9 +156,9 @@ proc render() =
   if args["--maxDepth"] and (renderer of PathTracer):
     renderer.setMaxDepth(parseInt($args["--maxDepth"]))
   if args["--initState"] and (renderer of PathTracer):
-    renderer.setInitStatePCG(n = (parseUInt($args["--initState"])))
+    renderer.setPCG(s1 = (parseUInt($args["--initState"])))
   if args["--initSeq"] and (renderer of PathTracer):
-    renderer.setInitSeqPCG(n = (parseUInt($args["--initSeq"])))
+    renderer.setPCG(s2 = (parseUInt($args["--initSeq"])))
   if args["--initState"] and args["--initSeq"] and (renderer of PathTracer):
     renderer.setPCG(s1 = (parseUInt($args["--initState"])), s2 = (parseUInt($args["--initSeq"])))
 
@@ -170,6 +170,9 @@ proc render() =
     img_scene.camera.get().transformation = img_scene.camera.get().transformation * rotation_z(img_scene.float_variables["clock"])
 
   var tracer : ImageTracer = newImageTracer(newHdrImage(width, height), img_scene.camera.get())
+  if args["--samplePerPixel"]:
+    tracer.samples_per_side = parseInt($args["--samplePerPixel"])
+
   tracer.fireAllRays(renderer)
   if args["--output"]:
     tracer.image.writeLdrImage($args["--output"])

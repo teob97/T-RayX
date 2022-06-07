@@ -47,13 +47,7 @@ method setNumOfRays*(x : var Renderer, n : int) {.base.} =
 method setMaxDepth*(x : var Renderer, n : int) {.base.} =
   quit "To override"
 
-method setInitStatePCG*(x : var Renderer, n : uint64) {.base.} =
-  quit "To override"
-
-method setInitSeqPCG*(x : var Renderer, n : uint64) {.base.} =
-  quit "To override"
-
-method setPCG*(x : var Renderer, s1 : uint64, s2 : uint64) {.base.} =
+method setPCG*(x : var Renderer, s1 : uint64 = 42, s2 : uint64 = 54) {.base.} =
   quit "To override"
 
 method setNumOfRays*(x : var PathTracer, n : int) =
@@ -62,13 +56,7 @@ method setNumOfRays*(x : var PathTracer, n : int) =
 method setMaxDepth*(x : var PathTracer, n : int) =
   x.max_depth = n
 
-method setInitStatePCG*(x : var PathTracer, n : uint64) =
-  x.pcg = newPCG(init_state = n)
-
-method setInitSeqPCG*(x : var PathTracer, n : uint64) =
-  x.pcg = newPCG(init_seq = n)
-
-method setPCG*(x : var PathTracer, s1 : uint64, s2 : uint64) =
+method setPCG*(x : var PathTracer, s1 : uint64 = 42, s2 : uint64 = 54) =
   x.pcg = newPCG(init_state = s1, init_seq = s2)
 
 #**************************************************** CONSTRUCTORS ****************************************************
