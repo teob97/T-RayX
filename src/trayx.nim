@@ -16,7 +16,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>. 
 ]#
     
-import basictypes, pfm, ldr, cameras, imagetracer, shapes, transformation, geometry, materials, renderer, scenefiles
+import trayx/[basictypes, pfm, ldr, cameras, imagetracer, shapes, transformation, geometry, materials, renderer, scenefiles]
 import docopt
 import std/[strutils, strformat, streams, os, times, options]
 when compileOption("profiler"):

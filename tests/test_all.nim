@@ -1,16 +1,16 @@
 import std/[unittest, options, streams, tables]
-import ../src/basictypes
-import ../src/pfm
-import ../src/ldr
-import ../src/geometry
-import ../src/transformation
-import ../src/cameras
-import ../src/imagetracer
-import ../src/shapes
-import ../src/materials
-import ../src/pcg
-import ../src/renderer
-import ../src/scenefiles
+import ../src/trayx/basictypes
+import ../src/trayx/pfm
+import ../src/trayx/ldr
+import ../src/trayx/geometry
+import ../src/trayx/transformation
+import ../src/trayx/cameras
+import ../src/trayx/imagetracer
+import ../src/trayx/shapes
+import ../src/trayx/materials
+import ../src/trayx/pcg
+import ../src/trayx/renderer
+import ../src/trayx/scenefiles
 
 #################
 #TEST BASICTYPES#
