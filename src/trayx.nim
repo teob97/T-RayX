@@ -70,7 +70,7 @@ proc parseCommandLine*(param : var Parameters) =
     raise newException(IOError, fmt"Invalid factor ('{args[3]}'), it must be a floating-point number.")
   param.output_png_file_name = args[4]
 
-proc pfm2png() =
+proc pfm2png*() =
   ## Main procedure to convert a .pfm file into a .png file
   var param : Parameters
   try:
@@ -92,7 +92,7 @@ proc pfm2png() =
 
 #*********************************** DEMO ***********************************
 
-proc demo() =
+proc demo*()=
   let
     width  : int = 960
     height : int = 540
@@ -120,7 +120,7 @@ proc demo() =
 
 #*************************************RENDER*************************************************
 
-proc render() =
+proc render*() =
   # Check is the variable `clock` has been defined through the CLI.
 
   # FARE IN MODO COME FA TOMASI DI GENERARE UNA TABELLA GENERICA NEL CASO SI VOLESSERO DEFINIRE PIÙ PARAMETRI.
