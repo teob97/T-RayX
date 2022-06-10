@@ -18,7 +18,7 @@ jobs:
       - run: nimble test -Y
       - run: nim doc --index:on --project --out:${{ env.deploy-dir }} ${{ env.nim-src }}
       - run: mv ${{ env.deploy-dir }}/trayx.html ${{ env.deploy-dir }}/index.html
-      - run: for file in $(find ${{ env.deploy-dir }}); do sed -i -r 's|trayx\.html|index.html|g' ${file}; done
+      - run: for file in $(find -type f ${{ env.deploy-dir }}); do sed -i -r 's|trayx\.html|index.html|g' ${file}; done
       - name: Deploy documents
         uses: peaceiris/actions-gh-pages@v3
         with:
