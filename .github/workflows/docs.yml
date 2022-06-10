@@ -11,8 +11,8 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: jiro4989/setup-nim-action@v1
+      - uses: actions/checkout@v2
+      - uses: jiro4989/setup-nim-action@v1.1.4
         with:
           nim-version: ${{ env.nim-version }}
       - run: nim doc --index:on --project --out:${{ env.deploy-dir }} ${{ env.nim-src }}
