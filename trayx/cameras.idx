@@ -1,0 +1,14 @@
+Ray	trayx/cameras.html#Ray	cameras: Ray	
+Camera	trayx/cameras.html#Camera	cameras: Camera	
+OrthogonalCamera	trayx/cameras.html#OrthogonalCamera	cameras: OrthogonalCamera	
+PerspectiveCamera	trayx/cameras.html#PerspectiveCamera	cameras: PerspectiveCamera	
+newRay	trayx/cameras.html#newRay,Point,Vec,float,int	cameras: newRay(origin: Point; dir: Vec; tmin = 0.00001; tmax = Inf; depth: int = 0): Ray	
+areClose	trayx/cameras.html#areClose,Ray,Ray	cameras: areClose(ray1, ray2: Ray): bool	
+at	trayx/cameras.html#at,Ray,float	cameras: at(ray: Ray; t: float): Point	
+transform	trayx/cameras.html#transform,Ray,Transformation	cameras: transform(ray: Ray; t: Transformation): Ray	
+`*`	trayx/cameras.html#*,Ray,Transformation	cameras: `*`(ray: Ray; transformation: Transformation): Ray	
+newOrthogonalCamera	trayx/cameras.html#newOrthogonalCamera,float	cameras: newOrthogonalCamera(aspect_ratio: float = 2.0;\n                    transformation = newTransformation()): OrthogonalCamera	
+newPerspectiveCamera	trayx/cameras.html#newPerspectiveCamera,float,float	cameras: newPerspectiveCamera(distance, aspect_ratio: float;\n                     transformation = newTransformation()): PerspectiveCamera	
+fireRay	trayx/cameras.html#fireRay.e,Camera,float,float	cameras: fireRay(cam: Camera; u, v: float): Ray	
+fireRay	trayx/cameras.html#fireRay.e,OrthogonalCamera,float,float	cameras: fireRay(cam: OrthogonalCamera; u, v: float): Ray	
+fireRay	trayx/cameras.html#fireRay.e,PerspectiveCamera,float,float	cameras: fireRay(cam: PerspectiveCamera; u, v: float): Ray	

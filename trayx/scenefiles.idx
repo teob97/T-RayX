@@ -1,0 +1,62 @@
+WHITESPACE	trayx/scenefiles.html#WHITESPACE	scenefiles: WHITESPACE	
+SYMBOLS	trayx/scenefiles.html#SYMBOLS	scenefiles: SYMBOLS	
+GrammarError	trayx/scenefiles.html#GrammarError	scenefiles: GrammarError	
+SourceLocation	trayx/scenefiles.html#SourceLocation	scenefiles: SourceLocation	
+newSourceLocation	trayx/scenefiles.html#newSourceLocation,string,int,int	scenefiles: newSourceLocation(file_name: string = &quot;&quot;; line_num = 0; col_num = 0): SourceLocation	
+`$`	trayx/scenefiles.html#$,SourceLocation	scenefiles: `$`(location: SourceLocation): string	
+NEW	trayx/scenefiles.html#NEW	KeywordEnum.NEW	
+MATERIAL	trayx/scenefiles.html#MATERIAL	KeywordEnum.MATERIAL	
+PLANE	trayx/scenefiles.html#PLANE	KeywordEnum.PLANE	
+SPHERE	trayx/scenefiles.html#SPHERE	KeywordEnum.SPHERE	
+DIFFUSE	trayx/scenefiles.html#DIFFUSE	KeywordEnum.DIFFUSE	
+SPECULAR	trayx/scenefiles.html#SPECULAR	KeywordEnum.SPECULAR	
+UNIFORM	trayx/scenefiles.html#UNIFORM	KeywordEnum.UNIFORM	
+CHECKERED	trayx/scenefiles.html#CHECKERED	KeywordEnum.CHECKERED	
+IMAGE	trayx/scenefiles.html#IMAGE	KeywordEnum.IMAGE	
+IDENTITY	trayx/scenefiles.html#IDENTITY	KeywordEnum.IDENTITY	
+TRANSLATION	trayx/scenefiles.html#TRANSLATION	KeywordEnum.TRANSLATION	
+ROTATION_X	trayx/scenefiles.html#ROTATION_X	KeywordEnum.ROTATION_X	
+ROTATION_Y	trayx/scenefiles.html#ROTATION_Y	KeywordEnum.ROTATION_Y	
+ROTATION_Z	trayx/scenefiles.html#ROTATION_Z	KeywordEnum.ROTATION_Z	
+SCALING	trayx/scenefiles.html#SCALING	KeywordEnum.SCALING	
+CAMERA	trayx/scenefiles.html#CAMERA	KeywordEnum.CAMERA	
+ORTHOGONAL	trayx/scenefiles.html#ORTHOGONAL	KeywordEnum.ORTHOGONAL	
+PERSPECTIVE	trayx/scenefiles.html#PERSPECTIVE	KeywordEnum.PERSPECTIVE	
+FLOAT	trayx/scenefiles.html#FLOAT	KeywordEnum.FLOAT	
+KeywordEnum	trayx/scenefiles.html#KeywordEnum	scenefiles: KeywordEnum	
+KeywordToken	trayx/scenefiles.html#KeywordToken	TokenKind.KeywordToken	
+IdentifierToken	trayx/scenefiles.html#IdentifierToken	TokenKind.IdentifierToken	
+StringToken	trayx/scenefiles.html#StringToken	TokenKind.StringToken	
+LiteralNumberToken	trayx/scenefiles.html#LiteralNumberToken	TokenKind.LiteralNumberToken	
+SymbolToken	trayx/scenefiles.html#SymbolToken	TokenKind.SymbolToken	
+StopToken	trayx/scenefiles.html#StopToken	TokenKind.StopToken	
+TokenKind	trayx/scenefiles.html#TokenKind	scenefiles: TokenKind	
+Token	trayx/scenefiles.html#Token	scenefiles: Token	
+TokenValue	trayx/scenefiles.html#TokenValue	scenefiles: TokenValue	
+Scene	trayx/scenefiles.html#Scene	scenefiles: Scene	
+InputStream	trayx/scenefiles.html#InputStream	scenefiles: InputStream	
+newInputStream	trayx/scenefiles.html#newInputStream,Stream,string,int	scenefiles: newInputStream(stream: Stream; file_name: string = &quot;&quot;; tabulation = 4): InputStream	
+updatePos	trayx/scenefiles.html#updatePos,InputStream,char	scenefiles: updatePos(strm: var InputStream; ch: char)	
+readChar	trayx/scenefiles.html#readChar,InputStream	scenefiles: readChar(strm: var InputStream): char	
+unreadChar	trayx/scenefiles.html#unreadChar,InputStream,char	scenefiles: unreadChar(strm: var InputStream; ch: char)	
+skipWhitespacesAndComments	trayx/scenefiles.html#skipWhitespacesAndComments,InputStream	scenefiles: skipWhitespacesAndComments(strm: var InputStream)	
+parseStringToken	trayx/scenefiles.html#parseStringToken,InputStream,SourceLocation	scenefiles: parseStringToken(strm: var InputStream; token_location: SourceLocation): Token	
+parseFloatToken	trayx/scenefiles.html#parseFloatToken,InputStream,string,SourceLocation	scenefiles: parseFloatToken(strm: var InputStream; first_char: string;\n                token_location: SourceLocation): Token	
+parseKeywordOrIdentifierToken	trayx/scenefiles.html#parseKeywordOrIdentifierToken,InputStream,string,SourceLocation	scenefiles: parseKeywordOrIdentifierToken(strm: var InputStream; first_char: string;\n                              token_location: SourceLocation): Token	
+readToken	trayx/scenefiles.html#readToken,InputStream	scenefiles: readToken(strm: var InputStream): Token	
+unreadToken	trayx/scenefiles.html#unreadToken,InputStream,Token	scenefiles: unreadToken(strm: var InputStream; token: Token)	
+expectSymbol	trayx/scenefiles.html#expectSymbol,InputStream,string	scenefiles: expectSymbol(input_file: var InputStream; symbol: string)	
+expectKeywords	trayx/scenefiles.html#expectKeywords,InputStream,seq[KeywordEnum]	scenefiles: expectKeywords(input_file: var InputStream; keywords: seq[KeywordEnum]): KeywordEnum	
+expectNumber	trayx/scenefiles.html#expectNumber,InputStream,Scene	scenefiles: expectNumber(input_file: var InputStream; scene: Scene): float	
+expectString	trayx/scenefiles.html#expectString,InputStream	scenefiles: expectString(input_file: var InputStream): string	
+expectIdentifier	trayx/scenefiles.html#expectIdentifier,InputStream	scenefiles: expectIdentifier(input_file: var InputStream): string	
+parseVector	trayx/scenefiles.html#parseVector,InputStream,Scene	scenefiles: parseVector(input_file: var InputStream; scene: Scene): Vec	
+parseColor	trayx/scenefiles.html#parseColor,InputStream,Scene	scenefiles: parseColor(input_file: var InputStream; scene: Scene): Color	
+parsePigment	trayx/scenefiles.html#parsePigment,InputStream,Scene	scenefiles: parsePigment(input_file: var InputStream; scene: Scene): Pigment	
+parseBRDF	trayx/scenefiles.html#parseBRDF,InputStream,Scene	scenefiles: parseBRDF(input_file: var InputStream; scene: Scene): BRDF	
+parseMaterial	trayx/scenefiles.html#parseMaterial,InputStream,Scene	scenefiles: parseMaterial(input_file: var InputStream; scene: Scene): (string, Material)	
+parseTransformation	trayx/scenefiles.html#parseTransformation,InputStream,Scene	scenefiles: parseTransformation(input_file: var InputStream; scene: Scene): Transformation	
+parseSphere	trayx/scenefiles.html#parseSphere,InputStream,Scene	scenefiles: parseSphere(input_file: var InputStream; scene: Scene): Sphere	
+parsePlane	trayx/scenefiles.html#parsePlane,InputStream,Scene	scenefiles: parsePlane(input_file: var InputStream; scene: Scene): Plane	
+parseCamera	trayx/scenefiles.html#parseCamera,InputStream,Scene	scenefiles: parseCamera(input_file: var InputStream; scene: Scene): Camera	
+parseScene	trayx/scenefiles.html#parseScene,InputStream,Table[string,float]	scenefiles: parseScene(input_file: var InputStream;\n           variables: Table[string, float] = initTable()): Scene	

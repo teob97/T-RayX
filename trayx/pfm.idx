@@ -1,0 +1,7 @@
+InvalidPfmFileFormat	trayx/pfm.html#InvalidPfmFileFormat	pfm: InvalidPfmFileFormat	
+readFloat	trayx/pfm.html#readFloat,Stream,float	pfm: readFloat(stream: Stream; endianness: float): float32	
+parseImgSize	trayx/pfm.html#parseImgSize,string	pfm: parseImgSize(line: string): (int, int)	
+parseEndianness	trayx/pfm.html#parseEndianness,string	pfm: parseEndianness(line: string): float32	
+readPfmImage	trayx/pfm.html#readPfmImage,Stream	pfm: readPfmImage(stream: Stream): HdrImage	
+writeFloat	trayx/pfm.html#writeFloat,Stream,float32,float32	pfm: writeFloat(stream: Stream; color: float32; endianness: float32)	
+writePfmImage	trayx/pfm.html#writePfmImage,HdrImage,Stream,float32	pfm: writePfmImage(img: HdrImage; stream: Stream; endianness: float32 = -1.0)	

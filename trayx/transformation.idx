@@ -1,0 +1,18 @@
+Transformation	trayx/transformation.html#Transformation	transformation: Transformation	
+`[]`	trayx/transformation.html#[],array[,float],int,int	transformation: `[]`(m: array[16, float]; x, y: int): float	
+`*`	trayx/transformation.html#*,array[,float],array[,float]	transformation: `*`(m1, m2: array[16, float]): array[16, float]	
+areMatrClose	trayx/transformation.html#areMatrClose,array[,float],array[,float],float	transformation: areMatrClose(m1, m2: array[16, float]; epsilon: float = 0.00001): bool	
+diffOfProduct	trayx/transformation.html#diffOfProduct,float,float,float,float	transformation: diffOfProduct(m1, m2, m3, m4: float): float	
+newTransformation	trayx/transformation.html#newTransformation	transformation: newTransformation(m = IDENTITY_MATRIX4x4; invm = IDENTITY_MATRIX4x4): Transformation	
+inverse	trayx/transformation.html#inverse,Transformation	transformation: inverse(T: Transformation): Transformation	
+isConsistent	trayx/transformation.html#isConsistent,Transformation	transformation: isConsistent(T: Transformation): bool	
+isClose	trayx/transformation.html#isClose,Transformation,Transformation	transformation: isClose(T1: Transformation; T2: Transformation): bool	
+`*`	trayx/transformation.html#*,Transformation,Vec	transformation: `*`(T: Transformation; v: Vec): Vec	
+`*`	trayx/transformation.html#*,Transformation,Point	transformation: `*`(T: Transformation; p: Point): Point	
+`*`	trayx/transformation.html#*,Transformation,Normal	transformation: `*`(T: Transformation; n: Normal): Normal	
+`*`	trayx/transformation.html#*,Transformation,Transformation	transformation: `*`(T1: Transformation; T2: Transformation): Transformation	
+translation	trayx/transformation.html#translation,Vec	transformation: translation(v: Vec): Transformation	
+scaling	trayx/transformation.html#scaling,Vec	transformation: scaling(v: Vec): Transformation	
+rotation_x	trayx/transformation.html#rotation_x,float	transformation: rotation_x(angle_deg: float): Transformation	
+rotation_y	trayx/transformation.html#rotation_y,float	transformation: rotation_y(angle_deg: float): Transformation	
+rotation_z	trayx/transformation.html#rotation_z,float	transformation: rotation_z(angle_deg: float): Transformation	

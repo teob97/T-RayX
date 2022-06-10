@@ -70,73 +70,1009 @@ window.addEventListener('DOMContentLoaded', main);
 <div class="document" id="documentId">
   <div class="container">
     <h1 class="title">Index</h1>
-    Modules: <a href="basictypes.html">basictypes</a>.<br/><p /><h2>API symbols</h2>
-<dl><dt><a name="%60%2A%60" href="#%60%2A%60"><span>`*`:</span></a></dt><dd><ul class="simple">
+    Modules: <a href="trayx.html">trayx</a>, <a href="trayx/basictypes.html">trayx/basictypes</a>, <a href="trayx/cameras.html">trayx/cameras</a>, <a href="trayx/geometry.html">trayx/geometry</a>, <a href="trayx/imagetracer.html">trayx/imagetracer</a>, <a href="trayx/ldr.html">trayx/ldr</a>, <a href="trayx/materials.html">trayx/materials</a>, <a href="trayx/pcg.html">trayx/pcg</a>, <a href="trayx/pfm.html">trayx/pfm</a>, <a href="trayx/renderer.html">trayx/renderer</a>, <a href="trayx/scenefiles.html">trayx/scenefiles</a>, <a href="trayx/shapes.html">trayx/shapes</a>, <a href="trayx/transformation.html">trayx/transformation</a>.<br/><p /><h2>API symbols</h2>
+<dl><dt><a name="%60%24%60" href="#%60%24%60"><span>`$`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="basictypes: `*`(c1, c2: Color): Color" href="basictypes.html#%2A%2CColor%2CColor">basictypes: `*`(c1, c2: Color): Color</a></li>
+          data-doc-search-tag="geometry: `$`(arg`gensym5: Normal): string" href="trayx/geometry.html#%24%2CNormal">geometry: `$`(arg`gensym5: Normal): string</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="basictypes: `*`(c: Color; a: float32): Color" href="basictypes.html#%2A%2CColor%2Cfloat32">basictypes: `*`(c: Color; a: float32): Color</a></li>
+          data-doc-search-tag="geometry: `$`(arg`gensym4: Point): string" href="trayx/geometry.html#%24%2CPoint">geometry: `$`(arg`gensym4: Point): string</a></li>
           <li><a class="reference external"
-          data-doc-search-tag="basictypes: `*`(a: float32; c: Color): Color" href="basictypes.html#%2A%2Cfloat32%2CColor">basictypes: `*`(a: float32; c: Color): Color</a></li>
+          data-doc-search-tag="geometry: `$`(arg`gensym3: Vec): string" href="trayx/geometry.html#%24%2CVec">geometry: `$`(arg`gensym3: Vec): string</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="scenefiles: `$`(location: SourceLocation): string" href="trayx/scenefiles.html#%24%2CSourceLocation">scenefiles: `$`(location: SourceLocation): string</a></li>
+          </ul></dd>
+<dt><a name="%60%2A%60" href="#%60%2A%60"><span>`*`:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="basictypes: `*`(c1, c2: Color): Color" href="trayx/basictypes.html#%2A%2CColor%2CColor">basictypes: `*`(c1, c2: Color): Color</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="basictypes: `*`(c: Color; a: float32): Color" href="trayx/basictypes.html#%2A%2CColor%2Cfloat32">basictypes: `*`(c: Color; a: float32): Color</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="basictypes: `*`(a: float32; c: Color): Color" href="trayx/basictypes.html#%2A%2Cfloat32%2CColor">basictypes: `*`(a: float32; c: Color): Color</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="cameras: `*`(ray: Ray; transformation: Transformation): Ray" href="trayx/cameras.html#%2A%2CRay%2CTransformation">cameras: `*`(ray: Ray; transformation: Transformation): Ray</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `*`(arg1`gensym11: float; arg2`gensym11: Normal): Normal" href="trayx/geometry.html#%2A%2Cfloat%2CNormal">geometry: `*`(arg1`gensym11: float; arg2`gensym11: Normal): Normal</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `*`(arg1`gensym10: float; arg2`gensym10: Point): Point" href="trayx/geometry.html#%2A%2Cfloat%2CPoint">geometry: `*`(arg1`gensym10: float; arg2`gensym10: Point): Point</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `*`(arg1`gensym9: float; arg2`gensym9: Vec): Vec" href="trayx/geometry.html#%2A%2Cfloat%2CVec">geometry: `*`(arg1`gensym9: float; arg2`gensym9: Vec): Vec</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `*`(arg2`gensym11: Normal; arg1`gensym11: float): Normal" href="trayx/geometry.html#%2A%2CNormal%2Cfloat">geometry: `*`(arg2`gensym11: Normal; arg1`gensym11: float): Normal</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `*`(arg2`gensym10: Point; arg1`gensym10: float): Point" href="trayx/geometry.html#%2A%2CPoint%2Cfloat">geometry: `*`(arg2`gensym10: Point; arg1`gensym10: float): Point</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `*`(arg2`gensym9: Vec; arg1`gensym9: float): Vec" href="trayx/geometry.html#%2A%2CVec%2Cfloat">geometry: `*`(arg2`gensym9: Vec; arg1`gensym9: float): Vec</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="transformation: `*`(m1, m2: array[16, float]): array[16, float]" href="trayx/transformation.html#%2A%2Carray%5B%2Cfloat%5D%2Carray%5B%2Cfloat%5D">transformation: `*`(m1, m2: array[16, float]): array[16, float]</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="transformation: `*`(T: Transformation; n: Normal): Normal" href="trayx/transformation.html#%2A%2CTransformation%2CNormal">transformation: `*`(T: Transformation; n: Normal): Normal</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="transformation: `*`(T: Transformation; p: Point): Point" href="trayx/transformation.html#%2A%2CTransformation%2CPoint">transformation: `*`(T: Transformation; p: Point): Point</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="transformation: `*`(T1: Transformation; T2: Transformation): Transformation" href="trayx/transformation.html#%2A%2CTransformation%2CTransformation">transformation: `*`(T1: Transformation; T2: Transformation): Transformation</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="transformation: `*`(T: Transformation; v: Vec): Vec" href="trayx/transformation.html#%2A%2CTransformation%2CVec">transformation: `*`(T: Transformation; v: Vec): Vec</a></li>
           </ul></dd>
 <dt><a name="%60%2B%60" href="#%60%2B%60"><span>`+`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="basictypes: `+`(c1: Color; c2: Color): Color" href="basictypes.html#%2B%2CColor%2CColor">basictypes: `+`(c1: Color; c2: Color): Color</a></li>
+          data-doc-search-tag="basictypes: `+`(c1: Color; c2: Color): Color" href="trayx/basictypes.html#%2B%2CColor%2CColor">basictypes: `+`(c1: Color; c2: Color): Color</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `+`(a`gensym23: Normal; b`gensym23: Normal): Normal" href="trayx/geometry.html#%2B%2CNormal%2CNormal">geometry: `+`(a`gensym23: Normal; b`gensym23: Normal): Normal</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `+`(a`gensym21: Point; b`gensym21: Vec): Point" href="trayx/geometry.html#%2B%2CPoint%2CVec">geometry: `+`(a`gensym21: Point; b`gensym21: Vec): Point</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `+`(a`gensym20: Vec; b`gensym20: Point): Point" href="trayx/geometry.html#%2B%2CVec%2CPoint">geometry: `+`(a`gensym20: Vec; b`gensym20: Point): Point</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `+`(a`gensym18: Vec; b`gensym18: Vec): Vec" href="trayx/geometry.html#%2B%2CVec%2CVec">geometry: `+`(a`gensym18: Vec; b`gensym18: Vec): Vec</a></li>
           </ul></dd>
 <dt><a name="%60-%60" href="#%60-%60"><span>`-`:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="basictypes: `-`(c1: Color; c2: Color): Color" href="basictypes.html#-%2CColor%2CColor">basictypes: `-`(c1: Color; c2: Color): Color</a></li>
+          data-doc-search-tag="basictypes: `-`(c1: Color; c2: Color): Color" href="trayx/basictypes.html#-%2CColor%2CColor">basictypes: `-`(c1: Color; c2: Color): Color</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `-`(arg`gensym13: Normal): Normal" href="trayx/geometry.html#-%2CNormal">geometry: `-`(arg`gensym13: Normal): Normal</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `-`(a`gensym24: Normal; b`gensym24: Normal): Normal" href="trayx/geometry.html#-%2CNormal%2CNormal">geometry: `-`(a`gensym24: Normal; b`gensym24: Normal): Normal</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `-`(a`gensym25: Point; b`gensym25: Point): Vec" href="trayx/geometry.html#-%2CPoint%2CPoint">geometry: `-`(a`gensym25: Point; b`gensym25: Point): Vec</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `-`(a`gensym22: Point; b`gensym22: Vec): Point" href="trayx/geometry.html#-%2CPoint%2CVec">geometry: `-`(a`gensym22: Point; b`gensym22: Vec): Point</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `-`(arg`gensym12: Vec): Vec" href="trayx/geometry.html#-%2CVec">geometry: `-`(arg`gensym12: Vec): Vec</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: `-`(a`gensym19: Vec; b`gensym19: Vec): Vec" href="trayx/geometry.html#-%2CVec%2CVec">geometry: `-`(a`gensym19: Vec; b`gensym19: Vec): Vec</a></li>
+          </ul></dd>
+<dt><a name="%60%5B%5D%60" href="#%60%5B%5D%60"><span>`[]`:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="transformation: `[]`(m: array[16, float]; x, y: int): float" href="trayx/transformation.html#%5B%5D%2Carray%5B%2Cfloat%5D%2Cint%2Cint">transformation: `[]`(m: array[16, float]; x, y: int): float</a></li>
+          </ul></dd>
+<dt><a name="AABoundingBox" href="#AABoundingBox"><span>AABoundingBox:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: AABoundingBox" href="trayx/shapes.html#AABoundingBox">shapes: AABoundingBox</a></li>
+          </ul></dd>
+<dt><a name="AABox" href="#AABox"><span>AABox:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: AABox" href="trayx/shapes.html#AABox">shapes: AABox</a></li>
+          </ul></dd>
+<dt><a name="AABoxPointToUV" href="#AABoxPointToUV"><span>AABoxPointToUV:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: AABoxPointToUV(point: Point): Vec2d" href="trayx/shapes.html#AABoxPointToUV%2CPoint">shapes: AABoxPointToUV(point: Point): Vec2d</a></li>
           </ul></dd>
 <dt><a name="areClose" href="#areClose"><span>areClose:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="basictypes: areClose(c1, c2: Color; epsilon: float32 = 0.00001): bool" href="basictypes.html#areClose%2CColor%2CColor%2Cfloat32">basictypes: areClose(c1, c2: Color; epsilon: float32 = 0.00001): bool</a></li>
+          data-doc-search-tag="basictypes: areClose(c1, c2: Color; epsilon: float32 = 0.00001): bool" href="trayx/basictypes.html#areClose%2CColor%2CColor%2Cfloat32">basictypes: areClose(c1, c2: Color; epsilon: float32 = 0.00001): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="cameras: areClose(ray1, ray2: Ray): bool" href="trayx/cameras.html#areClose%2CRay%2CRay">cameras: areClose(ray1, ray2: Ray): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: areClose(arg1`gensym8, arg2`gensym8: Normal; e`gensym8 = 0.00001): bool" href="trayx/geometry.html#areClose%2CNormal%2CNormal%2Cfloat">geometry: areClose(arg1`gensym8, arg2`gensym8: Normal; e`gensym8 = 0.00001): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: areClose(arg1`gensym7, arg2`gensym7: Point; e`gensym7 = 0.00001): bool" href="trayx/geometry.html#areClose%2CPoint%2CPoint%2Cfloat">geometry: areClose(arg1`gensym7, arg2`gensym7: Point; e`gensym7 = 0.00001): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: areClose(arg1`gensym6, arg2`gensym6: Vec; e`gensym6 = 0.00001): bool" href="trayx/geometry.html#areClose%2CVec%2CVec%2Cfloat">geometry: areClose(arg1`gensym6, arg2`gensym6: Vec; e`gensym6 = 0.00001): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: areClose(v1, v2: Vec2d; epsilon: float = 0.00001): bool" href="trayx/geometry.html#areClose%2CVec2d%2CVec2d%2Cfloat">geometry: areClose(v1, v2: Vec2d; epsilon: float = 0.00001): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="shapes: areClose(h1, h2: HitRecord; epsilon: float = 0.00001): bool" href="trayx/shapes.html#areClose%2CHitRecord%2CHitRecord%2Cfloat">shapes: areClose(h1, h2: HitRecord; epsilon: float = 0.00001): bool</a></li>
+          </ul></dd>
+<dt><a name="areMatrClose" href="#areMatrClose"><span>areMatrClose:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="transformation: areMatrClose(m1, m2: array[16, float]; epsilon: float = 0.00001): bool" href="trayx/transformation.html#areMatrClose%2Carray%5B%2Cfloat%5D%2Carray%5B%2Cfloat%5D%2Cfloat">transformation: areMatrClose(m1, m2: array[16, float]; epsilon: float = 0.00001): bool</a></li>
+          </ul></dd>
+<dt><a name="at" href="#at"><span>at:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cameras: at(ray: Ray; t: float): Point" href="trayx/cameras.html#at%2CRay%2Cfloat">cameras: at(ray: Ray; t: float): Point</a></li>
+          </ul></dd>
+<dt><a name="averageLuminosity" href="#averageLuminosity"><span>averageLuminosity:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="ldr: averageLuminosity(img: HdrImage; delta: float32 = 1e-10): float32" href="trayx/ldr.html#averageLuminosity%2CHdrImage%2Cfloat32">ldr: averageLuminosity(img: HdrImage; delta: float32 = 1e-10): float32</a></li>
           </ul></dd>
 <dt><a name="BLACK" href="#BLACK"><span>BLACK:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="basictypes: BLACK" href="basictypes.html#BLACK">basictypes: BLACK</a></li>
+          data-doc-search-tag="basictypes: BLACK" href="trayx/basictypes.html#BLACK">basictypes: BLACK</a></li>
+          </ul></dd>
+<dt><a name="BRDF" href="#BRDF"><span>BRDF:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: BRDF" href="trayx/materials.html#BRDF">materials: BRDF</a></li>
+          </ul></dd>
+<dt><a name="Camera" href="#Camera"><span>Camera:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cameras: Camera" href="trayx/cameras.html#Camera">cameras: Camera</a></li>
+          </ul></dd>
+<dt><a name="CAMERA" href="#CAMERA"><span>CAMERA:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.CAMERA" href="trayx/scenefiles.html#CAMERA">KeywordEnum.CAMERA</a></li>
+          </ul></dd>
+<dt><a name="CHECKERED" href="#CHECKERED"><span>CHECKERED:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.CHECKERED" href="trayx/scenefiles.html#CHECKERED">KeywordEnum.CHECKERED</a></li>
+          </ul></dd>
+<dt><a name="CheckeredPigment" href="#CheckeredPigment"><span>CheckeredPigment:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: CheckeredPigment" href="trayx/materials.html#CheckeredPigment">materials: CheckeredPigment</a></li>
+          </ul></dd>
+<dt><a name="clamp" href="#clamp"><span>clamp:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="ldr: clamp(x: float32): float32" href="trayx/ldr.html#clamp%2Cfloat32">ldr: clamp(x: float32): float32</a></li>
+          </ul></dd>
+<dt><a name="clampImage" href="#clampImage"><span>clampImage:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="ldr: clampImage(img: var HdrImage)" href="trayx/ldr.html#clampImage%2CHdrImage">ldr: clampImage(img: var HdrImage)</a></li>
           </ul></dd>
 <dt><a name="Color" href="#Color"><span>Color:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="basictypes: Color" href="basictypes.html#Color">basictypes: Color</a></li>
+          data-doc-search-tag="basictypes: Color" href="trayx/basictypes.html#Color">basictypes: Color</a></li>
+          </ul></dd>
+<dt><a name="createONBfromZ" href="#createONBfromZ"><span>createONBfromZ:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: createONBfromZ(normal: Normal): ONB" href="trayx/geometry.html#createONBfromZ%2CNormal">geometry: createONBfromZ(normal: Normal): ONB</a></li>
+          </ul></dd>
+<dt><a name="cross" href="#cross"><span>cross:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: cross(arg1`gensym17: Normal; arg2`gensym17: Normal): Vec" href="trayx/geometry.html#cross%2CNormal%2CNormal">geometry: cross(arg1`gensym17: Normal; arg2`gensym17: Normal): Vec</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: cross(arg1`gensym15: Normal; arg2`gensym15: Vec): Vec" href="trayx/geometry.html#cross%2CNormal%2CVec">geometry: cross(arg1`gensym15: Normal; arg2`gensym15: Vec): Vec</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: cross(arg1`gensym14: Vec; arg2`gensym14: Normal): Vec" href="trayx/geometry.html#cross%2CVec%2CNormal">geometry: cross(arg1`gensym14: Vec; arg2`gensym14: Normal): Vec</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: cross(arg1`gensym16: Vec; arg2`gensym16: Vec): Vec" href="trayx/geometry.html#cross%2CVec%2CVec">geometry: cross(arg1`gensym16: Vec; arg2`gensym16: Vec): Vec</a></li>
+          </ul></dd>
+<dt><a name="Cylinder" href="#Cylinder"><span>Cylinder:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: Cylinder" href="trayx/shapes.html#Cylinder">shapes: Cylinder</a></li>
+          </ul></dd>
+<dt><a name="define_3dop" href="#define_3dop"><span>define_3dop:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: define_3dop(fname: untyped; type1: typedesc; type2: typedesc; rettype: typedesc)" href="trayx/geometry.html#define_3dop.t%2Cuntyped%2Ctypedesc%2Ctypedesc%2Ctypedesc">geometry: define_3dop(fname: untyped; type1: typedesc; type2: typedesc; rettype: typedesc)</a></li>
+          </ul></dd>
+<dt><a name="define_dot" href="#define_dot"><span>define_dot:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: define_dot(type1: typedesc; type2: typedesc)" href="trayx/geometry.html#define_dot.t%2Ctypedesc%2Ctypedesc">geometry: define_dot(type1: typedesc; type2: typedesc)</a></li>
+          </ul></dd>
+<dt><a name="define_norm" href="#define_norm"><span>define_norm:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: define_norm(t: typedesc)" href="trayx/geometry.html#define_norm.t%2Ctypedesc">geometry: define_norm(t: typedesc)</a></li>
+          </ul></dd>
+<dt><a name="define_normalization" href="#define_normalization"><span>define_normalization:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: define_normalization(t: typedesc)" href="trayx/geometry.html#define_normalization.t%2Ctypedesc">geometry: define_normalization(t: typedesc)</a></li>
+          </ul></dd>
+<dt><a name="define_normalized_dot" href="#define_normalized_dot"><span>define_normalized_dot:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: define_normalized_dot(t1, t2: typedesc)" href="trayx/geometry.html#define_normalized_dot.t%2Ctypedesc%2Ctypedesc">geometry: define_normalized_dot(t1, t2: typedesc)</a></li>
+          </ul></dd>
+<dt><a name="define_product" href="#define_product"><span>define_product:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: define_product(t: typedesc)" href="trayx/geometry.html#define_product.t%2Ctypedesc">geometry: define_product(t: typedesc)</a></li>
+          </ul></dd>
+<dt><a name="define_squared_norm" href="#define_squared_norm"><span>define_squared_norm:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: define_squared_norm(t: typedesc)" href="trayx/geometry.html#define_squared_norm.t%2Ctypedesc">geometry: define_squared_norm(t: typedesc)</a></li>
+          </ul></dd>
+<dt><a name="diffOfProduct" href="#diffOfProduct"><span>diffOfProduct:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="transformation: diffOfProduct(m1, m2, m3, m4: float): float" href="trayx/transformation.html#diffOfProduct%2Cfloat%2Cfloat%2Cfloat%2Cfloat">transformation: diffOfProduct(m1, m2, m3, m4: float): float</a></li>
+          </ul></dd>
+<dt><a name="DIFFUSE" href="#DIFFUSE"><span>DIFFUSE:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.DIFFUSE" href="trayx/scenefiles.html#DIFFUSE">KeywordEnum.DIFFUSE</a></li>
+          </ul></dd>
+<dt><a name="DiffuseBRDF" href="#DiffuseBRDF"><span>DiffuseBRDF:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: DiffuseBRDF" href="trayx/materials.html#DiffuseBRDF">materials: DiffuseBRDF</a></li>
+          </ul></dd>
+<dt><a name="dot" href="#dot"><span>dot:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: dot(a`gensym29: Normal; b`gensym29: Normal): float" href="trayx/geometry.html#dot%2CNormal%2CNormal">geometry: dot(a`gensym29: Normal; b`gensym29: Normal): float</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: dot(a`gensym28: Normal; b`gensym28: Vec): float" href="trayx/geometry.html#dot%2CNormal%2CVec">geometry: dot(a`gensym28: Normal; b`gensym28: Vec): float</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: dot(a`gensym27: Vec; b`gensym27: Normal): float" href="trayx/geometry.html#dot%2CVec%2CNormal">geometry: dot(a`gensym27: Vec; b`gensym27: Normal): float</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: dot(a`gensym26: Vec; b`gensym26: Vec): float" href="trayx/geometry.html#dot%2CVec%2CVec">geometry: dot(a`gensym26: Vec; b`gensym26: Vec): float</a></li>
+          </ul></dd>
+<dt><a name="eq_2deg_solver" href="#eq_2deg_solver"><span>eq_2deg_solver:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: eq_2deg_solver(a, b, c: float): array[2, float]" href="trayx/shapes.html#eq_2deg_solver%2Cfloat%2Cfloat%2Cfloat">shapes: eq_2deg_solver(a, b, c: float): array[2, float]</a></li>
+          </ul></dd>
+<dt><a name="eval" href="#eval"><span>eval:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: eval(brdf: BRDF; normal: Normal; in_dir, out_dir: Vec; uv: Vec2d): Color" href="trayx/materials.html#eval.e%2CBRDF%2CNormal%2CVec%2CVec%2CVec2d">materials: eval(brdf: BRDF; normal: Normal; in_dir, out_dir: Vec; uv: Vec2d): Color</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="materials: eval(brdf: DiffuseBRDF; normal: Normal; in_dir, out_dir: Vec; uv: Vec2d): Color" href="trayx/materials.html#eval.e%2CDiffuseBRDF%2CNormal%2CVec%2CVec%2CVec2d">materials: eval(brdf: DiffuseBRDF; normal: Normal; in_dir, out_dir: Vec; uv: Vec2d): Color</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="materials: eval(brdf: SpecularBRDF; normal: Normal; in_dir, out_dir: Vec; uv: Vec2d): Color" href="trayx/materials.html#eval.e%2CSpecularBRDF%2CNormal%2CVec%2CVec%2CVec2d">materials: eval(brdf: SpecularBRDF; normal: Normal; in_dir, out_dir: Vec; uv: Vec2d): Color</a></li>
+          </ul></dd>
+<dt><a name="expectIdentifier" href="#expectIdentifier"><span>expectIdentifier:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: expectIdentifier(input_file: var InputStream): string" href="trayx/scenefiles.html#expectIdentifier%2CInputStream">scenefiles: expectIdentifier(input_file: var InputStream): string</a></li>
+          </ul></dd>
+<dt><a name="expectKeywords" href="#expectKeywords"><span>expectKeywords:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: expectKeywords(input_file: var InputStream; keywords: seq[KeywordEnum]): KeywordEnum" href="trayx/scenefiles.html#expectKeywords%2CInputStream%2Cseq%5BKeywordEnum%5D">scenefiles: expectKeywords(input_file: var InputStream; keywords: seq[KeywordEnum]): KeywordEnum</a></li>
+          </ul></dd>
+<dt><a name="expectNumber" href="#expectNumber"><span>expectNumber:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: expectNumber(input_file: var InputStream; scene: Scene): float" href="trayx/scenefiles.html#expectNumber%2CInputStream%2CScene">scenefiles: expectNumber(input_file: var InputStream; scene: Scene): float</a></li>
+          </ul></dd>
+<dt><a name="expectString" href="#expectString"><span>expectString:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: expectString(input_file: var InputStream): string" href="trayx/scenefiles.html#expectString%2CInputStream">scenefiles: expectString(input_file: var InputStream): string</a></li>
+          </ul></dd>
+<dt><a name="expectSymbol" href="#expectSymbol"><span>expectSymbol:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: expectSymbol(input_file: var InputStream; symbol: string)" href="trayx/scenefiles.html#expectSymbol%2CInputStream%2Cstring">scenefiles: expectSymbol(input_file: var InputStream; symbol: string)</a></li>
+          </ul></dd>
+<dt><a name="fireAllRays" href="#fireAllRays"><span>fireAllRays:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="imagetracer: fireAllRays(imageT: var ImageTracer; renderer: Renderer)" href="trayx/imagetracer.html#fireAllRays%2CImageTracer%2CRenderer">imagetracer: fireAllRays(imageT: var ImageTracer; renderer: Renderer)</a></li>
+          </ul></dd>
+<dt><a name="fireRay" href="#fireRay"><span>fireRay:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cameras: fireRay(cam: Camera; u, v: float): Ray" href="trayx/cameras.html#fireRay.e%2CCamera%2Cfloat%2Cfloat">cameras: fireRay(cam: Camera; u, v: float): Ray</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="cameras: fireRay(cam: OrthogonalCamera; u, v: float): Ray" href="trayx/cameras.html#fireRay.e%2COrthogonalCamera%2Cfloat%2Cfloat">cameras: fireRay(cam: OrthogonalCamera; u, v: float): Ray</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="cameras: fireRay(cam: PerspectiveCamera; u, v: float): Ray" href="trayx/cameras.html#fireRay.e%2CPerspectiveCamera%2Cfloat%2Cfloat">cameras: fireRay(cam: PerspectiveCamera; u, v: float): Ray</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="imagetracer: fireRay(imageT: ImageTracer; col: int; row: int; u_pixel = 0.5; v_pixel = 0.5): Ray" href="trayx/imagetracer.html#fireRay%2CImageTracer%2Cint%2Cint%2Cfloat%2Cfloat">imagetracer: fireRay(imageT: ImageTracer; col: int; row: int; u_pixel = 0.5; v_pixel = 0.5): Ray</a></li>
+          </ul></dd>
+<dt><a name="FlatRenderer" href="#FlatRenderer"><span>FlatRenderer:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="renderer: FlatRenderer" href="trayx/renderer.html#FlatRenderer">renderer: FlatRenderer</a></li>
+          </ul></dd>
+<dt><a name="FLOAT" href="#FLOAT"><span>FLOAT:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.FLOAT" href="trayx/scenefiles.html#FLOAT">KeywordEnum.FLOAT</a></li>
+          </ul></dd>
+<dt><a name="getColor" href="#getColor"><span>getColor:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: getColor(pig: CheckeredPigment; uv: Vec2d): Color" href="trayx/materials.html#getColor.e%2CCheckeredPigment%2CVec2d">materials: getColor(pig: CheckeredPigment; uv: Vec2d): Color</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="materials: getColor(pig: ImagePigment; uv: Vec2d): Color" href="trayx/materials.html#getColor.e%2CImagePigment%2CVec2d">materials: getColor(pig: ImagePigment; uv: Vec2d): Color</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="materials: getColor(pig: Pigment; uv: Vec2d): Color" href="trayx/materials.html#getColor.e%2CPigment%2CVec2d">materials: getColor(pig: Pigment; uv: Vec2d): Color</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="materials: getColor(pig: UniformPigment; uv: Vec2d): Color" href="trayx/materials.html#getColor.e%2CUniformPigment%2CVec2d">materials: getColor(pig: UniformPigment; uv: Vec2d): Color</a></li>
           </ul></dd>
 <dt><a name="getPixel" href="#getPixel"><span>getPixel:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="basictypes: getPixel(img: HdrImage; x, y: int): Color" href="basictypes.html#getPixel%2CHdrImage%2Cint%2Cint">basictypes: getPixel(img: HdrImage; x, y: int): Color</a></li>
+          data-doc-search-tag="basictypes: getPixel(img: HdrImage; x, y: int): Color" href="trayx/basictypes.html#getPixel%2CHdrImage%2Cint%2Cint">basictypes: getPixel(img: HdrImage; x, y: int): Color</a></li>
+          </ul></dd>
+<dt><a name="GrammarError" href="#GrammarError"><span>GrammarError:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: GrammarError" href="trayx/scenefiles.html#GrammarError">scenefiles: GrammarError</a></li>
           </ul></dd>
 <dt><a name="HdrImage" href="#HdrImage"><span>HdrImage:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="basictypes: HdrImage" href="basictypes.html#HdrImage">basictypes: HdrImage</a></li>
+          data-doc-search-tag="basictypes: HdrImage" href="trayx/basictypes.html#HdrImage">basictypes: HdrImage</a></li>
+          </ul></dd>
+<dt><a name="HitRecord" href="#HitRecord"><span>HitRecord:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: HitRecord" href="trayx/shapes.html#HitRecord">shapes: HitRecord</a></li>
+          </ul></dd>
+<dt><a name="IdentifierToken" href="#IdentifierToken"><span>IdentifierToken:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="TokenKind.IdentifierToken" href="trayx/scenefiles.html#IdentifierToken">TokenKind.IdentifierToken</a></li>
+          </ul></dd>
+<dt><a name="IDENTITY" href="#IDENTITY"><span>IDENTITY:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.IDENTITY" href="trayx/scenefiles.html#IDENTITY">KeywordEnum.IDENTITY</a></li>
+          </ul></dd>
+<dt><a name="IMAGE" href="#IMAGE"><span>IMAGE:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.IMAGE" href="trayx/scenefiles.html#IMAGE">KeywordEnum.IMAGE</a></li>
+          </ul></dd>
+<dt><a name="ImagePigment" href="#ImagePigment"><span>ImagePigment:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: ImagePigment" href="trayx/materials.html#ImagePigment">materials: ImagePigment</a></li>
+          </ul></dd>
+<dt><a name="ImageTracer" href="#ImageTracer"><span>ImageTracer:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="imagetracer: ImageTracer" href="trayx/imagetracer.html#ImageTracer">imagetracer: ImageTracer</a></li>
+          </ul></dd>
+<dt><a name="InputStream" href="#InputStream"><span>InputStream:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: InputStream" href="trayx/scenefiles.html#InputStream">scenefiles: InputStream</a></li>
+          </ul></dd>
+<dt><a name="InvalidPfmFileFormat" href="#InvalidPfmFileFormat"><span>InvalidPfmFileFormat:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="pfm: InvalidPfmFileFormat" href="trayx/pfm.html#InvalidPfmFileFormat">pfm: InvalidPfmFileFormat</a></li>
+          </ul></dd>
+<dt><a name="inverse" href="#inverse"><span>inverse:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="transformation: inverse(T: Transformation): Transformation" href="trayx/transformation.html#inverse%2CTransformation">transformation: inverse(T: Transformation): Transformation</a></li>
+          </ul></dd>
+<dt><a name="isClose" href="#isClose"><span>isClose:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="transformation: isClose(T1: Transformation; T2: Transformation): bool" href="trayx/transformation.html#isClose%2CTransformation%2CTransformation">transformation: isClose(T1: Transformation; T2: Transformation): bool</a></li>
+          </ul></dd>
+<dt><a name="isConsistent" href="#isConsistent"><span>isConsistent:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="transformation: isConsistent(T: Transformation): bool" href="trayx/transformation.html#isConsistent%2CTransformation">transformation: isConsistent(T: Transformation): bool</a></li>
+          </ul></dd>
+<dt><a name="is_point_visible" href="#is_point_visible"><span>is_point_visible:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: is_point_visible(world: World; point: Point; observer_pos: Point): bool" href="trayx/shapes.html#is_point_visible%2CWorld%2CPoint%2CPoint">shapes: is_point_visible(world: World; point: Point; observer_pos: Point): bool</a></li>
+          </ul></dd>
+<dt><a name="KeywordEnum" href="#KeywordEnum"><span>KeywordEnum:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: KeywordEnum" href="trayx/scenefiles.html#KeywordEnum">scenefiles: KeywordEnum</a></li>
+          </ul></dd>
+<dt><a name="KeywordToken" href="#KeywordToken"><span>KeywordToken:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="TokenKind.KeywordToken" href="trayx/scenefiles.html#KeywordToken">TokenKind.KeywordToken</a></li>
+          </ul></dd>
+<dt><a name="LiteralNumberToken" href="#LiteralNumberToken"><span>LiteralNumberToken:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="TokenKind.LiteralNumberToken" href="trayx/scenefiles.html#LiteralNumberToken">TokenKind.LiteralNumberToken</a></li>
+          </ul></dd>
+<dt><a name="luminosity" href="#luminosity"><span>luminosity:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="ldr: luminosity(c: Color): float32" href="trayx/ldr.html#luminosity%2CColor">ldr: luminosity(c: Color): float32</a></li>
+          </ul></dd>
+<dt><a name="Material" href="#Material"><span>Material:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: Material" href="trayx/materials.html#Material">materials: Material</a></li>
+          </ul></dd>
+<dt><a name="MATERIAL" href="#MATERIAL"><span>MATERIAL:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.MATERIAL" href="trayx/scenefiles.html#MATERIAL">KeywordEnum.MATERIAL</a></li>
+          </ul></dd>
+<dt><a name="NEW" href="#NEW"><span>NEW:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.NEW" href="trayx/scenefiles.html#NEW">KeywordEnum.NEW</a></li>
+          </ul></dd>
+<dt><a name="newAABox" href="#newAABox"><span>newAABox:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: newAABox(pmin: Point = newPoint(0, 0, 0); pmax: Point = newPoint(1, 1, 1);
+         transformation: Transformation = newTransformation();
+         material: Material = newMaterial()): AABox" href="trayx/shapes.html#newAABox%2CPoint%2CPoint%2CTransformation%2CMaterial">shapes: newAABox(pmin: Point = newPoint(0, 0, 0); pmax: Point = newPoint(1, 1, 1);
+         transformation: Transformation = newTransformation();
+         material: Material = newMaterial()): AABox</a></li>
+          </ul></dd>
+<dt><a name="newCheckeredPigment" href="#newCheckeredPigment"><span>newCheckeredPigment:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: newCheckeredPigment(color1: Color = newColor(0.03, 0.27, 0.8);
+                    color2: Color = newColor(0.98, 0.68, 0.08);
+                    num_of_steps: int = 10): CheckeredPigment" href="trayx/materials.html#newCheckeredPigment%2CColor%2CColor%2Cint">materials: newCheckeredPigment(color1: Color = newColor(0.03, 0.27, 0.8);
+                    color2: Color = newColor(0.98, 0.68, 0.08);
+                    num_of_steps: int = 10): CheckeredPigment</a></li>
           </ul></dd>
 <dt><a name="newColor" href="#newColor"><span>newColor:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="basictypes: newColor(r: float32 = 0.0; g: float32 = 0.0; b: float32 = 0.0): Color" href="basictypes.html#newColor%2Cfloat32%2Cfloat32%2Cfloat32">basictypes: newColor(r: float32 = 0.0; g: float32 = 0.0; b: float32 = 0.0): Color</a></li>
+          data-doc-search-tag="basictypes: newColor(r: float32 = 0.0; g: float32 = 0.0; b: float32 = 0.0): Color" href="trayx/basictypes.html#newColor%2Cfloat32%2Cfloat32%2Cfloat32">basictypes: newColor(r: float32 = 0.0; g: float32 = 0.0; b: float32 = 0.0): Color</a></li>
+          </ul></dd>
+<dt><a name="newCylinder" href="#newCylinder"><span>newCylinder:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: newCylinder(transformation: Transformation = newTransformation();
+            material: Material = newMaterial(); r, z_min, z_max: float;
+            phi_max: float = 2 * PI): Cylinder" href="trayx/shapes.html#newCylinder%2CTransformation%2CMaterial%2Cfloat%2Cfloat%2Cfloat%2Cfloat">shapes: newCylinder(transformation: Transformation = newTransformation();
+            material: Material = newMaterial(); r, z_min, z_max: float;
+            phi_max: float = 2 * PI): Cylinder</a></li>
+          </ul></dd>
+<dt><a name="newDiffuseBRDF" href="#newDiffuseBRDF"><span>newDiffuseBRDF:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: newDiffuseBRDF(pigment: Pigment = newUniformPigment()): DiffuseBRDF" href="trayx/materials.html#newDiffuseBRDF%2CPigment">materials: newDiffuseBRDF(pigment: Pigment = newUniformPigment()): DiffuseBRDF</a></li>
+          </ul></dd>
+<dt><a name="newFlatRenderer" href="#newFlatRenderer"><span>newFlatRenderer:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="renderer: newFlatRenderer(world: World; background_color: Color = BLACK): FlatRenderer" href="trayx/renderer.html#newFlatRenderer%2CWorld%2CColor">renderer: newFlatRenderer(world: World; background_color: Color = BLACK): FlatRenderer</a></li>
           </ul></dd>
 <dt><a name="newHdrImage" href="#newHdrImage"><span>newHdrImage:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="basictypes: newHdrImage(width, height: int): HdrImage" href="basictypes.html#newHdrImage%2Cint%2Cint">basictypes: newHdrImage(width, height: int): HdrImage</a></li>
+          data-doc-search-tag="basictypes: newHdrImage(width, height: int): HdrImage" href="trayx/basictypes.html#newHdrImage%2Cint%2Cint">basictypes: newHdrImage(width, height: int): HdrImage</a></li>
+          </ul></dd>
+<dt><a name="newHitRecord" href="#newHitRecord"><span>newHitRecord:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: newHitRecord(world_point: Point; normal: Normal; surface_point: Vec2d; t: float;
+             ray: Ray; material: Material = newMaterial()): HitRecord" href="trayx/shapes.html#newHitRecord%2CPoint%2CNormal%2CVec2d%2Cfloat%2CRay%2CMaterial">shapes: newHitRecord(world_point: Point; normal: Normal; surface_point: Vec2d; t: float;
+             ray: Ray; material: Material = newMaterial()): HitRecord</a></li>
+          </ul></dd>
+<dt><a name="newImagePigment" href="#newImagePigment"><span>newImagePigment:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: newImagePigment(image: HdrImage): ImagePigment" href="trayx/materials.html#newImagePigment%2CHdrImage">materials: newImagePigment(image: HdrImage): ImagePigment</a></li>
+          </ul></dd>
+<dt><a name="newImageTracer" href="#newImageTracer"><span>newImageTracer:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="imagetracer: newImageTracer(image: HdrImage; camera: Camera; samples_per_side: int = 0;
+               pcg: PCG = newPCG()): ImageTracer" href="trayx/imagetracer.html#newImageTracer%2CHdrImage%2CCamera%2Cint%2CPCG">imagetracer: newImageTracer(image: HdrImage; camera: Camera; samples_per_side: int = 0;
+               pcg: PCG = newPCG()): ImageTracer</a></li>
+          </ul></dd>
+<dt><a name="newInputStream" href="#newInputStream"><span>newInputStream:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: newInputStream(stream: Stream; file_name: string = &quot;&quot;; tabulation = 4): InputStream" href="trayx/scenefiles.html#newInputStream%2CStream%2Cstring%2Cint">scenefiles: newInputStream(stream: Stream; file_name: string = &quot;&quot;; tabulation = 4): InputStream</a></li>
+          </ul></dd>
+<dt><a name="newMaterial" href="#newMaterial"><span>newMaterial:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: newMaterial(brdf: BRDF = newDiffuseBRDF(newUniformPigment(WHITE));
+            emitted_radiance: Pigment = newUniformPigment(BLACK)): Material" href="trayx/materials.html#newMaterial%2CBRDF%2CPigment">materials: newMaterial(brdf: BRDF = newDiffuseBRDF(newUniformPigment(WHITE));
+            emitted_radiance: Pigment = newUniformPigment(BLACK)): Material</a></li>
+          </ul></dd>
+<dt><a name="newNormal" href="#newNormal"><span>newNormal:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: newNormal(x, y, z: float): Normal" href="trayx/geometry.html#newNormal%2Cfloat%2Cfloat%2Cfloat">geometry: newNormal(x, y, z: float): Normal</a></li>
+          </ul></dd>
+<dt><a name="newOnOffRenderer" href="#newOnOffRenderer"><span>newOnOffRenderer:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="renderer: newOnOffRenderer(world: World; color: Color = WHITE;
+                 background_color: Color = BLACK): OnOffRenderer" href="trayx/renderer.html#newOnOffRenderer%2CWorld%2CColor%2CColor">renderer: newOnOffRenderer(world: World; color: Color = WHITE;
+                 background_color: Color = BLACK): OnOffRenderer</a></li>
+          </ul></dd>
+<dt><a name="newOrthogonalCamera" href="#newOrthogonalCamera"><span>newOrthogonalCamera:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cameras: newOrthogonalCamera(aspect_ratio: float = 2.0;
+                    transformation = newTransformation()): OrthogonalCamera" href="trayx/cameras.html#newOrthogonalCamera%2Cfloat">cameras: newOrthogonalCamera(aspect_ratio: float = 2.0;
+                    transformation = newTransformation()): OrthogonalCamera</a></li>
+          </ul></dd>
+<dt><a name="newPathTracer" href="#newPathTracer"><span>newPathTracer:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="renderer: newPathTracer(world: World; background_color: Color = BLACK;
+              pcg: PCG = newPCG(); num_of_rays: int = 10; max_depth: int = 2;
+              russian_roulette_limit: int = 3): PathTracer" href="trayx/renderer.html#newPathTracer%2CWorld%2CColor%2CPCG%2Cint%2Cint%2Cint">renderer: newPathTracer(world: World; background_color: Color = BLACK;
+              pcg: PCG = newPCG(); num_of_rays: int = 10; max_depth: int = 2;
+              russian_roulette_limit: int = 3): PathTracer</a></li>
+          </ul></dd>
+<dt><a name="newPCG" href="#newPCG"><span>newPCG:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="pcg: newPCG(init_state: uint64 = 42; init_seq: uint64 = 54): PCG" href="trayx/pcg.html#newPCG%2Cuint64%2Cuint64">pcg: newPCG(init_state: uint64 = 42; init_seq: uint64 = 54): PCG</a></li>
+          </ul></dd>
+<dt><a name="newPerspectiveCamera" href="#newPerspectiveCamera"><span>newPerspectiveCamera:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cameras: newPerspectiveCamera(distance, aspect_ratio: float;
+                     transformation = newTransformation()): PerspectiveCamera" href="trayx/cameras.html#newPerspectiveCamera%2Cfloat%2Cfloat">cameras: newPerspectiveCamera(distance, aspect_ratio: float;
+                     transformation = newTransformation()): PerspectiveCamera</a></li>
+          </ul></dd>
+<dt><a name="newPlane" href="#newPlane"><span>newPlane:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: newPlane(transformation: Transformation = newTransformation();
+         material: Material = newMaterial()): Plane" href="trayx/shapes.html#newPlane%2CTransformation%2CMaterial">shapes: newPlane(transformation: Transformation = newTransformation();
+         material: Material = newMaterial()): Plane</a></li>
+          </ul></dd>
+<dt><a name="newPoint" href="#newPoint"><span>newPoint:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: newPoint(x, y, z: float): Point" href="trayx/geometry.html#newPoint%2Cfloat%2Cfloat%2Cfloat">geometry: newPoint(x, y, z: float): Point</a></li>
+          </ul></dd>
+<dt><a name="newPointLight" href="#newPointLight"><span>newPointLight:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: newPointLight(position: Point; color: Color; linear_radius: float = 0.0): PointLight" href="trayx/shapes.html#newPointLight%2CPoint%2CColor%2Cfloat">shapes: newPointLight(position: Point; color: Color; linear_radius: float = 0.0): PointLight</a></li>
+          </ul></dd>
+<dt><a name="newPointLightRenderer" href="#newPointLightRenderer"><span>newPointLightRenderer:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="renderer: newPointLightRenderer(world: World; background_color: Color = BLACK;
+                      ambient_color: Color = newColor(0.1, 0.1, 0.1)): PointLightRenderer" href="trayx/renderer.html#newPointLightRenderer%2CWorld%2CColor%2CColor">renderer: newPointLightRenderer(world: World; background_color: Color = BLACK;
+                      ambient_color: Color = newColor(0.1, 0.1, 0.1)): PointLightRenderer</a></li>
+          </ul></dd>
+<dt><a name="newRay" href="#newRay"><span>newRay:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cameras: newRay(origin: Point; dir: Vec; tmin = 0.00001; tmax = Inf; depth: int = 0): Ray" href="trayx/cameras.html#newRay%2CPoint%2CVec%2Cfloat%2Cint">cameras: newRay(origin: Point; dir: Vec; tmin = 0.00001; tmax = Inf; depth: int = 0): Ray</a></li>
+          </ul></dd>
+<dt><a name="newSourceLocation" href="#newSourceLocation"><span>newSourceLocation:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: newSourceLocation(file_name: string = &quot;&quot;; line_num = 0; col_num = 0): SourceLocation" href="trayx/scenefiles.html#newSourceLocation%2Cstring%2Cint%2Cint">scenefiles: newSourceLocation(file_name: string = &quot;&quot;; line_num = 0; col_num = 0): SourceLocation</a></li>
+          </ul></dd>
+<dt><a name="newSpecularBRDF" href="#newSpecularBRDF"><span>newSpecularBRDF:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: newSpecularBRDF(pigment: Pigment = newUniformPigment();
+                angle: float = PI / 1800.0): SpecularBRDF" href="trayx/materials.html#newSpecularBRDF%2CPigment%2Cfloat">materials: newSpecularBRDF(pigment: Pigment = newUniformPigment();
+                angle: float = PI / 1800.0): SpecularBRDF</a></li>
+          </ul></dd>
+<dt><a name="newSphere" href="#newSphere"><span>newSphere:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: newSphere(transformation: Transformation = newTransformation();
+          material: Material = newMaterial()): Sphere" href="trayx/shapes.html#newSphere%2CTransformation%2CMaterial">shapes: newSphere(transformation: Transformation = newTransformation();
+          material: Material = newMaterial()): Sphere</a></li>
+          </ul></dd>
+<dt><a name="newTransformation" href="#newTransformation"><span>newTransformation:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="transformation: newTransformation(m = IDENTITY_MATRIX4x4; invm = IDENTITY_MATRIX4x4): Transformation" href="trayx/transformation.html#newTransformation">transformation: newTransformation(m = IDENTITY_MATRIX4x4; invm = IDENTITY_MATRIX4x4): Transformation</a></li>
+          </ul></dd>
+<dt><a name="newUniformPigment" href="#newUniformPigment"><span>newUniformPigment:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: newUniformPigment(color: Color = WHITE): UniformPigment" href="trayx/materials.html#newUniformPigment%2CColor">materials: newUniformPigment(color: Color = WHITE): UniformPigment</a></li>
+          </ul></dd>
+<dt><a name="newVec" href="#newVec"><span>newVec:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: newVec(x, y, z: float): Vec" href="trayx/geometry.html#newVec%2Cfloat%2Cfloat%2Cfloat">geometry: newVec(x, y, z: float): Vec</a></li>
+          </ul></dd>
+<dt><a name="newVec2d" href="#newVec2d"><span>newVec2d:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: newVec2d(u, v: float): Vec2d" href="trayx/geometry.html#newVec2d%2Cfloat%2Cfloat">geometry: newVec2d(u, v: float): Vec2d</a></li>
+          </ul></dd>
+<dt><a name="newWorld" href="#newWorld"><span>newWorld:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: newWorld(shapes: seq[Shape] = newSeq[Shape](0);
+         point_lights: seq[PointLight] = newSeq[PointLight](0)): World" href="trayx/shapes.html#newWorld%2Cseq%5BShape%5D%2Cseq%5BPointLight%5D">shapes: newWorld(shapes: seq[Shape] = newSeq[Shape](0);
+         point_lights: seq[PointLight] = newSeq[PointLight](0)): World</a></li>
+          </ul></dd>
+<dt><a name="norm" href="#norm"><span>norm:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: norm(a`gensym33: Normal): float" href="trayx/geometry.html#norm%2CNormal">geometry: norm(a`gensym33: Normal): float</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: norm(a`gensym32: Vec): float" href="trayx/geometry.html#norm%2CVec">geometry: norm(a`gensym32: Vec): float</a></li>
+          </ul></dd>
+<dt><a name="Normal" href="#Normal"><span>Normal:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: Normal" href="trayx/geometry.html#Normal">geometry: Normal</a></li>
+          </ul></dd>
+<dt><a name="normalization" href="#normalization"><span>normalization:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: normalization(a`gensym35: Normal): Normal" href="trayx/geometry.html#normalization%2CNormal">geometry: normalization(a`gensym35: Normal): Normal</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: normalization(a`gensym34: Vec): Vec" href="trayx/geometry.html#normalization%2CVec">geometry: normalization(a`gensym34: Vec): Vec</a></li>
+          </ul></dd>
+<dt><a name="normalized_dot" href="#normalized_dot"><span>normalized_dot:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: normalized_dot(a`gensym37: Normal; b`gensym37: Normal): float" href="trayx/geometry.html#normalized_dot%2CNormal%2CNormal">geometry: normalized_dot(a`gensym37: Normal; b`gensym37: Normal): float</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: normalized_dot(a`gensym39: Normal; b`gensym39: Vec): float" href="trayx/geometry.html#normalized_dot%2CNormal%2CVec">geometry: normalized_dot(a`gensym39: Normal; b`gensym39: Vec): float</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: normalized_dot(a`gensym38: Vec; b`gensym38: Normal): float" href="trayx/geometry.html#normalized_dot%2CVec%2CNormal">geometry: normalized_dot(a`gensym38: Vec; b`gensym38: Normal): float</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: normalized_dot(a`gensym36: Vec; b`gensym36: Vec): float" href="trayx/geometry.html#normalized_dot%2CVec%2CVec">geometry: normalized_dot(a`gensym36: Vec; b`gensym36: Vec): float</a></li>
+          </ul></dd>
+<dt><a name="normalizeImage" href="#normalizeImage"><span>normalizeImage:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="ldr: normalizeImage(img: var HdrImage; factor: float;
+               luminosity: Option[float] = none(float))" href="trayx/ldr.html#normalizeImage%2CHdrImage%2Cfloat%2COption%5Bfloat%5D">ldr: normalizeImage(img: var HdrImage; factor: float;
+               luminosity: Option[float] = none(float))</a></li>
+          </ul></dd>
+<dt><a name="normalToVec" href="#normalToVec"><span>normalToVec:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: normalToVec(n: Normal): Vec" href="trayx/geometry.html#normalToVec%2CNormal">geometry: normalToVec(n: Normal): Vec</a></li>
+          </ul></dd>
+<dt><a name="ONB" href="#ONB"><span>ONB:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: ONB" href="trayx/geometry.html#ONB">geometry: ONB</a></li>
+          </ul></dd>
+<dt><a name="OnOffRenderer" href="#OnOffRenderer"><span>OnOffRenderer:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="renderer: OnOffRenderer" href="trayx/renderer.html#OnOffRenderer">renderer: OnOffRenderer</a></li>
+          </ul></dd>
+<dt><a name="ORTHOGONAL" href="#ORTHOGONAL"><span>ORTHOGONAL:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.ORTHOGONAL" href="trayx/scenefiles.html#ORTHOGONAL">KeywordEnum.ORTHOGONAL</a></li>
+          </ul></dd>
+<dt><a name="OrthogonalCamera" href="#OrthogonalCamera"><span>OrthogonalCamera:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cameras: OrthogonalCamera" href="trayx/cameras.html#OrthogonalCamera">cameras: OrthogonalCamera</a></li>
+          </ul></dd>
+<dt><a name="Parameters" href="#Parameters"><span>Parameters:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="trayx: Parameters" href="trayx.html#Parameters">trayx: Parameters</a></li>
+          </ul></dd>
+<dt><a name="parseBRDF" href="#parseBRDF"><span>parseBRDF:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: parseBRDF(input_file: var InputStream; scene: Scene): BRDF" href="trayx/scenefiles.html#parseBRDF%2CInputStream%2CScene">scenefiles: parseBRDF(input_file: var InputStream; scene: Scene): BRDF</a></li>
+          </ul></dd>
+<dt><a name="parseCamera" href="#parseCamera"><span>parseCamera:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: parseCamera(input_file: var InputStream; scene: Scene): Camera" href="trayx/scenefiles.html#parseCamera%2CInputStream%2CScene">scenefiles: parseCamera(input_file: var InputStream; scene: Scene): Camera</a></li>
+          </ul></dd>
+<dt><a name="parseColor" href="#parseColor"><span>parseColor:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: parseColor(input_file: var InputStream; scene: Scene): Color" href="trayx/scenefiles.html#parseColor%2CInputStream%2CScene">scenefiles: parseColor(input_file: var InputStream; scene: Scene): Color</a></li>
+          </ul></dd>
+<dt><a name="parseCommandLine" href="#parseCommandLine"><span>parseCommandLine:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="trayx: parseCommandLine(param: var Parameters)" href="trayx.html#parseCommandLine%2CParameters">trayx: parseCommandLine(param: var Parameters)</a></li>
+          </ul></dd>
+<dt><a name="parseEndianness" href="#parseEndianness"><span>parseEndianness:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="pfm: parseEndianness(line: string): float32" href="trayx/pfm.html#parseEndianness%2Cstring">pfm: parseEndianness(line: string): float32</a></li>
+          </ul></dd>
+<dt><a name="parseFloatToken" href="#parseFloatToken"><span>parseFloatToken:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: parseFloatToken(strm: var InputStream; first_char: string;
+                token_location: SourceLocation): Token" href="trayx/scenefiles.html#parseFloatToken%2CInputStream%2Cstring%2CSourceLocation">scenefiles: parseFloatToken(strm: var InputStream; first_char: string;
+                token_location: SourceLocation): Token</a></li>
+          </ul></dd>
+<dt><a name="parseImgSize" href="#parseImgSize"><span>parseImgSize:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="pfm: parseImgSize(line: string): (int, int)" href="trayx/pfm.html#parseImgSize%2Cstring">pfm: parseImgSize(line: string): (int, int)</a></li>
+          </ul></dd>
+<dt><a name="parseKeywordOrIdentifierToken" href="#parseKeywordOrIdentifierToken"><span>parseKeywordOrIdentifierToken:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: parseKeywordOrIdentifierToken(strm: var InputStream; first_char: string;
+                              token_location: SourceLocation): Token" href="trayx/scenefiles.html#parseKeywordOrIdentifierToken%2CInputStream%2Cstring%2CSourceLocation">scenefiles: parseKeywordOrIdentifierToken(strm: var InputStream; first_char: string;
+                              token_location: SourceLocation): Token</a></li>
+          </ul></dd>
+<dt><a name="parseMaterial" href="#parseMaterial"><span>parseMaterial:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: parseMaterial(input_file: var InputStream; scene: Scene): (string, Material)" href="trayx/scenefiles.html#parseMaterial%2CInputStream%2CScene">scenefiles: parseMaterial(input_file: var InputStream; scene: Scene): (string, Material)</a></li>
+          </ul></dd>
+<dt><a name="parsePigment" href="#parsePigment"><span>parsePigment:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: parsePigment(input_file: var InputStream; scene: Scene): Pigment" href="trayx/scenefiles.html#parsePigment%2CInputStream%2CScene">scenefiles: parsePigment(input_file: var InputStream; scene: Scene): Pigment</a></li>
+          </ul></dd>
+<dt><a name="parsePlane" href="#parsePlane"><span>parsePlane:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: parsePlane(input_file: var InputStream; scene: Scene): Plane" href="trayx/scenefiles.html#parsePlane%2CInputStream%2CScene">scenefiles: parsePlane(input_file: var InputStream; scene: Scene): Plane</a></li>
+          </ul></dd>
+<dt><a name="parseScene" href="#parseScene"><span>parseScene:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: parseScene(input_file: var InputStream;
+           variables: Table[string, float] = initTable()): Scene" href="trayx/scenefiles.html#parseScene%2CInputStream%2CTable%5Bstring%2Cfloat%5D">scenefiles: parseScene(input_file: var InputStream;
+           variables: Table[string, float] = initTable()): Scene</a></li>
+          </ul></dd>
+<dt><a name="parseSphere" href="#parseSphere"><span>parseSphere:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: parseSphere(input_file: var InputStream; scene: Scene): Sphere" href="trayx/scenefiles.html#parseSphere%2CInputStream%2CScene">scenefiles: parseSphere(input_file: var InputStream; scene: Scene): Sphere</a></li>
+          </ul></dd>
+<dt><a name="parseStringToken" href="#parseStringToken"><span>parseStringToken:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: parseStringToken(strm: var InputStream; token_location: SourceLocation): Token" href="trayx/scenefiles.html#parseStringToken%2CInputStream%2CSourceLocation">scenefiles: parseStringToken(strm: var InputStream; token_location: SourceLocation): Token</a></li>
+          </ul></dd>
+<dt><a name="parseTransformation" href="#parseTransformation"><span>parseTransformation:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: parseTransformation(input_file: var InputStream; scene: Scene): Transformation" href="trayx/scenefiles.html#parseTransformation%2CInputStream%2CScene">scenefiles: parseTransformation(input_file: var InputStream; scene: Scene): Transformation</a></li>
+          </ul></dd>
+<dt><a name="parseVector" href="#parseVector"><span>parseVector:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: parseVector(input_file: var InputStream; scene: Scene): Vec" href="trayx/scenefiles.html#parseVector%2CInputStream%2CScene">scenefiles: parseVector(input_file: var InputStream; scene: Scene): Vec</a></li>
+          </ul></dd>
+<dt><a name="PathTracer" href="#PathTracer"><span>PathTracer:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="renderer: PathTracer" href="trayx/renderer.html#PathTracer">renderer: PathTracer</a></li>
+          </ul></dd>
+<dt><a name="PCG" href="#PCG"><span>PCG:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="pcg: PCG" href="trayx/pcg.html#PCG">pcg: PCG</a></li>
+          </ul></dd>
+<dt><a name="PERSPECTIVE" href="#PERSPECTIVE"><span>PERSPECTIVE:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.PERSPECTIVE" href="trayx/scenefiles.html#PERSPECTIVE">KeywordEnum.PERSPECTIVE</a></li>
+          </ul></dd>
+<dt><a name="PerspectiveCamera" href="#PerspectiveCamera"><span>PerspectiveCamera:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cameras: PerspectiveCamera" href="trayx/cameras.html#PerspectiveCamera">cameras: PerspectiveCamera</a></li>
+          </ul></dd>
+<dt><a name="Pigment" href="#Pigment"><span>Pigment:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: Pigment" href="trayx/materials.html#Pigment">materials: Pigment</a></li>
           </ul></dd>
 <dt><a name="pixelOffset" href="#pixelOffset"><span>pixelOffset:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="basictypes: pixelOffset(img: HdrImage; x, y: int): int" href="basictypes.html#pixelOffset%2CHdrImage%2Cint%2Cint">basictypes: pixelOffset(img: HdrImage; x, y: int): int</a></li>
+          data-doc-search-tag="basictypes: pixelOffset(img: HdrImage; x, y: int): int" href="trayx/basictypes.html#pixelOffset%2CHdrImage%2Cint%2Cint">basictypes: pixelOffset(img: HdrImage; x, y: int): int</a></li>
+          </ul></dd>
+<dt><a name="PLANE" href="#PLANE"><span>PLANE:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.PLANE" href="trayx/scenefiles.html#PLANE">KeywordEnum.PLANE</a></li>
+          </ul></dd>
+<dt><a name="Plane" href="#Plane"><span>Plane:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: Plane" href="trayx/shapes.html#Plane">shapes: Plane</a></li>
+          </ul></dd>
+<dt><a name="Point" href="#Point"><span>Point:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: Point" href="trayx/geometry.html#Point">geometry: Point</a></li>
+          </ul></dd>
+<dt><a name="PointLight" href="#PointLight"><span>PointLight:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: PointLight" href="trayx/shapes.html#PointLight">shapes: PointLight</a></li>
+          </ul></dd>
+<dt><a name="PointLightRenderer" href="#PointLightRenderer"><span>PointLightRenderer:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="renderer: PointLightRenderer" href="trayx/renderer.html#PointLightRenderer">renderer: PointLightRenderer</a></li>
+          </ul></dd>
+<dt><a name="PointToVec" href="#PointToVec"><span>PointToVec:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: PointToVec(p: Point): Vec" href="trayx/geometry.html#PointToVec%2CPoint">geometry: PointToVec(p: Point): Vec</a></li>
+          </ul></dd>
+<dt><a name="print_string" href="#print_string"><span>print_string:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: print_string(arg`gensym2: Normal)" href="trayx/geometry.html#print_string%2CNormal">geometry: print_string(arg`gensym2: Normal)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: print_string(arg`gensym1: Point)" href="trayx/geometry.html#print_string%2CPoint">geometry: print_string(arg`gensym1: Point)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: print_string(arg`gensym0: Vec)" href="trayx/geometry.html#print_string%2CVec">geometry: print_string(arg`gensym0: Vec)</a></li>
+          </ul></dd>
+<dt><a name="quickRayIntersection" href="#quickRayIntersection"><span>quickRayIntersection:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: quickRayIntersection(plane: Plane; ray: Ray): bool" href="trayx/shapes.html#quickRayIntersection.e%2CPlane%2CRay">shapes: quickRayIntersection(plane: Plane; ray: Ray): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="shapes: quickRayIntersection(shape: Shape; ray: Ray): bool" href="trayx/shapes.html#quickRayIntersection.e%2CShape%2CRay">shapes: quickRayIntersection(shape: Shape; ray: Ray): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="shapes: quickRayIntersection(sphere: Sphere; ray: Ray): bool" href="trayx/shapes.html#quickRayIntersection.e%2CSphere%2CRay">shapes: quickRayIntersection(sphere: Sphere; ray: Ray): bool</a></li>
+          </ul></dd>
+<dt><a name="random" href="#random"><span>random:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="pcg: random(pcg: var PCG): uint32" href="trayx/pcg.html#random%2CPCG">pcg: random(pcg: var PCG): uint32</a></li>
+          </ul></dd>
+<dt><a name="random_float" href="#random_float"><span>random_float:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="pcg: random_float(pcg: var PCG): float" href="trayx/pcg.html#random_float%2CPCG">pcg: random_float(pcg: var PCG): float</a></li>
+          </ul></dd>
+<dt><a name="Ray" href="#Ray"><span>Ray:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cameras: Ray" href="trayx/cameras.html#Ray">cameras: Ray</a></li>
+          </ul></dd>
+<dt><a name="rayIntersection" href="#rayIntersection"><span>rayIntersection:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: rayIntersection(world: World; ray: Ray): Option[HitRecord]" href="trayx/shapes.html#rayIntersection%2CWorld%2CRay">shapes: rayIntersection(world: World; ray: Ray): Option[HitRecord]</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="shapes: rayIntersection(box: AABox; ray: Ray): Option[HitRecord]" href="trayx/shapes.html#rayIntersection.e%2CAABox%2CRay">shapes: rayIntersection(box: AABox; ray: Ray): Option[HitRecord]</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="shapes: rayIntersection(cylinder: Cylinder; ray: Ray): Option[HitRecord]" href="trayx/shapes.html#rayIntersection.e%2CCylinder%2CRay">shapes: rayIntersection(cylinder: Cylinder; ray: Ray): Option[HitRecord]</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="shapes: rayIntersection(plane: Plane; ray: Ray): Option[HitRecord]" href="trayx/shapes.html#rayIntersection.e%2CPlane%2CRay">shapes: rayIntersection(plane: Plane; ray: Ray): Option[HitRecord]</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="shapes: rayIntersection(shape: Shape; ray: Ray): Option[HitRecord]" href="trayx/shapes.html#rayIntersection.e%2CShape%2CRay">shapes: rayIntersection(shape: Shape; ray: Ray): Option[HitRecord]</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="shapes: rayIntersection(sphere: Sphere; ray: Ray): Option[HitRecord]" href="trayx/shapes.html#rayIntersection.e%2CSphere%2CRay">shapes: rayIntersection(sphere: Sphere; ray: Ray): Option[HitRecord]</a></li>
+          </ul></dd>
+<dt><a name="readChar" href="#readChar"><span>readChar:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: readChar(strm: var InputStream): char" href="trayx/scenefiles.html#readChar%2CInputStream">scenefiles: readChar(strm: var InputStream): char</a></li>
+          </ul></dd>
+<dt><a name="readFloat" href="#readFloat"><span>readFloat:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="pfm: readFloat(stream: Stream; endianness: float): float32" href="trayx/pfm.html#readFloat%2CStream%2Cfloat">pfm: readFloat(stream: Stream; endianness: float): float32</a></li>
+          </ul></dd>
+<dt><a name="readPfmImage" href="#readPfmImage"><span>readPfmImage:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="pfm: readPfmImage(stream: Stream): HdrImage" href="trayx/pfm.html#readPfmImage%2CStream">pfm: readPfmImage(stream: Stream): HdrImage</a></li>
+          </ul></dd>
+<dt><a name="readToken" href="#readToken"><span>readToken:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: readToken(strm: var InputStream): Token" href="trayx/scenefiles.html#readToken%2CInputStream">scenefiles: readToken(strm: var InputStream): Token</a></li>
+          </ul></dd>
+<dt><a name="render" href="#render"><span>render:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="renderer: render(renderer: FlatRenderer; ray: Ray): Color" href="trayx/renderer.html#render.e%2CFlatRenderer%2CRay">renderer: render(renderer: FlatRenderer; ray: Ray): Color</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="renderer: render(renderer: OnOffRenderer; ray: Ray): Color" href="trayx/renderer.html#render.e%2COnOffRenderer%2CRay">renderer: render(renderer: OnOffRenderer; ray: Ray): Color</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="renderer: render(renderer: PathTracer; ray: Ray): Color" href="trayx/renderer.html#render.e%2CPathTracer%2CRay">renderer: render(renderer: PathTracer; ray: Ray): Color</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="renderer: render(renderer: PointLightRenderer; ray: Ray): Color" href="trayx/renderer.html#render.e%2CPointLightRenderer%2CRay">renderer: render(renderer: PointLightRenderer; ray: Ray): Color</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="renderer: render(renderer: Renderer; ray: Ray): Color" href="trayx/renderer.html#render.e%2CRenderer%2CRay">renderer: render(renderer: Renderer; ray: Ray): Color</a></li>
+          </ul></dd>
+<dt><a name="Renderer" href="#Renderer"><span>Renderer:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="renderer: Renderer" href="trayx/renderer.html#Renderer">renderer: Renderer</a></li>
+          </ul></dd>
+<dt><a name="ROTATION_X" href="#ROTATION_X"><span>ROTATION_X:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.ROTATION_X" href="trayx/scenefiles.html#ROTATION_X">KeywordEnum.ROTATION_X</a></li>
+          </ul></dd>
+<dt><a name="rotation_x" href="#rotation_x"><span>rotation_x:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="transformation: rotation_x(angle_deg: float): Transformation" href="trayx/transformation.html#rotation_x%2Cfloat">transformation: rotation_x(angle_deg: float): Transformation</a></li>
+          </ul></dd>
+<dt><a name="ROTATION_Y" href="#ROTATION_Y"><span>ROTATION_Y:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.ROTATION_Y" href="trayx/scenefiles.html#ROTATION_Y">KeywordEnum.ROTATION_Y</a></li>
+          </ul></dd>
+<dt><a name="rotation_y" href="#rotation_y"><span>rotation_y:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="transformation: rotation_y(angle_deg: float): Transformation" href="trayx/transformation.html#rotation_y%2Cfloat">transformation: rotation_y(angle_deg: float): Transformation</a></li>
+          </ul></dd>
+<dt><a name="ROTATION_Z" href="#ROTATION_Z"><span>ROTATION_Z:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.ROTATION_Z" href="trayx/scenefiles.html#ROTATION_Z">KeywordEnum.ROTATION_Z</a></li>
+          </ul></dd>
+<dt><a name="rotation_z" href="#rotation_z"><span>rotation_z:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="transformation: rotation_z(angle_deg: float): Transformation" href="trayx/transformation.html#rotation_z%2Cfloat">transformation: rotation_z(angle_deg: float): Transformation</a></li>
+          </ul></dd>
+<dt><a name="SCALING" href="#SCALING"><span>SCALING:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.SCALING" href="trayx/scenefiles.html#SCALING">KeywordEnum.SCALING</a></li>
+          </ul></dd>
+<dt><a name="scaling" href="#scaling"><span>scaling:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="transformation: scaling(v: Vec): Transformation" href="trayx/transformation.html#scaling%2CVec">transformation: scaling(v: Vec): Transformation</a></li>
+          </ul></dd>
+<dt><a name="Scene" href="#Scene"><span>Scene:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: Scene" href="trayx/scenefiles.html#Scene">scenefiles: Scene</a></li>
+          </ul></dd>
+<dt><a name="setMaxDepth" href="#setMaxDepth"><span>setMaxDepth:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="renderer: setMaxDepth(x: var PathTracer; n: int)" href="trayx/renderer.html#setMaxDepth.e%2CPathTracer%2Cint">renderer: setMaxDepth(x: var PathTracer; n: int)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="renderer: setMaxDepth(x: var Renderer; n: int)" href="trayx/renderer.html#setMaxDepth.e%2CRenderer%2Cint">renderer: setMaxDepth(x: var Renderer; n: int)</a></li>
+          </ul></dd>
+<dt><a name="setNumOfRays" href="#setNumOfRays"><span>setNumOfRays:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="renderer: setNumOfRays(x: var PathTracer; n: int)" href="trayx/renderer.html#setNumOfRays.e%2CPathTracer%2Cint">renderer: setNumOfRays(x: var PathTracer; n: int)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="renderer: setNumOfRays(x: var Renderer; n: int)" href="trayx/renderer.html#setNumOfRays.e%2CRenderer%2Cint">renderer: setNumOfRays(x: var Renderer; n: int)</a></li>
+          </ul></dd>
+<dt><a name="setPCG" href="#setPCG"><span>setPCG:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="renderer: setPCG(x: var PathTracer; s1: uint64 = 42; s2: uint64 = 54)" href="trayx/renderer.html#setPCG.e%2CPathTracer%2Cuint64%2Cuint64">renderer: setPCG(x: var PathTracer; s1: uint64 = 42; s2: uint64 = 54)</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="renderer: setPCG(x: var Renderer; s1: uint64 = 42; s2: uint64 = 54)" href="trayx/renderer.html#setPCG.e%2CRenderer%2Cuint64%2Cuint64">renderer: setPCG(x: var Renderer; s1: uint64 = 42; s2: uint64 = 54)</a></li>
           </ul></dd>
 <dt><a name="setPixel" href="#setPixel"><span>setPixel:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="basictypes: setPixel(img: var HdrImage; x, y: int; new_col: Color)" href="basictypes.html#setPixel%2CHdrImage%2Cint%2Cint%2CColor">basictypes: setPixel(img: var HdrImage; x, y: int; new_col: Color)</a></li>
+          data-doc-search-tag="basictypes: setPixel(img: var HdrImage; x, y: int; new_col: Color)" href="trayx/basictypes.html#setPixel%2CHdrImage%2Cint%2Cint%2CColor">basictypes: setPixel(img: var HdrImage; x, y: int; new_col: Color)</a></li>
+          </ul></dd>
+<dt><a name="Shape" href="#Shape"><span>Shape:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: Shape" href="trayx/shapes.html#Shape">shapes: Shape</a></li>
+          </ul></dd>
+<dt><a name="skipWhitespacesAndComments" href="#skipWhitespacesAndComments"><span>skipWhitespacesAndComments:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: skipWhitespacesAndComments(strm: var InputStream)" href="trayx/scenefiles.html#skipWhitespacesAndComments%2CInputStream">scenefiles: skipWhitespacesAndComments(strm: var InputStream)</a></li>
+          </ul></dd>
+<dt><a name="SourceLocation" href="#SourceLocation"><span>SourceLocation:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: SourceLocation" href="trayx/scenefiles.html#SourceLocation">scenefiles: SourceLocation</a></li>
+          </ul></dd>
+<dt><a name="SPECULAR" href="#SPECULAR"><span>SPECULAR:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.SPECULAR" href="trayx/scenefiles.html#SPECULAR">KeywordEnum.SPECULAR</a></li>
+          </ul></dd>
+<dt><a name="SpecularBRDF" href="#SpecularBRDF"><span>SpecularBRDF:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: SpecularBRDF" href="trayx/materials.html#SpecularBRDF">materials: SpecularBRDF</a></li>
+          </ul></dd>
+<dt><a name="SPHERE" href="#SPHERE"><span>SPHERE:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.SPHERE" href="trayx/scenefiles.html#SPHERE">KeywordEnum.SPHERE</a></li>
+          </ul></dd>
+<dt><a name="Sphere" href="#Sphere"><span>Sphere:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: Sphere" href="trayx/shapes.html#Sphere">shapes: Sphere</a></li>
+          </ul></dd>
+<dt><a name="sphereNormal" href="#sphereNormal"><span>sphereNormal:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: sphereNormal(point: Point; ray_dir: Vec): Normal" href="trayx/shapes.html#sphereNormal%2CPoint%2CVec">shapes: sphereNormal(point: Point; ray_dir: Vec): Normal</a></li>
+          </ul></dd>
+<dt><a name="spherePointToUV" href="#spherePointToUV"><span>spherePointToUV:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: spherePointToUV(point: Point): Vec2d" href="trayx/shapes.html#spherePointToUV%2CPoint">shapes: spherePointToUV(point: Point): Vec2d</a></li>
+          </ul></dd>
+<dt><a name="squared_norm" href="#squared_norm"><span>squared_norm:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: squared_norm(a`gensym31: Normal): float" href="trayx/geometry.html#squared_norm%2CNormal">geometry: squared_norm(a`gensym31: Normal): float</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="geometry: squared_norm(a`gensym30: Vec): float" href="trayx/geometry.html#squared_norm%2CVec">geometry: squared_norm(a`gensym30: Vec): float</a></li>
+          </ul></dd>
+<dt><a name="StopToken" href="#StopToken"><span>StopToken:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="TokenKind.StopToken" href="trayx/scenefiles.html#StopToken">TokenKind.StopToken</a></li>
+          </ul></dd>
+<dt><a name="StringToken" href="#StringToken"><span>StringToken:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="TokenKind.StringToken" href="trayx/scenefiles.html#StringToken">TokenKind.StringToken</a></li>
+          </ul></dd>
+<dt><a name="SYMBOLS" href="#SYMBOLS"><span>SYMBOLS:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: SYMBOLS" href="trayx/scenefiles.html#SYMBOLS">scenefiles: SYMBOLS</a></li>
+          </ul></dd>
+<dt><a name="SymbolToken" href="#SymbolToken"><span>SymbolToken:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="TokenKind.SymbolToken" href="trayx/scenefiles.html#SymbolToken">TokenKind.SymbolToken</a></li>
           </ul></dd>
 <dt><a name="test_valid_coordinates" href="#test_valid_coordinates"><span>test_valid_coordinates:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="basictypes: test_valid_coordinates(img: HdrImage; width, height: int): bool" href="basictypes.html#test_valid_coordinates%2CHdrImage%2Cint%2Cint">basictypes: test_valid_coordinates(img: HdrImage; width, height: int): bool</a></li>
+          data-doc-search-tag="basictypes: test_valid_coordinates(img: HdrImage; width, height: int): bool" href="trayx/basictypes.html#test_valid_coordinates%2CHdrImage%2Cint%2Cint">basictypes: test_valid_coordinates(img: HdrImage; width, height: int): bool</a></li>
+          </ul></dd>
+<dt><a name="Token" href="#Token"><span>Token:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: Token" href="trayx/scenefiles.html#Token">scenefiles: Token</a></li>
+          </ul></dd>
+<dt><a name="TokenKind" href="#TokenKind"><span>TokenKind:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: TokenKind" href="trayx/scenefiles.html#TokenKind">scenefiles: TokenKind</a></li>
+          </ul></dd>
+<dt><a name="TokenValue" href="#TokenValue"><span>TokenValue:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: TokenValue" href="trayx/scenefiles.html#TokenValue">scenefiles: TokenValue</a></li>
+          </ul></dd>
+<dt><a name="transform" href="#transform"><span>transform:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="cameras: transform(ray: Ray; t: Transformation): Ray" href="trayx/cameras.html#transform%2CRay%2CTransformation">cameras: transform(ray: Ray; t: Transformation): Ray</a></li>
+          </ul></dd>
+<dt><a name="Transformation" href="#Transformation"><span>Transformation:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="transformation: Transformation" href="trayx/transformation.html#Transformation">transformation: Transformation</a></li>
+          </ul></dd>
+<dt><a name="TRANSLATION" href="#TRANSLATION"><span>TRANSLATION:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.TRANSLATION" href="trayx/scenefiles.html#TRANSLATION">KeywordEnum.TRANSLATION</a></li>
+          </ul></dd>
+<dt><a name="translation" href="#translation"><span>translation:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="transformation: translation(v: Vec): Transformation" href="trayx/transformation.html#translation%2CVec">transformation: translation(v: Vec): Transformation</a></li>
+          </ul></dd>
+<dt><a name="UNIFORM" href="#UNIFORM"><span>UNIFORM:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.UNIFORM" href="trayx/scenefiles.html#UNIFORM">KeywordEnum.UNIFORM</a></li>
+          </ul></dd>
+<dt><a name="UniformPigment" href="#UniformPigment"><span>UniformPigment:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="materials: UniformPigment" href="trayx/materials.html#UniformPigment">materials: UniformPigment</a></li>
+          </ul></dd>
+<dt><a name="unreadChar" href="#unreadChar"><span>unreadChar:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: unreadChar(strm: var InputStream; ch: char)" href="trayx/scenefiles.html#unreadChar%2CInputStream%2Cchar">scenefiles: unreadChar(strm: var InputStream; ch: char)</a></li>
+          </ul></dd>
+<dt><a name="unreadToken" href="#unreadToken"><span>unreadToken:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: unreadToken(strm: var InputStream; token: Token)" href="trayx/scenefiles.html#unreadToken%2CInputStream%2CToken">scenefiles: unreadToken(strm: var InputStream; token: Token)</a></li>
+          </ul></dd>
+<dt><a name="updatePos" href="#updatePos"><span>updatePos:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: updatePos(strm: var InputStream; ch: char)" href="trayx/scenefiles.html#updatePos%2CInputStream%2Cchar">scenefiles: updatePos(strm: var InputStream; ch: char)</a></li>
+          </ul></dd>
+<dt><a name="Vec" href="#Vec"><span>Vec:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: Vec" href="trayx/geometry.html#Vec">geometry: Vec</a></li>
+          </ul></dd>
+<dt><a name="Vec2d" href="#Vec2d"><span>Vec2d:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: Vec2d" href="trayx/geometry.html#Vec2d">geometry: Vec2d</a></li>
+          </ul></dd>
+<dt><a name="VecToNormal" href="#VecToNormal"><span>VecToNormal:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: VecToNormal(v: Vec): Normal" href="trayx/geometry.html#VecToNormal%2CVec">geometry: VecToNormal(v: Vec): Normal</a></li>
+          </ul></dd>
+<dt><a name="VEC_X" href="#VEC_X"><span>VEC_X:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: VEC_X" href="trayx/geometry.html#VEC_X">geometry: VEC_X</a></li>
+          </ul></dd>
+<dt><a name="VEC_Y" href="#VEC_Y"><span>VEC_Y:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: VEC_Y" href="trayx/geometry.html#VEC_Y">geometry: VEC_Y</a></li>
+          </ul></dd>
+<dt><a name="VEC_Z" href="#VEC_Z"><span>VEC_Z:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="geometry: VEC_Z" href="trayx/geometry.html#VEC_Z">geometry: VEC_Z</a></li>
           </ul></dd>
 <dt><a name="WHITE" href="#WHITE"><span>WHITE:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="basictypes: WHITE" href="basictypes.html#WHITE">basictypes: WHITE</a></li>
+          data-doc-search-tag="basictypes: WHITE" href="trayx/basictypes.html#WHITE">basictypes: WHITE</a></li>
+          </ul></dd>
+<dt><a name="WHITESPACE" href="#WHITESPACE"><span>WHITESPACE:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: WHITESPACE" href="trayx/scenefiles.html#WHITESPACE">scenefiles: WHITESPACE</a></li>
+          </ul></dd>
+<dt><a name="World" href="#World"><span>World:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="shapes: World" href="trayx/shapes.html#World">shapes: World</a></li>
+          </ul></dd>
+<dt><a name="writeFloat" href="#writeFloat"><span>writeFloat:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="pfm: writeFloat(stream: Stream; color: float32; endianness: float32)" href="trayx/pfm.html#writeFloat%2CStream%2Cfloat32%2Cfloat32">pfm: writeFloat(stream: Stream; color: float32; endianness: float32)</a></li>
+          </ul></dd>
+<dt><a name="writeLdrImage" href="#writeLdrImage"><span>writeLdrImage:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="ldr: writeLdrImage(img: HdrImage; name: string; gamma: float = 1.0)" href="trayx/ldr.html#writeLdrImage%2CHdrImage%2Cstring%2Cfloat">ldr: writeLdrImage(img: HdrImage; name: string; gamma: float = 1.0)</a></li>
+          </ul></dd>
+<dt><a name="writePfmImage" href="#writePfmImage"><span>writePfmImage:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="pfm: writePfmImage(img: HdrImage; stream: Stream; endianness: float32 = -1.0)" href="trayx/pfm.html#writePfmImage%2CHdrImage%2CStream%2Cfloat32">pfm: writePfmImage(img: HdrImage; stream: Stream; endianness: float32 = -1.0)</a></li>
           </ul></dd>
 </dl>
     <div class="row">
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-06-10 12:56:11 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-06-10 13:20:41 UTC</small>
       </div>
     </div>
   </div>

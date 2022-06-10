@@ -1,0 +1,16 @@
+Color	trayx/basictypes.html#Color	basictypes: Color	
+HdrImage	trayx/basictypes.html#HdrImage	basictypes: HdrImage	
+newColor	trayx/basictypes.html#newColor,float32,float32,float32	basictypes: newColor(r: float32 = 0.0; g: float32 = 0.0; b: float32 = 0.0): Color	
+BLACK	trayx/basictypes.html#BLACK	basictypes: BLACK	
+WHITE	trayx/basictypes.html#WHITE	basictypes: WHITE	
+newHdrImage	trayx/basictypes.html#newHdrImage,int,int	basictypes: newHdrImage(width, height: int): HdrImage	
+pixelOffset	trayx/basictypes.html#pixelOffset,HdrImage,int,int	basictypes: pixelOffset(img: HdrImage; x, y: int): int	
+`+`	trayx/basictypes.html#+,Color,Color	basictypes: `+`(c1: Color; c2: Color): Color	
+`-`	trayx/basictypes.html#-,Color,Color	basictypes: `-`(c1: Color; c2: Color): Color	
+`*`	trayx/basictypes.html#*,Color,Color	basictypes: `*`(c1, c2: Color): Color	
+`*`	trayx/basictypes.html#*,float32,Color	basictypes: `*`(a: float32; c: Color): Color	
+`*`	trayx/basictypes.html#*,Color,float32	basictypes: `*`(c: Color; a: float32): Color	
+areClose	trayx/basictypes.html#areClose,Color,Color,float32	basictypes: areClose(c1, c2: Color; epsilon: float32 = 0.00001): bool	
+test_valid_coordinates	trayx/basictypes.html#test_valid_coordinates,HdrImage,int,int	basictypes: test_valid_coordinates(img: HdrImage; width, height: int): bool	
+getPixel	trayx/basictypes.html#getPixel,HdrImage,int,int	basictypes: getPixel(img: HdrImage; x, y: int): Color	
+setPixel	trayx/basictypes.html#setPixel,HdrImage,int,int,Color	basictypes: setPixel(img: var HdrImage; x, y: int; new_col: Color)	

@@ -1,0 +1,21 @@
+Pigment	trayx/materials.html#Pigment	materials: Pigment	
+UniformPigment	trayx/materials.html#UniformPigment	materials: UniformPigment	
+ImagePigment	trayx/materials.html#ImagePigment	materials: ImagePigment	
+CheckeredPigment	trayx/materials.html#CheckeredPigment	materials: CheckeredPigment	
+BRDF	trayx/materials.html#BRDF	materials: BRDF	
+DiffuseBRDF	trayx/materials.html#DiffuseBRDF	materials: DiffuseBRDF	
+SpecularBRDF	trayx/materials.html#SpecularBRDF	materials: SpecularBRDF	
+Material	trayx/materials.html#Material	materials: Material	
+newUniformPigment	trayx/materials.html#newUniformPigment,Color	materials: newUniformPigment(color: Color = WHITE): UniformPigment	
+newImagePigment	trayx/materials.html#newImagePigment,HdrImage	materials: newImagePigment(image: HdrImage): ImagePigment	
+newCheckeredPigment	trayx/materials.html#newCheckeredPigment,Color,Color,int	materials: newCheckeredPigment(color1: Color = newColor(0.03, 0.27, 0.8);\n                    color2: Color = newColor(0.98, 0.68, 0.08);\n                    num_of_steps: int = 10): CheckeredPigment	
+getColor	trayx/materials.html#getColor.e,Pigment,Vec2d	materials: getColor(pig: Pigment; uv: Vec2d): Color	
+getColor	trayx/materials.html#getColor.e,UniformPigment,Vec2d	materials: getColor(pig: UniformPigment; uv: Vec2d): Color	
+getColor	trayx/materials.html#getColor.e,ImagePigment,Vec2d	materials: getColor(pig: ImagePigment; uv: Vec2d): Color	
+getColor	trayx/materials.html#getColor.e,CheckeredPigment,Vec2d	materials: getColor(pig: CheckeredPigment; uv: Vec2d): Color	
+newDiffuseBRDF	trayx/materials.html#newDiffuseBRDF,Pigment	materials: newDiffuseBRDF(pigment: Pigment = newUniformPigment()): DiffuseBRDF	
+newSpecularBRDF	trayx/materials.html#newSpecularBRDF,Pigment,float	materials: newSpecularBRDF(pigment: Pigment = newUniformPigment();\n                angle: float = PI / 1800.0): SpecularBRDF	
+eval	trayx/materials.html#eval.e,BRDF,Normal,Vec,Vec,Vec2d	materials: eval(brdf: BRDF; normal: Normal; in_dir, out_dir: Vec; uv: Vec2d): Color	
+eval	trayx/materials.html#eval.e,DiffuseBRDF,Normal,Vec,Vec,Vec2d	materials: eval(brdf: DiffuseBRDF; normal: Normal; in_dir, out_dir: Vec; uv: Vec2d): Color	
+eval	trayx/materials.html#eval.e,SpecularBRDF,Normal,Vec,Vec,Vec2d	materials: eval(brdf: SpecularBRDF; normal: Normal; in_dir, out_dir: Vec; uv: Vec2d): Color	
+newMaterial	trayx/materials.html#newMaterial,BRDF,Pigment	materials: newMaterial(brdf: BRDF = newDiffuseBRDF(newUniformPigment(WHITE));\n            emitted_radiance: Pigment = newUniformPigment(BLACK)): Material	

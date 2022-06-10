@@ -1,0 +1,20 @@
+Renderer	trayx/renderer.html#Renderer	renderer: Renderer	
+OnOffRenderer	trayx/renderer.html#OnOffRenderer	renderer: OnOffRenderer	
+FlatRenderer	trayx/renderer.html#FlatRenderer	renderer: FlatRenderer	
+PathTracer	trayx/renderer.html#PathTracer	renderer: PathTracer	
+PointLightRenderer	trayx/renderer.html#PointLightRenderer	renderer: PointLightRenderer	
+setNumOfRays	trayx/renderer.html#setNumOfRays.e,Renderer,int	renderer: setNumOfRays(x: var Renderer; n: int)	
+setMaxDepth	trayx/renderer.html#setMaxDepth.e,Renderer,int	renderer: setMaxDepth(x: var Renderer; n: int)	
+setPCG	trayx/renderer.html#setPCG.e,Renderer,uint64,uint64	renderer: setPCG(x: var Renderer; s1: uint64 = 42; s2: uint64 = 54)	
+setNumOfRays	trayx/renderer.html#setNumOfRays.e,PathTracer,int	renderer: setNumOfRays(x: var PathTracer; n: int)	
+setMaxDepth	trayx/renderer.html#setMaxDepth.e,PathTracer,int	renderer: setMaxDepth(x: var PathTracer; n: int)	
+setPCG	trayx/renderer.html#setPCG.e,PathTracer,uint64,uint64	renderer: setPCG(x: var PathTracer; s1: uint64 = 42; s2: uint64 = 54)	
+newOnOffRenderer	trayx/renderer.html#newOnOffRenderer,World,Color,Color	renderer: newOnOffRenderer(world: World; color: Color = WHITE;\n                 background_color: Color = BLACK): OnOffRenderer	
+newFlatRenderer	trayx/renderer.html#newFlatRenderer,World,Color	renderer: newFlatRenderer(world: World; background_color: Color = BLACK): FlatRenderer	
+newPathTracer	trayx/renderer.html#newPathTracer,World,Color,PCG,int,int,int	renderer: newPathTracer(world: World; background_color: Color = BLACK;\n              pcg: PCG = newPCG(); num_of_rays: int = 10; max_depth: int = 2;\n              russian_roulette_limit: int = 3): PathTracer	
+newPointLightRenderer	trayx/renderer.html#newPointLightRenderer,World,Color,Color	renderer: newPointLightRenderer(world: World; background_color: Color = BLACK;\n                      ambient_color: Color = newColor(0.1, 0.1, 0.1)): PointLightRenderer	
+render	trayx/renderer.html#render.e,Renderer,Ray	renderer: render(renderer: Renderer; ray: Ray): Color	
+render	trayx/renderer.html#render.e,OnOffRenderer,Ray	renderer: render(renderer: OnOffRenderer; ray: Ray): Color	
+render	trayx/renderer.html#render.e,FlatRenderer,Ray	renderer: render(renderer: FlatRenderer; ray: Ray): Color	
+render	trayx/renderer.html#render.e,PathTracer,Ray	renderer: render(renderer: PathTracer; ray: Ray): Color	
+render	trayx/renderer.html#render.e,PointLightRenderer,Ray	renderer: render(renderer: PointLightRenderer; ray: Ray): Color	

@@ -1,0 +1,67 @@
+Vec	trayx/geometry.html#Vec	geometry: Vec	
+Vec2d	trayx/geometry.html#Vec2d	geometry: Vec2d	
+Point	trayx/geometry.html#Point	geometry: Point	
+Normal	trayx/geometry.html#Normal	geometry: Normal	
+ONB	trayx/geometry.html#ONB	geometry: ONB	
+newVec	trayx/geometry.html#newVec,float,float,float	geometry: newVec(x, y, z: float): Vec	
+areClose	trayx/geometry.html#areClose,Vec2d,Vec2d,float	geometry: areClose(v1, v2: Vec2d; epsilon: float = 0.00001): bool	
+newVec2d	trayx/geometry.html#newVec2d,float,float	geometry: newVec2d(u, v: float): Vec2d	
+VEC_X	trayx/geometry.html#VEC_X	geometry: VEC_X	
+VEC_Y	trayx/geometry.html#VEC_Y	geometry: VEC_Y	
+VEC_Z	trayx/geometry.html#VEC_Z	geometry: VEC_Z	
+newPoint	trayx/geometry.html#newPoint,float,float,float	geometry: newPoint(x, y, z: float): Point	
+newNormal	trayx/geometry.html#newNormal,float,float,float	geometry: newNormal(x, y, z: float): Normal	
+print_string	trayx/geometry.html#print_string,Vec	geometry: print_string(arg`gensym0: Vec)	
+print_string	trayx/geometry.html#print_string,Point	geometry: print_string(arg`gensym1: Point)	
+print_string	trayx/geometry.html#print_string,Normal	geometry: print_string(arg`gensym2: Normal)	
+`$`	trayx/geometry.html#$,Vec	geometry: `$`(arg`gensym3: Vec): string	
+`$`	trayx/geometry.html#$,Point	geometry: `$`(arg`gensym4: Point): string	
+`$`	trayx/geometry.html#$,Normal	geometry: `$`(arg`gensym5: Normal): string	
+areClose	trayx/geometry.html#areClose,Vec,Vec,float	geometry: areClose(arg1`gensym6, arg2`gensym6: Vec; e`gensym6 = 0.00001): bool	
+areClose	trayx/geometry.html#areClose,Point,Point,float	geometry: areClose(arg1`gensym7, arg2`gensym7: Point; e`gensym7 = 0.00001): bool	
+areClose	trayx/geometry.html#areClose,Normal,Normal,float	geometry: areClose(arg1`gensym8, arg2`gensym8: Normal; e`gensym8 = 0.00001): bool	
+define_product	trayx/geometry.html#define_product.t,typedesc	geometry: define_product(t: typedesc)	
+`*`	trayx/geometry.html#*,float,Vec	geometry: `*`(arg1`gensym9: float; arg2`gensym9: Vec): Vec	
+`*`	trayx/geometry.html#*,Vec,float	geometry: `*`(arg2`gensym9: Vec; arg1`gensym9: float): Vec	
+`*`	trayx/geometry.html#*,float,Point	geometry: `*`(arg1`gensym10: float; arg2`gensym10: Point): Point	
+`*`	trayx/geometry.html#*,Point,float	geometry: `*`(arg2`gensym10: Point; arg1`gensym10: float): Point	
+`*`	trayx/geometry.html#*,float,Normal	geometry: `*`(arg1`gensym11: float; arg2`gensym11: Normal): Normal	
+`*`	trayx/geometry.html#*,Normal,float	geometry: `*`(arg2`gensym11: Normal; arg1`gensym11: float): Normal	
+`-`	trayx/geometry.html#-,Vec	geometry: `-`(arg`gensym12: Vec): Vec	
+`-`	trayx/geometry.html#-,Normal	geometry: `-`(arg`gensym13: Normal): Normal	
+cross	trayx/geometry.html#cross,Vec,Normal	geometry: cross(arg1`gensym14: Vec; arg2`gensym14: Normal): Vec	
+cross	trayx/geometry.html#cross,Normal,Vec	geometry: cross(arg1`gensym15: Normal; arg2`gensym15: Vec): Vec	
+cross	trayx/geometry.html#cross,Vec,Vec	geometry: cross(arg1`gensym16: Vec; arg2`gensym16: Vec): Vec	
+cross	trayx/geometry.html#cross,Normal,Normal	geometry: cross(arg1`gensym17: Normal; arg2`gensym17: Normal): Vec	
+define_3dop	trayx/geometry.html#define_3dop.t,untyped,typedesc,typedesc,typedesc	geometry: define_3dop(fname: untyped; type1: typedesc; type2: typedesc; rettype: typedesc)	
+`+`	trayx/geometry.html#+,Vec,Vec	geometry: `+`(a`gensym18: Vec; b`gensym18: Vec): Vec	
+`-`	trayx/geometry.html#-,Vec,Vec	geometry: `-`(a`gensym19: Vec; b`gensym19: Vec): Vec	
+`+`	trayx/geometry.html#+,Vec,Point	geometry: `+`(a`gensym20: Vec; b`gensym20: Point): Point	
+`+`	trayx/geometry.html#+,Point,Vec	geometry: `+`(a`gensym21: Point; b`gensym21: Vec): Point	
+`-`	trayx/geometry.html#-,Point,Vec	geometry: `-`(a`gensym22: Point; b`gensym22: Vec): Point	
+`+`	trayx/geometry.html#+,Normal,Normal	geometry: `+`(a`gensym23: Normal; b`gensym23: Normal): Normal	
+`-`	trayx/geometry.html#-,Normal,Normal	geometry: `-`(a`gensym24: Normal; b`gensym24: Normal): Normal	
+`-`	trayx/geometry.html#-,Point,Point	geometry: `-`(a`gensym25: Point; b`gensym25: Point): Vec	
+define_dot	trayx/geometry.html#define_dot.t,typedesc,typedesc	geometry: define_dot(type1: typedesc; type2: typedesc)	
+dot	trayx/geometry.html#dot,Vec,Vec	geometry: dot(a`gensym26: Vec; b`gensym26: Vec): float	
+dot	trayx/geometry.html#dot,Vec,Normal	geometry: dot(a`gensym27: Vec; b`gensym27: Normal): float	
+dot	trayx/geometry.html#dot,Normal,Vec	geometry: dot(a`gensym28: Normal; b`gensym28: Vec): float	
+dot	trayx/geometry.html#dot,Normal,Normal	geometry: dot(a`gensym29: Normal; b`gensym29: Normal): float	
+define_squared_norm	trayx/geometry.html#define_squared_norm.t,typedesc	geometry: define_squared_norm(t: typedesc)	
+squared_norm	trayx/geometry.html#squared_norm,Vec	geometry: squared_norm(a`gensym30: Vec): float	
+squared_norm	trayx/geometry.html#squared_norm,Normal	geometry: squared_norm(a`gensym31: Normal): float	
+define_norm	trayx/geometry.html#define_norm.t,typedesc	geometry: define_norm(t: typedesc)	
+norm	trayx/geometry.html#norm,Vec	geometry: norm(a`gensym32: Vec): float	
+norm	trayx/geometry.html#norm,Normal	geometry: norm(a`gensym33: Normal): float	
+define_normalization	trayx/geometry.html#define_normalization.t,typedesc	geometry: define_normalization(t: typedesc)	
+normalization	trayx/geometry.html#normalization,Vec	geometry: normalization(a`gensym34: Vec): Vec	
+normalization	trayx/geometry.html#normalization,Normal	geometry: normalization(a`gensym35: Normal): Normal	
+VecToNormal	trayx/geometry.html#VecToNormal,Vec	geometry: VecToNormal(v: Vec): Normal	
+PointToVec	trayx/geometry.html#PointToVec,Point	geometry: PointToVec(p: Point): Vec	
+normalToVec	trayx/geometry.html#normalToVec,Normal	geometry: normalToVec(n: Normal): Vec	
+define_normalized_dot	trayx/geometry.html#define_normalized_dot.t,typedesc,typedesc	geometry: define_normalized_dot(t1, t2: typedesc)	
+normalized_dot	trayx/geometry.html#normalized_dot,Vec,Vec	geometry: normalized_dot(a`gensym36: Vec; b`gensym36: Vec): float	
+normalized_dot	trayx/geometry.html#normalized_dot,Normal,Normal	geometry: normalized_dot(a`gensym37: Normal; b`gensym37: Normal): float	
+normalized_dot	trayx/geometry.html#normalized_dot,Vec,Normal	geometry: normalized_dot(a`gensym38: Vec; b`gensym38: Normal): float	
+normalized_dot	trayx/geometry.html#normalized_dot,Normal,Vec	geometry: normalized_dot(a`gensym39: Normal; b`gensym39: Vec): float	
+createONBfromZ	trayx/geometry.html#createONBfromZ,Normal	geometry: createONBfromZ(normal: Normal): ONB	

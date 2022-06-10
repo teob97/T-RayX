@@ -1,0 +1,31 @@
+HitRecord	trayx/shapes.html#HitRecord	shapes: HitRecord	
+AABoundingBox	trayx/shapes.html#AABoundingBox	shapes: AABoundingBox	
+Shape	trayx/shapes.html#Shape	shapes: Shape	
+Sphere	trayx/shapes.html#Sphere	shapes: Sphere	
+AABox	trayx/shapes.html#AABox	shapes: AABox	
+Plane	trayx/shapes.html#Plane	shapes: Plane	
+Cylinder	trayx/shapes.html#Cylinder	shapes: Cylinder	
+PointLight	trayx/shapes.html#PointLight	shapes: PointLight	
+World	trayx/shapes.html#World	shapes: World	
+eq_2deg_solver	trayx/shapes.html#eq_2deg_solver,float,float,float	shapes: eq_2deg_solver(a, b, c: float): array[2, float]	
+newHitRecord	trayx/shapes.html#newHitRecord,Point,Normal,Vec2d,float,Ray,Material	shapes: newHitRecord(world_point: Point; normal: Normal; surface_point: Vec2d; t: float;\n             ray: Ray; material: Material = newMaterial()): HitRecord	
+areClose	trayx/shapes.html#areClose,HitRecord,HitRecord,float	shapes: areClose(h1, h2: HitRecord; epsilon: float = 0.00001): bool	
+newWorld	trayx/shapes.html#newWorld,seq[Shape],seq[PointLight]	shapes: newWorld(shapes: seq[Shape] = newSeq[Shape](0);\n         point_lights: seq[PointLight] = newSeq[PointLight](0)): World	
+rayIntersection	trayx/shapes.html#rayIntersection.e,Shape,Ray	shapes: rayIntersection(shape: Shape; ray: Ray): Option[HitRecord]	
+rayIntersection	trayx/shapes.html#rayIntersection,World,Ray	shapes: rayIntersection(world: World; ray: Ray): Option[HitRecord]	
+quickRayIntersection	trayx/shapes.html#quickRayIntersection.e,Shape,Ray	shapes: quickRayIntersection(shape: Shape; ray: Ray): bool	
+is_point_visible	trayx/shapes.html#is_point_visible,World,Point,Point	shapes: is_point_visible(world: World; point: Point; observer_pos: Point): bool	
+newPointLight	trayx/shapes.html#newPointLight,Point,Color,float	shapes: newPointLight(position: Point; color: Color; linear_radius: float = 0.0): PointLight	
+newAABox	trayx/shapes.html#newAABox,Point,Point,Transformation,Material	shapes: newAABox(pmin: Point = newPoint(0, 0, 0); pmax: Point = newPoint(1, 1, 1);\n         transformation: Transformation = newTransformation();\n         material: Material = newMaterial()): AABox	
+AABoxPointToUV	trayx/shapes.html#AABoxPointToUV,Point	shapes: AABoxPointToUV(point: Point): Vec2d	
+rayIntersection	trayx/shapes.html#rayIntersection.e,AABox,Ray	shapes: rayIntersection(box: AABox; ray: Ray): Option[HitRecord]	
+newSphere	trayx/shapes.html#newSphere,Transformation,Material	shapes: newSphere(transformation: Transformation = newTransformation();\n          material: Material = newMaterial()): Sphere	
+spherePointToUV	trayx/shapes.html#spherePointToUV,Point	shapes: spherePointToUV(point: Point): Vec2d	
+sphereNormal	trayx/shapes.html#sphereNormal,Point,Vec	shapes: sphereNormal(point: Point; ray_dir: Vec): Normal	
+rayIntersection	trayx/shapes.html#rayIntersection.e,Sphere,Ray	shapes: rayIntersection(sphere: Sphere; ray: Ray): Option[HitRecord]	
+newPlane	trayx/shapes.html#newPlane,Transformation,Material	shapes: newPlane(transformation: Transformation = newTransformation();\n         material: Material = newMaterial()): Plane	
+rayIntersection	trayx/shapes.html#rayIntersection.e,Plane,Ray	shapes: rayIntersection(plane: Plane; ray: Ray): Option[HitRecord]	
+newCylinder	trayx/shapes.html#newCylinder,Transformation,Material,float,float,float,float	shapes: newCylinder(transformation: Transformation = newTransformation();\n            material: Material = newMaterial(); r, z_min, z_max: float;\n            phi_max: float = 2 * PI): Cylinder	
+rayIntersection	trayx/shapes.html#rayIntersection.e,Cylinder,Ray	shapes: rayIntersection(cylinder: Cylinder; ray: Ray): Option[HitRecord]	
+quickRayIntersection	trayx/shapes.html#quickRayIntersection.e,Sphere,Ray	shapes: quickRayIntersection(sphere: Sphere; ray: Ray): bool	
+quickRayIntersection	trayx/shapes.html#quickRayIntersection.e,Plane,Ray	shapes: quickRayIntersection(plane: Plane; ray: Ray): bool	

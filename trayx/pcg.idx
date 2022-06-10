@@ -1,0 +1,4 @@
+PCG	trayx/pcg.html#PCG	pcg: PCG	
+random	trayx/pcg.html#random,PCG	pcg: random(pcg: var PCG): uint32	
+newPCG	trayx/pcg.html#newPCG,uint64,uint64	pcg: newPCG(init_state: uint64 = 42; init_seq: uint64 = 54): PCG	
+random_float	trayx/pcg.html#random_float,PCG	pcg: random_float(pcg: var PCG): float	
