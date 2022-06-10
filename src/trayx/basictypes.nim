@@ -52,7 +52,7 @@ func pixelOffset*(img : HdrImage; x, y : int) : int =
     ## Given (x,y) the coordinates of the pixel, return the corresponding index inside the vector in which the pixel is stored.
     return y * img.width + x
 
-##*********************************** OPERATIONS ***********************************
+#*********************************** OPERATIONS ***********************************
 
 func `+` *(c1 : Color, c2 : Color): Color =
   ## Return the sum of two pixels
