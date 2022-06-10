@@ -39,7 +39,7 @@ type
   Shape* = ref object of RootObj
     ## A generic 3D shape
     ## This is an abstract class, and you should only use it to derive
-    ## concrete classes. Be sure to redefine the method :meth:`.Shape.rayIntersection`.
+    ## concrete classes. Be sure to redefine the method `.Shape.rayIntersection`.
     transformation* : Transformation
     material* : Material
     bound_box* : AABoundingBox
@@ -61,7 +61,7 @@ type
     ## A point light (used by the point-light render). 
     ## It represents a Dirac's delta in the rendering equation.
     ## If `linear_radius` is non-zero, it is used to compute the solid angle subtended by 
-    ## the light at a given distance `d` through the formula `(linear_radius/d)^2
+    ## the light at a given distance `d` through the formula `(linear_radius/d)^2`
     position* : Point
     color* : Color
     linear_radius* : float

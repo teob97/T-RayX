@@ -21,7 +21,7 @@ type
   Pigment* = ref object of RootObj
     ## Pigment object
     ## This abstract class represents a pigment, i.e., a function that associates a color with
-    ## each point on a parametric surface (u,v). Call the method :meth:`.Pigment.getColor` to
+    ## each point on a parametric surface (u,v). Call the method `.Pigment.getColor` to
     ## retrieve the color of the surface given a `Vec2d` object.
   UniformPigment* = ref object of Pigment
     ## Uniform Pigment: only one color
