@@ -1,5 +1,5 @@
-Parameters	trayx.html#Parameters	trayx: Parameters	
-parseCommandLine	trayx.html#parseCommandLine,Parameters	trayx: parseCommandLine(param: var Parameters)	
-pfm2png	trayx.html#pfm2png	trayx: pfm2png()	
-demo	trayx.html#demo	trayx: demo()	
-render	trayx.html#render	trayx: render()	
+Parameters	index.html#Parameters	trayx: Parameters	
+parseCommandLine	index.html#parseCommandLine,Parameters	trayx: parseCommandLine(param: var Parameters)	
+pfm2png	index.html#pfm2png	trayx: pfm2png()	
+demo	index.html#demo	trayx: demo()	
+render	index.html#render	trayx: render()	
