@@ -4,7 +4,7 @@ on: [push]
 
 env:
   nim-version: stable
-  nim-src: src/trayx.nim
+  nim-src: src/trayx/basictypes.nim
   deploy-dir: .gh-pages
 
 jobs:
