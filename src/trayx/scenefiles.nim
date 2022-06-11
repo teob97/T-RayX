@@ -471,12 +471,12 @@ proc parseAABox*(input_file: var InputStream, scene: Scene): AABox =
   expectSymbol(input_file, ")")
   return newAABox(transformation = transformation, material = scene.materials[material_name])
 
-proc parseCylinder*(input_file: var InputStream, scene: Scene): AABox =
+proc parseCylinder*(input_file: var InputStream, scene: Scene): Cylinder =
   expectSymbol(input_file, "(")
   let material_name : string = expectIdentifier(input_file)
   if not scene.materials.hasKey(material_name):
     # We raise the exception here because input_file is pointing to the end of the wrong identifier
-    let error_string = $input_file.location&"Unknown material "&($material_name)
+    let error_string = $input_file.location&" Unknown material "&($material_name)
     raise newException(GrammarError, error_string)
   expectSymbol(input_file, ",")
   let transformation = parseTransformation(input_file, scene)
