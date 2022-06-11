@@ -45,7 +45,9 @@ type
     CAMERA = 16,
     ORTHOGONAL = 17,
     PERSPECTIVE = 18,
-    FLOAT = 19
+    FLOAT = 19,
+    AABOX = 20,
+    CYLINDER = 21
 
 const KEYWORDS = {"new": KeywordEnum.NEW,
               "material": KeywordEnum.MATERIAL,
@@ -418,30 +420,6 @@ proc parseTransformation*(input_file: var InputStream, scene: Scene) : Transform
       input_file.unreadToken(next_kw)
       break
 
-proc parseSphere*(input_file: var InputStream, scene: Scene) : Sphere =
-  expectSymbol(input_file, "(")
-  let material_name : string = expectIdentifier(input_file)
-  if not scene.materials.hasKey(material_name):
-    # We raise the exception here because input_file is pointing to the end of the wrong identifier
-    let error_string = $input_file.location&" Unknown material "&($material_name)
-    raise newException(GrammarError, error_string)
-  expectSymbol(input_file, ",")
-  let transformation = parseTransformation(input_file, scene)
-  expectSymbol(input_file, ")")
-  return newSphere(transformation = transformation, material = scene.materials[material_name])
-
-proc parsePlane*(input_file: var InputStream, scene: Scene) : Plane =
-  expectSymbol(input_file, "(")
-  let material_name = expectIdentifier(input_file)
-  if not scene.materials.hasKey(material_name):
-    # We raise the exception here because input_file is pointing to the end of the wrong identifier
-    let error_string = $input_file.location&"Unknown material "&($material_name)
-    raise newException(GrammarError, error_string)
-  expectSymbol(input_file, ",")
-  let transformation = parseTransformation(input_file, scene)
-  expectSymbol(input_file, ")")
-  return newPlane(transformation = transformation, material = scene.materials[material_name])
-
 proc parseCamera*(input_file: var InputStream, scene: Scene) : Camera =
   expectSymbol(input_file, "(")
   let type_kw = expectKeywords(input_file, @[KeywordEnum.PERSPECTIVE, KeywordEnum.ORTHOGONAL])
@@ -457,7 +435,104 @@ proc parseCamera*(input_file: var InputStream, scene: Scene) : Camera =
   if type_kw == KeywordEnum.ORTHOGONAL:
     result = newOrthogonalCamera(aspect_ratio = aspect_ratio, transformation = transformation)
 
+proc parseSphere*(input_file: var InputStream, scene: Scene) : Sphere =
+  expectSymbol(input_file, "(")
+  let material_name : string = expectIdentifier(input_file)
+  if not scene.materials.hasKey(material_name):
+    # We raise the exception here because input_file is pointing to the end of the wrong identifier
+    let error_string = $input_file.location&" Unknown material "&($material_name)
+    raise newException(GrammarError, error_string)
+  expectSymbol(input_file, ",")
+  let transformation = parseTransformation(input_file, scene)
+  expectSymbol(input_file, ")")
+  return newSphere(transformation = transformation, material = scene.materials[material_name])
+
+proc parsePlane*(input_file: var InputStream, scene: Scene) : Plane =
+  expectSymbol(input_file, "(")
+  let material_name : string = expectIdentifier(input_file)
+  if not scene.materials.hasKey(material_name):
+    # We raise the exception here because input_file is pointing to the end of the wrong identifier
+    let error_string = $input_file.location&"Unknown material "&($material_name)
+    raise newException(GrammarError, error_string)
+  expectSymbol(input_file, ",")
+  let transformation = parseTransformation(input_file, scene)
+  expectSymbol(input_file, ")")
+  return newPlane(transformation = transformation, material = scene.materials[material_name])
+
+proc parseAABox*(input_file: var InputStream, scene: Scene): AABox =
+  expectSymbol(input_file, "(")
+  let material_name : string = expectIdentifier(input_file)
+  if not scene.materials.hasKey(material_name):
+    # We raise the exception here because input_file is pointing to the end of the wrong identifier
+    let error_string = $input_file.location&"Unknown material "&($material_name)
+    raise newException(GrammarError, error_string)
+  expectSymbol(input_file, ",")
+  let transformation = parseTransformation(input_file, scene)
+  expectSymbol(input_file, ")")
+  return newAABox(transformation = transformation, material = scene.materials[material_name])
+
+proc parseCylinder*(input_file: var InputStream, scene: Scene): AABox =
+  expectSymbol(input_file, "(")
+  let material_name : string = expectIdentifier(input_file)
+  if not scene.materials.hasKey(material_name):
+    # We raise the exception here because input_file is pointing to the end of the wrong identifier
+    let error_string = $input_file.location&"Unknown material "&($material_name)
+    raise newException(GrammarError, error_string)
+  expectSymbol(input_file, ",")
+  let transformation = parseTransformation(input_file, scene)
+  expectSymbol(input_file, ")")
+  return newCylinder(transformation = transformation, material = scene.materials[material_name])
+
 proc parseScene*(input_file: var InputStream, variables: Table[string, float] = initTable[string, float]()) : Scene =
+  ## Read a scene description from a stream and return a `.Scene` object
+  result.float_variables = variables
+  for k in variables.keys:
+    result.overridden_variables.incl(k)
+  while true:
+
+    let what = input_file.readToken()
+    if not (what.kind == KeywordToken):
+      let error_string = $input_file.location&" Expected a keyword."
+      raise newException(GrammarError, error_string)
+    if what.kind == StopToken:
+      break
+
+    case what.keyword
+    of KeywordEnum.FLOAT:
+      let variable_name : string = expectIdentifier(input_file)
+      # Save this for the error message
+      let variable_loc = input_file.location
+      expectSymbol(input_file, "(")
+      let variable_value = expectNumber(input_file, result)
+      expect_symbol(input_file, ")")
+      if (variable_name in result.float_variables) and not (variable_name in result.overridden_variables):
+        let error_string = $variable_loc&" Variable "&($variable_name)&" cannot be redefined."
+        raise newException(GrammarError, error_string) 
+      if not result.overridden_variables.contains(variable_name):
+        # Only define the variable if it was not defined by the user *outside* the scene file
+        # (e.g., from the command line)
+        result.float_variables[variable_name] = variable_value
+    of KeywordEnum.CAMERA:
+      if not result.camera.isNone:
+        let error_string = $what.location&"You cannot define more than one camera"
+        raise newException(GrammarError, error_string)
+      result.camera = some(parseCamera(input_file, result))
+    of KeywordEnum.MATERIAL:
+      var (name, material) = parseMaterial(input_file, result)
+      result.materials[name] = material    
+    of KeywordEnum.SPHERE:
+      result.world.shapes.add(parseSphere(input_file, result))
+    of KeywordEnum.PLANE:
+      result.world.shapes.add(parsePlane(input_file, result))
+    of KeywordEnum.AABOX:
+      result.world.shapes.add(parseAABox(input_file, result))
+    of KeywordEnum.CYLINDER:
+      result.world.shapes.add(parseCylinder(input_file, result))
+    else:
+      let error_string = $input_file.location&" Invalid keyword."
+      raise newException(GrammarError, error_string)   
+
+#[ proc parseScene*(input_file: var InputStream, variables: Table[string, float] = initTable[string, float]()) : Scene =
   ## Read a scene description from a stream and return a `.Scene` object
   result.float_variables = variables
   for k in variables.keys:
@@ -494,9 +569,7 @@ proc parseScene*(input_file: var InputStream, variables: Table[string, float] = 
       result.camera = some(parseCamera(input_file, result))
     elif what.keyword == KeywordEnum.MATERIAL:
       var (name, material) = parseMaterial(input_file, result)
-      result.materials[name] = material
-
-
+      result.materials[name] = material ]#
 
 
 

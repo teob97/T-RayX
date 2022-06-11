@@ -412,7 +412,8 @@ method rayIntersection*(plane : Plane, ray : Ray): Option[HitRecord] =
 #**************************** CYLINDER ***********************************
 #*************************************************************************
 
-proc newCylinder*(transformation : Transformation = newTransformation(), material : Material = newMaterial(); r, z_min, z_max : float; phi_max : float = 2 * PI): Cylinder =
+proc newCylinder*(transformation : Transformation = newTransformation(), material : Material = newMaterial(); 
+                  r : float = 1, z_min : float = 0, z_max : float = 1; phi_max : float = 2 * PI): Cylinder =
   ## Constructor for a cylinder's later surface.
   result = Cylinder.new()
   result.transformation = transformation
