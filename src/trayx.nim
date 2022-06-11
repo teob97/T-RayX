@@ -17,8 +17,8 @@
 ]#
 
 import trayx/[basictypes, cameras, pfm, ldr,  imagetracer, shapes, transformation, geometry, materials, renderer, scenefiles]
-import docopt
 import std/[strutils, strformat, streams, times, options]
+import docopt
 when compileOption("profiler"):
   import nimprof
 
@@ -204,4 +204,7 @@ when isMainModule:
     let t2 = epochTime()
     echo("Execution time: ", t2 - t1)
   if args["render"]:
+    let t1 = epochTime()
     render()
+    let t2 = epochTime()
+    echo("Execution time: ", t2 - t1)
