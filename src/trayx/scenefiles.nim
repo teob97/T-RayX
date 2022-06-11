@@ -490,12 +490,13 @@ proc parseScene*(input_file: var InputStream, variables: Table[string, float] = 
     result.overridden_variables.incl(k)
   while true:
 
-    let what = input_file.readToken()
+    let what = input_file.readToken()    
+    if what.kind == StopToken:
+      break
     if not (what.kind == KeywordToken):
       let error_string = $input_file.location&" Expected a keyword."
       raise newException(GrammarError, error_string)
-    if what.kind == StopToken:
-      break
+
 
     case what.keyword
     of KeywordEnum.FLOAT:
