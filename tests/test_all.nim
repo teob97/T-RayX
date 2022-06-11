@@ -806,6 +806,10 @@ suite "Test scene file":
         plane (ground_material, identity)
     
         sphere(sphere_material, translation([0, 0, 1]))
+
+        aabox(sphere_material, identity)
+
+        cylinder(ground_material, identity)
     
         camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 2.0) 
         """)
@@ -898,13 +902,15 @@ suite "Test scene file":
       sphere_material.emitted_radiance of UniformPigment
       sphere_material.emitted_radiance.get_paramiters_test[0].areClose(newColor(0, 0, 0))
       # Check that the shapes are ok
-      len(scene.world.shapes) == 3
+      len(scene.world.shapes) == 5
       scene.world.shapes[0] of shapes.Plane
       scene.world.shapes[0].transformation.isClose(translation(newVec(0, 0, 100)) * rotation_y(150.0))
       scene.world.shapes[1] of shapes.Plane
       scene.world.shapes[1].transformation.isClose(newTransformation())
       scene.world.shapes[2] of shapes.Sphere
       scene.world.shapes[2].transformation.isClose(translation(newVec(0, 0, 1)))
+      scene.world.shapes[3] of shapes.AABox
+      scene.world.shapes[4] of shapes.Cylinder
       # Check that the camera is ok
       scene.camera.get() of PerspectiveCamera
       scene.camera.get().transformation.isClose(rotation_z(30) * translation(newVec(-4, 0, 1)))

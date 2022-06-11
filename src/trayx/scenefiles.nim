@@ -67,7 +67,9 @@ const KEYWORDS = {"new": KeywordEnum.NEW,
               "camera": KeywordEnum.CAMERA,
               "orthogonal": KeywordEnum.ORTHOGONAL,
               "perspective": KeywordEnum.PERSPECTIVE,
-              "float": KeywordEnum.FLOAT
+              "float": KeywordEnum.FLOAT,
+              "aabox": KeywordEnum.AABOX,
+              "cylinder": KeywordEnum.CYLINDER
               }.toTable
 type
   TokenKind* = enum
