@@ -18,7 +18,7 @@
 
 import trayx/[basictypes, cameras, pfm, ldr,  imagetracer, shapes, transformation, geometry, materials, renderer, scenefiles]
 import docopt
-import std/[strutils, strformat, streams, os, times, options]
+import std/[strutils, strformat, streams, times, options]
 when compileOption("profiler"):
   import nimprof
 
@@ -47,7 +47,7 @@ let args = docopt(doc, version = "1.0.0") #find a way to automatize versioning
 
 #*********************************** PFM2PNG ***********************************
 
-type
+#[ type
   Parameters* = object
       input_pfm_file_name : string
       factor : float
@@ -88,7 +88,21 @@ proc pfm2png*() =
   var outf = newFileStream(param.output_png_file_name, fmWrite)
   img.write_ldr_image(name=param.output_png_file_name, gamma=param.gamma)
   outf.close()
-  echo (fmt"File {param.output_png_file_name} has been written to disk.")
+  echo (fmt"File {param.output_png_file_name} has been written to disk.") ]#
+
+proc pfm2png*() =
+  ## Main procedure to convert a .pfm file into a .png file
+  var 
+    impf = openFileStream($args["<INPUT_FILE.pfm>"])
+    img : HdrImage = readPfmImage(impf)
+  impf.close()
+  echo ("File "&($args["<INPUT_FILE.pfm>"])&" has been read from disk.")
+  img.normalize_image(factor = parseFloat($args["<alpha>"]))
+  img.clamp_image()
+  var outf = newFileStream($args["<OUTPUT.png>"], fmWrite)
+  img.write_ldr_image(name = $args["<OUTPUT.png>"], gamma = parseFloat($args["<gamma>"]))
+  outf.close()
+  echo (fmt"File "&($args["<OUTPUT.png>"])&" has been written to disk.")
 
 #*********************************** DEMO ***********************************
 
