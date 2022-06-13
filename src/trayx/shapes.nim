@@ -82,8 +82,8 @@ proc eq_2deg_solver*(a,b,c : float): array[2, float] =
     q = - 0.5 * (b - sqrt(delta))
   else:
     q = - 0.5 * (b + sqrt(delta))
-  result[0] = q/a
-  result[1] = c/q
+  result[0] = min(q/a, c/q)
+  result[1] = max(q/a, c/q)
 
 
 #*********************************** HITRECORD ***********************************
@@ -356,10 +356,10 @@ method rayIntersection*(sphere : Sphere, ray : Ray): Option[HitRecord] =
     return none(HitRecord)
   var
     first_hit_t : float
-  let
-    sqrt_delta : float = sqrt(delta)
-    tmin : float = (-b - sqrt_delta) / (2.0 * a)
-    tmax : float = (-b + sqrt_delta) / (2.0 * a)
+  let 
+    t = eq_2deg_solver(a, b, c)
+    tmin : float = t[0]
+    tmax : float = t[1]
   if (tmin > inv_ray.tmin) and (tmin < inv_ray.tmax):
     first_hit_t = tmin
   elif (tmax > inv_ray.tmin) and (tmax < inv_ray.tmax):
@@ -446,9 +446,9 @@ method rayIntersection*(cylinder : Cylinder, ray : Ray): Option[HitRecord] =
   if delta < 0:
     return none(HitRecord)
   #Calculate the solutions
-  t0 = (- b - sqrt(delta))/(2 * a)
-  t1 = (- b + sqrt(delta))/(2 * a)
-  if t0 > t1 : swap(t0, t1) #NON SONO SICURO
+  let t = eq_2deg_solver(a, b, c)
+  t0 = t[0] 
+  t1 = t[1]
   #Check if t0 and t1 are in the correct [t_min, t_max] range
   if (t0 > inv_ray.tmax or t1 < inv_ray.tmin):
     return none(HitRecord)
