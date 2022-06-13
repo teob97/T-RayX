@@ -203,7 +203,7 @@ method render*(renderer : PointLightRenderer, ray : Ray): Color {.locks: "unknow
         distance_vec : Vec = hit_record.world_point - cur_light.position
         distance : float = distance_vec.norm()
         in_dir : Vec = distance_vec * (1.0 / distance)
-        cos_theta  : float = max(0.0, normalized_dot(-ray.dir, hit_record.normal))
+        cos_theta  : float = max(0.0, normalized_dot(-distance_vec, hit_record.normal))
       
       if (cur_light.linear_radius > 0):
         distance_factor = (cur_light.linear_radius / distance)*(cur_light.linear_radius / distance)
@@ -213,10 +213,10 @@ method render*(renderer : PointLightRenderer, ray : Ray): Color {.locks: "unknow
       var 
         emitted_color : Color = hit_material.emitted_radiance.get_color(hit_record.surface_point)
         brdf_color : Color = hit_material.brdf_function.eval(
-          normal=hit_record.normal,
-          in_dir=in_dir,
-          out_dir= -ray.dir,
-          uv=hit_record.surface_point,
+          normal = hit_record.normal,
+          in_dir = in_dir,
+          out_dir = -ray.dir,
+          uv = hit_record.surface_point,
         )
       result_color = result_color + (emitted_color + brdf_color) * cur_light.color * cos_theta * distance_factor
   return result_color 

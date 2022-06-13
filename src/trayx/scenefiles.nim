@@ -47,7 +47,8 @@ type
     PERSPECTIVE = 18,
     FLOAT = 19,
     AABOX = 20,
-    CYLINDER = 21
+    CYLINDER = 21,
+    LIGHTSOURCE = 22
 
 const KEYWORDS = {"new": KeywordEnum.NEW,
               "material": KeywordEnum.MATERIAL,
@@ -69,7 +70,8 @@ const KEYWORDS = {"new": KeywordEnum.NEW,
               "perspective": KeywordEnum.PERSPECTIVE,
               "float": KeywordEnum.FLOAT,
               "aabox": KeywordEnum.AABOX,
-              "cylinder": KeywordEnum.CYLINDER
+              "cylinder": KeywordEnum.CYLINDER,
+              "light" : KeywordEnum.LIGHTSOURCE
               }.toTable
 type
   TokenKind* = enum
@@ -93,7 +95,7 @@ type
       value* : float
     of SymbolToken:
       symbol* : string
-    of StopToken: #Forse qua si può anche omettere stop token perchè tanto è già definito sopra.
+    of StopToken:
       flag* : bool
 
 #***************************************** SCENE ***************************************************
@@ -236,7 +238,7 @@ proc readToken*(strm : var InputStream) : Token =
   # At this point we must check what kind of token begins with the "ch" character (which has been
   # put back in the stream with self.unread_char). First, we save the position in the stream
   
-  let tkn_location = strm.location # --> a cosa servirebbe questo comando?
+  let tkn_location = strm.location
   
   if ch in SYMBOLS:
     # One-character symbol, like '(' or ','
@@ -332,6 +334,16 @@ proc parseVector*(input_file: var InputStream, scene: Scene) : Vec =
   expectSymbol(input_file, "]")  
   return Vec(x: x, y: y, z: z)
 
+proc parsePoint*(input_file: var InputStream, scene: Scene) : Point =
+  expectSymbol(input_file, "[")
+  let  x : float = expectNumber(input_file, scene)
+  expectSymbol(input_file, ",")
+  let  y : float = expectNumber(input_file, scene)
+  expectSymbol(input_file, ",")
+  let  z : float = expectNumber(input_file, scene)
+  expectSymbol(input_file, "]")  
+  return Point(x: x, y: y, z: z)
+
 proc parseColor*(input_file: var InputStream, scene: Scene) : Color =
   expectSymbol(input_file, "<")
   let  r : float = expectNumber(input_file, scene)
@@ -369,9 +381,9 @@ proc parseBRDF*(input_file: var InputStream, scene: Scene) : BRDF =
   let pigment : Pigment = parsePigment(input_file, scene)
   expectSymbol(input_file, ")")
   if brdf_keyword == KeywordEnum.DIFFUSE:
-    return DiffuseBRDF(pigment: pigment)
+    return newDiffuseBRDF(pigment = pigment)
   elif brdf_keyword == KeywordEnum.SPECULAR:
-    return SpecularBRDF(pigment: pigment)
+    return newSpecularBRDF(pigment = pigment)
   assert false, "This line should be unreachable"
 
 proc parseMaterial*(input_file: var InputStream, scene: Scene) : (string, Material) = # (...) -> tuples
@@ -436,6 +448,16 @@ proc parseCamera*(input_file: var InputStream, scene: Scene) : Camera =
     result = newPerspectiveCamera(distance = distance, aspect_ratio = aspect_ratio, transformation = transformation)
   if type_kw == KeywordEnum.ORTHOGONAL:
     result = newOrthogonalCamera(aspect_ratio = aspect_ratio, transformation = transformation)
+
+proc parseLightSource*(input_file : var InputStream, scene : Scene) : PointLight =
+  expectSymbol(input_file, "(")
+  let position : Point = parsePoint(input_file, scene)
+  expectSymbol(input_file, ",")
+  let color : Color = parseColor(input_file, scene)
+  expectSymbol(input_file, ",")
+  let radius : float = expectNumber(input_file, scene)
+  expectSymbol(input_file, ")")
+  result = newPointLight(position, color, radius)
 
 proc parseSphere*(input_file: var InputStream, scene: Scene) : Sphere =
   expectSymbol(input_file, "(")
@@ -522,7 +544,9 @@ proc parseScene*(input_file: var InputStream, variables: Table[string, float] = 
       result.camera = some(parseCamera(input_file, result))
     of KeywordEnum.MATERIAL:
       var (name, material) = parseMaterial(input_file, result)
-      result.materials[name] = material    
+      result.materials[name] = material  
+    of KeywordEnum.LIGHTSOURCE:
+      result.world.point_lights.add(parseLightSource(input_file, result))  
     of KeywordEnum.SPHERE:
       result.world.shapes.add(parseSphere(input_file, result))
     of KeywordEnum.PLANE:
@@ -534,45 +558,3 @@ proc parseScene*(input_file: var InputStream, variables: Table[string, float] = 
     else:
       let error_string = $input_file.location&" Invalid keyword."
       raise newException(GrammarError, error_string)   
-
-#[ proc parseScene*(input_file: var InputStream, variables: Table[string, float] = initTable[string, float]()) : Scene =
-  ## Read a scene description from a stream and return a `.Scene` object
-  result.float_variables = variables
-  for k in variables.keys:
-    result.overridden_variables.incl(k)
-  while true:
-    let what = input_file.readToken()
-    if what.kind == StopToken:
-      break
-    if not (what.kind == KeywordToken):
-      let error_string = $input_file.location&" Expected a keyword."
-      raise newException(GrammarError, error_string)
-    if what.keyword == KeywordEnum.FLOAT:
-      let variable_name : string = expectIdentifier(input_file)
-      # Save this for the error message
-      let variable_loc = input_file.location
-      expectSymbol(input_file, "(")
-      let variable_value = expectNumber(input_file, result)
-      expect_symbol(input_file, ")")
-      if (variable_name in result.float_variables) and not (variable_name in result.overridden_variables):
-        let error_string = $variable_loc&" Variable "&($variable_name)&" cannot be redefined."
-        raise newException(GrammarError, error_string) 
-      if not result.overridden_variables.contains(variable_name):
-        # Only define the variable if it was not defined by the user *outside* the scene file
-        # (e.g., from the command line)
-        result.float_variables[variable_name] = variable_value
-    elif what.keyword == KeywordEnum.SPHERE:
-      result.world.shapes.add(parseSphere(input_file, result))
-    elif what.keyword == KeywordEnum.PLANE:
-      result.world.shapes.add(parsePlane(input_file, result))
-    elif what.keyword == KeywordEnum.CAMERA:
-      if not result.camera.isNone:
-        let error_string = $what.location&"You cannot define more than one camera"
-        raise newException(GrammarError, error_string)
-      result.camera = some(parseCamera(input_file, result))
-    elif what.keyword == KeywordEnum.MATERIAL:
-      var (name, material) = parseMaterial(input_file, result)
-      result.materials[name] = material ]#
-
-
-

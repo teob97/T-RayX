@@ -135,7 +135,7 @@ proc is_point_visible*(world : World, point : Point, observer_pos : Point): bool
   let
     direction : Vec = point - observer_pos
     dir_norm : float = direction.norm()
-    ray : Ray = newRay(origin = observer_pos, dir = direction, tmin = 1e-2 / dir_norm, tmax = 1.0)
+    ray : Ray = newRay(origin = observer_pos, dir = direction, tmin = 1e-2 / dir_norm, tmax = 1.0, depth = 0)
   for shapes in world.shapes:
     if shapes.quickRayIntersection(ray):
       return false
@@ -517,3 +517,8 @@ method quickRayIntersection*(plane : Plane, ray : Ray): bool =
   let t = - inv_ray.origin.z / inv_ray.dir.z
   return (t > inv_ray.tmin and t < inv_ray.tmax)
 
+method quickRayIntersection*(cyl : Cylinder, ray : Ray): bool =
+  quit "Da scrivere quick intersection per il cilindro"
+
+method quickRayIntersection*(cyl : AABox, ray : Ray): bool =
+  quit "Da scrivere quick intersection per il AABox"

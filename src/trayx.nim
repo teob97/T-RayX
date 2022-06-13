@@ -34,10 +34,10 @@ Options:
   --renderer=<type>             Renderer's type: onoff, flat, pathtracing, pointlight. Default: pathtracing.
   --clock=<angle-deg>           Angle in degree. Use it to rotate camera.
   --output=<output-file>        Output file.png
-  --numberOfRays=<nRay>         Number of rays departing from each surface point (only applicable with --algorithm=pathtracing).
+  --numberOfRays=<nRay>         Number of rays departing from each surface point (only applicable with pathtracing).
   --maxDepth=<depth>            Maximum allowed ray depth (only applicable with --algorithm=pathtracing).
   --initState=<seed>            Initial seed for the random number generator (positive number).
-  --initSeq=<seq-seed>          Identifier of the sequence produced by the random number generator (positive number)."
+  --initSeq=<seq-seed>          Identifier of the sequence produced by the random number generator (positive number).
   --samplePerPixel=<n_sample>   Number of samples per pixel (must be a perfect square, e.g., 16).
   -h --help                     Show this screen
   --version                     Show version
