@@ -242,7 +242,7 @@ proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
     result = newNormal(0,1,0)
   elif hit_point.z == box.pmax.z:
     result = newNormal(0,0,1)
-  if PointToVec(hit_point).dot(ray.dir) <= 0:
+  if PointToVec(hit_point).dot(ray.dir) < 0:
     result = - result
 
 
