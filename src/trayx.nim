@@ -191,7 +191,7 @@ proc render*() =
   if args["--output"]:
     tracer.image.writeLdrImage($args["--output"])
   else:
-    tracer.image.writeLdrImage("result.png")
+    tracer.image.writeLdrImage(now().format("yyyy-MM-dd'T'HH:mm:ss")&".png")
 
 #*********************************** MAIN ***********************************
 
@@ -199,12 +199,12 @@ when isMainModule:
   if args["pfm2png"]:
     pfm2png()
   if args["demo"]:
-    let t1 = epochTime()
+    let t1 = cpuTime()
     demo()
-    let t2 = epochTime()
+    let t2 = cpuTime()
     echo("Execution time: ", t2 - t1)
   if args["render"]:
-    let t1 = epochTime()
+    let t1 = cpuTime()
     render()
-    let t2 = epochTime()
+    let t2 = cpuTime()
     echo("Execution time: ", t2 - t1)

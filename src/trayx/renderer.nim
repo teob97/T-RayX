@@ -206,7 +206,7 @@ method render*(renderer : PointLightRenderer, ray : Ray): Color {.locks: "unknow
         cos_theta  : float = max(0.0, normalized_dot(-distance_vec, hit_record.normal))
       
       if (cur_light.linear_radius > 0):
-        distance_factor = (cur_light.linear_radius / distance)*(cur_light.linear_radius / distance)
+        distance_factor = (cur_light.linear_radius / distance)^2
       else:
         distance_factor = 1.0
       

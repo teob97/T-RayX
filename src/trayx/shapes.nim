@@ -226,36 +226,6 @@ proc boxIntersection(pmin, pmax : Point; ray : Ray) : bool =
     return true
 
 proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
-  ## Check in which face of the cube there is the intersection and calculate the normal using the cross product.
-  var
-    a = box.pmin
-    h = box.pmax
-    b = newPoint(h.x, a.y, a.z)
-    c = newPoint(h.x, a.y, h.z)
-    d = newPoint(a.x, a.y, h.z)
-    e = newPoint(a.x, h.y, h.z)
-    f = newPoint(a.x, h.y, a.z)
-    g = newPoint(h.x, h.y, a.z)
-  if hit_point.x == box.pmin.x:
-    # yz face (pmin.x, hit_point.y, hit_point.z)
-    result = VecToNormal(cross(d-a, f-a))
-  elif hit_point.y == box.pmin.y:
-    # xz face
-    result = VecToNormal(cross(b-a, d-a))
-  elif hit_point.z == box.pmin.z:
-    # xy face
-    result = VecToNormal(cross(f-a, b-a))
-  elif hit_point.x == box.pmax.x:
-    result = VecToNormal(cross(g-b, c-b))
-  elif hit_point.y == box.pmax.y:
-    result = VecToNormal(cross(e-f, g-f))
-  elif hit_point.z == box.pmax.z:
-    result = VecToNormal(cross(c-d, e-d))
-  
-  if PointToVec(hit_point).dot(ray.dir) > 0:
-    result = - result
-
-#[ proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
   ## Check in which face of the cube there is the intersection and calculate the normal knowing pmin and pmax.
   ## Default : pmin = (0,0,0) ; pmax = (1,1,1)
   if hit_point.x == box.pmin.x: # if hit_point.x == 0
@@ -272,9 +242,8 @@ proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
     result = newNormal(0,1,0)
   elif hit_point.z == box.pmax.z:
     result = newNormal(0,0,1)
-  
-  if PointToVec(hit_point).dot(ray.dir) > 0:
-    result = - result ]#
+  if PointToVec(hit_point).dot(ray.dir) <= 0:
+    result = - result
 
 
 method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
@@ -517,8 +486,75 @@ method quickRayIntersection*(plane : Plane, ray : Ray): bool =
   let t = - inv_ray.origin.z / inv_ray.dir.z
   return (t > inv_ray.tmin and t < inv_ray.tmax)
 
-method quickRayIntersection*(cyl : Cylinder, ray : Ray): bool =
-  quit "Da scrivere quick intersection per il cilindro"
+method quickRayIntersection*(cylinder : Cylinder, ray : Ray): bool =
+  var
+    inv_ray : Ray = ray.transform(cylinder.transformation.inverse())
+    hit_point : Point
+    t_hit : float
+    phi : float
+    t0, t1 : float
+  #Calculate the intersection equation's coefficients
+  let
+    a : float = inv_ray.dir.x * inv_ray.dir.x + inv_ray.dir.y * inv_ray.dir.y
+    b : float = 2 * (inv_ray.dir.x * inv_ray.origin.x + inv_ray.dir.y * inv_ray.origin.y)
+    c : float = inv_ray.origin.x * inv_ray.origin.x + inv_ray.origin.y * inv_ray.origin.y - cylinder.r * cylinder.r
+    delta : float = b * b - 4 * a * c
+  #Check if there are solutions
+  if delta < 0:
+    return false
+  let t = eq_2deg_solver(a, b, c)
+  t0 = t[0] 
+  t1 = t[1]
+  #Check if t0 and t1 are in the correct [t_min, t_max] range
+  if (t0 > inv_ray.tmax or t1 < inv_ray.tmin):
+    return false
+  #Check which solution is the correct one
+  t_hit = t0
+  if t_hit < inv_ray.tmin :
+    t_hit = t1
+    if t_hit > inv_ray.tmax:
+      return false
+  #Calculate the hit point and phi
+  hit_point = inv_ray.at(t_hit)
+  phi = arctan2(hit_point.y, hit_point.x)
+  if phi < 0:
+    phi = phi + 2 * PI
+  #Check the boundaries conditions for z, and if they aren't safisfied try the other solution
+  if (hit_point.z < cylinder.z_min or hit_point.z > cylinder.z_max or phi > cylinder.phi_max):
+    if (t_hit == t1):
+      return false
+    t_hit = t1
+    if t_hit > inv_ray.tmax:
+      return false
+    hit_point = inv_ray.at(t_hit)
+    phi = arctan2(hit_point.y, hit_point.x)
+    if phi < 0:
+      phi = phi + 2 * PI
+    if (hit_point.z < cylinder.z_min or hit_point.z > cylinder.z_max or phi > cylinder.phi_max):
+      return false
+  return true
 
-method quickRayIntersection*(cyl : AABox, ray : Ray): bool =
-  quit "Da scrivere quick intersection per il AABox"
+method quickRayIntersection*(box : AABox, ray : Ray): bool =
+  ## Checks if a ray intersects the AAB (only used in PointLight Tracer)
+  ## Return a true, or flase if no intersection was found.  
+  var
+    inv_ray : Ray = ray.transform(box.transformation.inverse())
+    origin_vec : Vec = PointToVec(inv_ray.origin)
+    tx_min : float64 = (box.pmin.x - origin_vec.x) / inv_ray.dir.x
+    ty_min : float64 = (box.pmin.y - origin_vec.y) / inv_ray.dir.y
+    tz_min : float64 = (box.pmin.z - origin_vec.z) / inv_ray.dir.z
+    tx_max : float64 = (box.pmax.x - origin_vec.x) / inv_ray.dir.x
+    ty_max : float64 = (box.pmax.y - origin_vec.y) / inv_ray.dir.y
+    tz_max : float64 = (box.pmax.z - origin_vec.z) / inv_ray.dir.z
+    t_hit : float64
+  if tx_min > tx_max: swap(tx_min, tx_max)
+  if ty_min > ty_max: swap(ty_min, ty_max)
+  if tz_min > tz_max: swap(tz_min, tz_max)
+  if checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max).isNone:
+    return false
+  else:
+    t_hit = get(checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max))
+  if (t_hit <= inv_ray.tmin) or (t_hit >= inv_ray.tmax):
+    return false
+  return true
+  
