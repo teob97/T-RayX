@@ -483,7 +483,7 @@ method quickRayIntersection*(plane : Plane, ray : Ray): bool =
     inv_ray = ray.transform(plane.transformation.inverse())
   if abs(inv_ray.dir.z) < 1e-5:
     return false
-  let t = - inv_ray.origin.z / inv_ray.dir.z
+  let t : float = - inv_ray.origin.z / inv_ray.dir.z
   return (t > inv_ray.tmin and t < inv_ray.tmax)
 
 method quickRayIntersection*(cylinder : Cylinder, ray : Ray): bool =
@@ -540,13 +540,13 @@ method quickRayIntersection*(box : AABox, ray : Ray): bool =
   var
     inv_ray : Ray = ray.transform(box.transformation.inverse())
     origin_vec : Vec = PointToVec(inv_ray.origin)
-    tx_min : float64 = (box.pmin.x - origin_vec.x) / inv_ray.dir.x
-    ty_min : float64 = (box.pmin.y - origin_vec.y) / inv_ray.dir.y
-    tz_min : float64 = (box.pmin.z - origin_vec.z) / inv_ray.dir.z
-    tx_max : float64 = (box.pmax.x - origin_vec.x) / inv_ray.dir.x
-    ty_max : float64 = (box.pmax.y - origin_vec.y) / inv_ray.dir.y
-    tz_max : float64 = (box.pmax.z - origin_vec.z) / inv_ray.dir.z
-    t_hit : float64
+    tx_min : float = (box.pmin.x - origin_vec.x) / inv_ray.dir.x
+    ty_min : float = (box.pmin.y - origin_vec.y) / inv_ray.dir.y
+    tz_min : float = (box.pmin.z - origin_vec.z) / inv_ray.dir.z
+    tx_max : float = (box.pmax.x - origin_vec.x) / inv_ray.dir.x
+    tz_max : float = (box.pmax.z - origin_vec.z) / inv_ray.dir.z
+    ty_max : float = (box.pmax.y - origin_vec.y) / inv_ray.dir.y
+    t_hit : float
   if tx_min > tx_max: swap(tx_min, tx_max)
   if ty_min > ty_max: swap(ty_min, ty_max)
   if tz_min > tz_max: swap(tz_min, tz_max)

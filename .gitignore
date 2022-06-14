@@ -2,9 +2,7 @@
 !**/
 !*.*
 
-output/demo/img*
-output/test*
-output/result*
+output/
 src/csg.nim
 .vscode
 profile_result*

@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>. ]#
     
-import std/[math, options, strformat]
+import std/[math, options]
 import simplepng, basictypes
 
 #*********************************** OPERATIONS ON HDRIMAGE ***********************************
@@ -72,4 +72,4 @@ proc writeLdrImage*(img : HdrImage, name : string, gamma : float = 1.0) =
               int(255 * pow(c.g, 1 / gamma)),
               int(255 * pow(c.b, 1 / gamma)), 255)
       i += 1
-  simplePNG(fmt"output/{name}", p)
+  simplePNG(name, p)

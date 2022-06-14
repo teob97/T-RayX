@@ -47,49 +47,6 @@ let args = docopt(doc, version = "1.0.0") #find a way to automatize versioning
 
 #*********************************** PFM2PNG ***********************************
 
-#[ type
-  Parameters* = object
-      input_pfm_file_name : string
-      factor : float
-      gamma : float
-      output_png_file_name : string
-
-# Read parameters form command line
-proc parseCommandLine*(param : var Parameters) =
-  var args = commandLineParams()
-  if len(args) != 5:
-    raise newException(IOError, "Usage: main.nim INPUT_PFM_FILE FACTOR GAMMA OUTPUT_PNG_FILE")
-  param.input_pfm_file_name = args[1]
-  try:
-    param.factor = args[2].parseFloat
-  except ValueError:
-    raise newException(IOError, fmt"Invalid factor ('{args[2]}'), it must be a floating-point number.")
-  try:
-    param.gamma = args[3].parseFloat
-  except ValueError:
-    raise newException(IOError, fmt"Invalid factor ('{args[3]}'), it must be a floating-point number.")
-  param.output_png_file_name = args[4]
-
-proc pfm2png*() =
-  ## Main procedure to convert a .pfm file into a .png file
-  var param : Parameters
-  try:
-    parseCommandLine(param):
-  except IOError:
-    echo ("Error: wrong parameters. See --help.")
-    return
-  var 
-    impf = openFileStream(param.input_pfm_file_name)
-    img : HdrImage = readPfmImage(impf)
-  impf.close()
-  echo (fmt"File {param.input_pfm_file_name} has been read from disk.")
-  img.normalize_image(factor=param.factor)
-  img.clamp_image()
-  var outf = newFileStream(param.output_png_file_name, fmWrite)
-  img.write_ldr_image(name=param.output_png_file_name, gamma=param.gamma)
-  outf.close()
-  echo (fmt"File {param.output_png_file_name} has been written to disk.") ]#
-
 proc pfm2png*() =
   ## Main procedure to convert a .pfm file into a .png file
   var 
@@ -130,7 +87,7 @@ proc demo*()=
   let renderer : Renderer = newPathTracer(world)
   tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)
-  tracer.image.writeLdrImage("demo.png")
+  tracer.image.writeLdrImage("output/demo.png")
 
 #*************************************RENDER*************************************************
 
@@ -191,7 +148,7 @@ proc render*() =
   if args["--output"]:
     tracer.image.writeLdrImage($args["--output"])
   else:
-    tracer.image.writeLdrImage(now().format("yyyy-MM-dd'T'HH:mm:ss")&".png")
+    tracer.image.writeLdrImage("output/img_"&(now().format("yyyy-MM-dd'T'HH:mm:ss"))&".png")
 
 #*********************************** MAIN ***********************************
 
