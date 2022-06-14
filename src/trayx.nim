@@ -138,7 +138,7 @@ proc render*() =
     height : int = parseInt($args["<height>"])
 
   if "clock" in img_scene.float_variables:
-    img_scene.camera.get().transformation = img_scene.camera.get().transformation * rotation_z(img_scene.float_variables["clock"])
+    img_scene.camera.get().transformation = rotation_z(img_scene.float_variables["clock"]) * img_scene.camera.get().transformation
 
   var tracer : ImageTracer = newImageTracer(newHdrImage(width, height), img_scene.camera.get())
   if args["--samplePerPixel"]:

@@ -228,21 +228,21 @@ proc boxIntersection(pmin, pmax : Point; ray : Ray) : bool =
 proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
   ## Check in which face of the cube there is the intersection and calculate the normal knowing pmin and pmax.
   ## Default : pmin = (0,0,0) ; pmax = (1,1,1)
-  if hit_point.x == box.pmin.x: # if hit_point.x == 0
+  if abs(hit_point.x - box.pmin.x)<1e-5: # if hit_point.x == 0
     result = newNormal(-1, 0, 0)
-  elif hit_point.y == box.pmin.y:
+  elif abs(hit_point.y - box.pmin.y)<1e-5:
     # xz face
     result = newNormal(0, -1, 0)
-  elif hit_point.z == box.pmin.z:
+  elif abs(hit_point.z - box.pmin.z)<1e-5:
     # xy face
     result = newNormal(0,0,-1)
-  elif hit_point.x == box.pmax.x:
+  elif abs(hit_point.x - box.pmax.x)<1e-5:
     result = newNormal(1,0,0)
-  elif hit_point.y == box.pmax.y:
+  elif abs(hit_point.y - box.pmax.y)<1e-5:
     result = newNormal(0,1,0)
-  elif hit_point.z == box.pmax.z:
+  elif abs(hit_point.z - box.pmax.z)<1e-5:
     result = newNormal(0,0,1)
-  if PointToVec(hit_point).dot(ray.dir) < 0:
+  if dot(ray.dir, PointToVec(hit_point)) > 0:
     result = - result
 
 
@@ -554,7 +554,7 @@ method quickRayIntersection*(box : AABox, ray : Ray): bool =
     return false
   else:
     t_hit = get(checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max))
-  if (t_hit <= inv_ray.tmin) or (t_hit >= inv_ray.tmax):
+  if (t_hit < inv_ray.tmin) or (t_hit > inv_ray.tmax):
     return false
   return true
   
