@@ -428,6 +428,7 @@ suite "Test shapes.nim":
       plane = newPlane()
       planeTrans = newPlane(transformation = rotation_y(angle_deg = 90.0))
       cube = newAABox(newPoint(1.0,1.0,1.0), newPoint(2.0,2.0,2.0))
+      cube2 = newAABox(transformation = scaling(newVec(10,10,10)) * translation(newVec(-0.5,-0.5,-0.5)) )
       cubeTrans = newAABox(newPoint(-1.0,-1.0,-1.0), newPoint(1.0,1.0,1.0), transformation = rotation_x(angle_deg = 45.0))
       ray1 = newRay(origin = newPoint(0, 0, 2), dir = -VEC_Z)
       ray2 = newRay(origin = newPoint(3, 0, 0), dir = -VEC_X)
@@ -466,6 +467,10 @@ suite "Test shapes.nim":
       intersection3a = cubeTrans.rayIntersection(ray3a)
       intersection4a = cubeTrans.rayIntersection(ray4a)
       intersection5a = cubeTrans.rayIntersection(ray5a)
+      inter1 = cube2.rayIntersection(ray1) #becca la faccia sotto
+      inter2 = cube2.rayIntersection(ray2) #dovrebbe beccare la faccia dietro
+      inter3 = cube2.rayIntersection(ray3) # becca la faccia x davanti
+      inter4 = cube2.rayIntersection(ray2p) # becca la faccia in alto
   test "Test Sphere Hit":
     check:
       not intersection1.isNone
@@ -541,11 +546,14 @@ suite "Test shapes.nim":
       areClose(intersection7p.get().surface_point, (newVec2d(0.25, 0.75)))
   test "Test AABox Hit":
     check:
+      areClose(inter1.get().normal, newNormal(0,0,1))
+      areClose(inter2.get().normal, newNormal(1,0,0))
+      areClose(inter3.get().normal, newNormal(-1,0,0))
+      areClose(inter4.get().normal, newNormal(0,0,-1))
       not intersection1a.isNone
       intersection2a.isNone
       areClose(intersection1a.get().world_point, (newPoint(1.0, 1.5, 1.5)))
   test "Test AABox Transformation":
-    #echo(intersection5a.get().normal)
     check:
       intersection3a.isNone
       not intersection4a.isNone
