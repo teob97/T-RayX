@@ -188,24 +188,24 @@ proc AABoxPointToUV*(point: Point) : Vec2d =
   elif point.z == 1:
     result = newVec2d((1 + point.y) / 4, (2 + point.x) / 3)
 
-proc checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max: float): Option[float] =
+proc checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max: float): Option[(float, float)] =
   ## Check if the intersection is "real".
   var 
     t_hit_min : float = tx_min
     t_hit_max : float = tx_max
   if tx_min > ty_max or ty_min > tx_max:
-    return none(float)
+    return none((float,float))
   if ty_min > tx_min:
     t_hit_min = ty_min
   if ty_max < tx_max:
     t_hit_max = ty_max
   if t_hit_min > tz_max or tz_min > t_hit_max:
-    return none(float)
+    return none((float,float))
   if tz_min > t_hit_min:
     t_hit_min = tz_min
   if tz_max < t_hit_max:
     t_hit_max = tz_max
-  return some(t_hit_min)
+  return some((t_hit_min, t_hit_max))
 
 proc boxIntersection(pmin, pmax : Point; ray : Ray) : bool =
   ## Check if there is an intersection with the boundary box.
@@ -225,26 +225,28 @@ proc boxIntersection(pmin, pmax : Point; ray : Ray) : bool =
   else:
     return true
 
+proc `<`(p1, p2 : Point): bool =
+  return p1.x<p2.x and p1.y<p2.y and p1.z<p2.z
+
 proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
   ## Check in which face of the cube there is the intersection and calculate the normal knowing pmin and pmax.
   ## Default : pmin = (0,0,0) ; pmax = (1,1,1)
-  if abs(hit_point.x - box.pmin.x)<1e-5: # if hit_point.x == 0
+  if hit_point.x == box.pmin.x: # if hit_point.x == 0
     result = newNormal(-1, 0, 0)
-  elif abs(hit_point.y - box.pmin.y)<1e-5:
+  elif hit_point.y == box.pmin.y:
     # xz face
     result = newNormal(0, -1, 0)
-  elif abs(hit_point.z - box.pmin.z)<1e-5:
+  elif hit_point.z == box.pmin.z:
     # xy face
     result = newNormal(0,0,-1)
-  elif abs(hit_point.x - box.pmax.x)<1e-5:
+  elif hit_point.x == box.pmax.x:
     result = newNormal(1,0,0)
-  elif abs(hit_point.y - box.pmax.y)<1e-5:
+  elif hit_point.y == box.pmax.y:
     result = newNormal(0,1,0)
-  elif abs(hit_point.z - box.pmax.z)<1e-5:
+  elif hit_point.z == box.pmax.z:
     result = newNormal(0,0,1)
-#[   if dot(ray.dir, PointToVec(hit_point)) > 0:
-    result = - result ]#
-
+  if ray.origin < box.pmax and box.pmin < ray.origin:
+    result = - result
 
 method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
   ## Checks if a ray intersects the AAB
@@ -262,15 +264,21 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
   if tx_min > tx_max: swap(tx_min, tx_max)
   if ty_min > ty_max: swap(ty_min, ty_max)
   if tz_min > tz_max: swap(tz_min, tz_max)
-  if checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max).isNone:
+  let t = checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max)
+  if t.isNone:
     return none(HitRecord)
+  # Check if the intersection in into the box or outo the box and choose the correct t_hit
+  if inv_ray.origin < box.pmax and box.pmin < inv_ray.origin:
+    # If the origin of the ray is into the box take t_max
+    t_hit = t.get()[1]
   else:
-    t_hit = get(checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max))
-  if (t_hit <= inv_ray.tmin) or (t_hit >= inv_ray.tmax):
+    # If the origin of the ray is outside the box take t_min
+    t_hit = t.get()[0]
+  if (t_hit < inv_ray.tmin) or (t_hit > inv_ray.tmax):
     return none(HitRecord)
   var hit_point : Point = inv_ray.at(t_hit)
   result = some(newHitRecord(world_point = box.transformation * hit_point,
-                      normal = box.transformation * box.boxNormal(hit_point, inv_ray),
+                      normal = (box.transformation * box.boxNormal(hit_point, inv_ray)),
                       surface_point = AABoxPointToUV(hit_point),
                       t = t_hit,
                       ray = ray,
@@ -550,11 +558,14 @@ method quickRayIntersection*(box : AABox, ray : Ray): bool =
   if tx_min > tx_max: swap(tx_min, tx_max)
   if ty_min > ty_max: swap(ty_min, ty_max)
   if tz_min > tz_max: swap(tz_min, tz_max)
-  if checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max).isNone:
+  let t = checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max)
+  if t.isNone:
     return false
+  #Check if the intersection in into the box or outo the box and choose the correct t_hit
+  if inv_ray.origin < box.pmax and box.pmin < inv_ray.origin:
+    t_hit = t.get()[1]
   else:
-    t_hit = get(checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max))
-  if (t_hit < inv_ray.tmin) or (t_hit > inv_ray.tmax):
+    t_hit = t.get()[0]
+  if (t_hit <= inv_ray.tmin) or (t_hit >= inv_ray.tmax):
     return false
   return true
-  
