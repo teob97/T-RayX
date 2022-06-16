@@ -1,7 +1,7 @@
 # HEAD
 
 -	**Major changes:** now it is possible to use `render` command through the CLI. [#7](https://github.com/teob97/T-RayX/pull/7)
--	Added a parser and a lexer in scenefiles.nim so that a .txt file can be used as input
+-	Added a parser and a lexer in scenefiles.nim so that a .txt file can be used as input. [#7](https://github.com/teob97/T-RayX/pull/7)
 
 # Version 0.2.0
 
