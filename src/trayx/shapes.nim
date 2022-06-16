@@ -242,8 +242,8 @@ proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
     result = newNormal(0,1,0)
   elif abs(hit_point.z - box.pmax.z)<1e-5:
     result = newNormal(0,0,1)
-  if dot(ray.dir, PointToVec(hit_point)) > 0:
-    result = - result
+#[   if dot(ray.dir, PointToVec(hit_point)) > 0:
+    result = - result ]#
 
 
 method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
