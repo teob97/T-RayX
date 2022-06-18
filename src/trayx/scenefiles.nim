@@ -358,7 +358,7 @@ proc parsePigment*(input_file: var InputStream, scene: Scene) : Pigment =
   let keyword : KeywordEnum = expectKeywords(input_file, @[KeywordEnum.UNIFORM, KeywordEnum.CHECKERED, KeywordEnum.IMAGE])
   expectSymbol(input_file, "(")
   if keyword == KeywordEnum.UNIFORM:
-    result = UniformPigment(color : parseColor(input_file, scene))
+    result = newUniformPigment(color = parseColor(input_file, scene))
   elif keyword == KeywordEnum.CHECKERED:
     let c1 : Color = parseColor(input_file, scene)
     expectSymbol(input_file, ",")
@@ -366,11 +366,11 @@ proc parsePigment*(input_file: var InputStream, scene: Scene) : Pigment =
     expectSymbol(input_file, ",")
     # Magari aggiungere un if con un errore se non riceve un int!!!!!!!!!!!!!!!1
     let nstep : int = expectNumber(input_file, scene).toInt
-    result = CheckeredPigment(color1: c1, color2: c2, num_of_steps: nstep)
+    result = newCheckeredPigment(color1 = c1, color2 = c2, num_of_steps = nstep)
   elif keyword == KeywordEnum.IMAGE:
     let impf : Stream = openFileStream(expectString(input_file))
     let img : HdrImage = readPfmImage(impf)
-    result = ImagePigment(image: img)
+    result = newImagePigment(image = img)
   else:
     assert false, "This line should be unreachable"
   expectSymbol(input_file, ")")
@@ -488,7 +488,7 @@ proc parseAABox*(input_file: var InputStream, scene: Scene): AABox =
   let material_name : string = expectIdentifier(input_file)
   if not scene.materials.hasKey(material_name):
     # We raise the exception here because input_file is pointing to the end of the wrong identifier
-    let error_string = $input_file.location&"Unknown material "&($material_name)
+    let error_string = $input_file.location&" Unknown material "&($material_name)
     raise newException(GrammarError, error_string)
   expectSymbol(input_file, ",")
   let transformation = parseTransformation(input_file, scene)
@@ -512,6 +512,7 @@ proc parseScene*(input_file: var InputStream, variables: Table[string, float] = 
   result.float_variables = variables
   for k in variables.keys:
     result.overridden_variables.incl(k)
+  result.world = newWorld()
   while true:
 
     let what = input_file.readToken()    

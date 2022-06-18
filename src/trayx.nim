@@ -103,7 +103,7 @@ proc render*() =
   var 
     file_stream : FileStream = newFileStream($args["<SCENE_FILE.txt>"], fmRead)
     input_stream : InputStream = newInputStream(file_stream)
-    img_scene : Scene = parseScene(input_stream, variables) #Qui la possibilità di passare una tabella di variabili se si desidera passarle da linea di comando.
+    img_scene : Scene = parseScene(input_stream, variables)
     renderer : Renderer
   file_stream.close()
   # Check is the renderer's type has been defined through the CLI

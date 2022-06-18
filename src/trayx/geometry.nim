@@ -128,7 +128,10 @@ define_product(Normal)
 template define_neg(t: typedesc) =
   ## Negation: return the reversed Vec or the reversed Normal
   proc `-`*(arg : t): t =
-    result = -1.0 * arg 
+    result.x = -arg.x
+    result.y = -arg.y 
+    result.z = -arg.z 
+
 
 define_neg(Vec)
 define_neg(Normal)

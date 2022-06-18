@@ -225,10 +225,13 @@ proc boxIntersection(pmin, pmax : Point; ray : Ray) : bool =
   else:
     return true
 
-proc `<`(p1, p2 : Point): bool =
-  return p1.x<p2.x and p1.y<p2.y and p1.z<p2.z
+#[ proc `<`(p1, p2 : Point): bool =
+  return p1.x<p2.x and p1.y<p2.y and p1.z<p2.z ]#
 
-proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
+proc `<=`(p1, p2 : Point): bool =
+  return p1.x<=p2.x and p1.y<=p2.y and p1.z<=p2.z
+
+#[ proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
   ## Check in which face of the cube there is the intersection and calculate the normal knowing pmin and pmax.
   ## Default : pmin = (0,0,0) ; pmax = (1,1,1)
   if hit_point.x == box.pmin.x: # if hit_point.x == 0
@@ -246,14 +249,34 @@ proc boxNormal(box : AABox, hit_point : Point, ray : Ray) : Normal =
   elif hit_point.z == box.pmax.z:
     result = newNormal(0,0,1)
   if ray.origin < box.pmax and box.pmin < ray.origin:
-    result = - result
+    return normalization(-result) ]#
+
+proc boxNormal( box : AABox; tx_min, tx_max, ty_min, ty_max, tz_min, tz_max: float; t_hit : float;  ray : Ray) : Normal =
+  ## Check in which face of the cube there is the intersection and calculate the normal knowing pmin and pmax.
+  ## Default : pmin = (0,0,0) ; pmax = (1,1,1)
+  if t_hit == tx_min:
+    result = newNormal(1,0,0)
+  elif t_hit == tx_max:
+    result = newNormal(1,0,0)
+  elif t_hit == ty_min:
+    result = newNormal(0,1,0)
+  elif t_hit == ty_max:
+    result = newNormal(0,1,0)
+  elif t_hit == tz_min:
+    result = newNormal(0,0,1)
+  elif t_hit == tz_max:
+    result = newNormal(0,0,1)
+  if dot(ray.dir, result) < 0:
+    return result
+  else:
+    return newNormal(0,0,0) - result
 
 method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
   ## Checks if a ray intersects the AAB
   ## Return a `HitRecord`, or `None` if no intersection was found.  
   var
     inv_ray : Ray = ray.transform(box.transformation.inverse())
-    origin_vec : Vec = PointToVec(inv_ray.origin)
+    origin_vec : Vec = PointToVec(inv_ray.origin) 
     tx_min : float = (box.pmin.x - origin_vec.x) / inv_ray.dir.x
     ty_min : float = (box.pmin.y - origin_vec.y) / inv_ray.dir.y
     tz_min : float = (box.pmin.z - origin_vec.z) / inv_ray.dir.z
@@ -267,24 +290,26 @@ method rayIntersection*(box : AABox, ray : Ray) : Option[HitRecord] =
   let t = checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max)
   if t.isNone:
     return none(HitRecord)
+  
   # Check if the intersection in into the box or outo the box and choose the correct t_hit
-  if inv_ray.origin < box.pmax and box.pmin < inv_ray.origin:
-    # If the origin of the ray is into the box take t_max
-    t_hit = t.get()[1]
+  if inv_ray.origin <= box.pmax and box.pmin <= inv_ray.origin:
+  # If the origin of the ray is into the box take t_max
+    t_hit = t.get()[1]     
   else:
-    # If the origin of the ray is outside the box take t_min
+  # If the origin of the ray is outside the box take t_min
     t_hit = t.get()[0]
+
+  var normal = box.boxNormal(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max, t_hit, inv_ray)
+
   if (t_hit < inv_ray.tmin) or (t_hit > inv_ray.tmax):
     return none(HitRecord)
   var hit_point : Point = inv_ray.at(t_hit)
   result = some(newHitRecord(world_point = box.transformation * hit_point,
-                      normal = (box.transformation * box.boxNormal(hit_point, inv_ray)),
-                      surface_point = AABoxPointToUV(hit_point),
-                      t = t_hit,
-                      ray = ray,
-                      material = box.material))
-
-
+                    normal = (box.transformation * normal).normalization(), 
+                    surface_point = AABoxPointToUV(hit_point),
+                    t = t_hit,
+                    ray = ray,
+                    material = box.material))
 
 #******************************************************************************
 #*********************************** SPHERE ***********************************
@@ -379,7 +404,7 @@ method rayIntersection*(plane : Plane, ray : Ray): Option[HitRecord] =
     else:
       normal = newNormal(0.0, 0.0, -1.0)
     result = some(newHitRecord(world_point = plane.transformation * inv_ray.at(t),
-                               normal = plane.transformation * normal,
+                               normal = (plane.transformation * normal),
                                surface_point = newVec2d(inv_ray.at(t).x - floor(inv_ray.at(t).x), inv_ray.at(t).y - floor(inv_ray.at(t).y)),
                                t = t,
                                ray = ray,
@@ -561,10 +586,12 @@ method quickRayIntersection*(box : AABox, ray : Ray): bool =
   let t = checkIntersection(tx_min, tx_max, ty_min, ty_max, tz_min, tz_max)
   if t.isNone:
     return false
-  #Check if the intersection in into the box or outo the box and choose the correct t_hit
-  if inv_ray.origin < box.pmax and box.pmin < inv_ray.origin:
-    t_hit = t.get()[1]
+  # Check if the intersection in into the box or outo the box and choose the correct t_hit
+  if inv_ray.origin <= box.pmax and box.pmin <= inv_ray.origin:
+  # If the origin of the ray is into the box take t_max
+    t_hit = t.get()[1]     
   else:
+  # If the origin of the ray is outside the box take t_min
     t_hit = t.get()[0]
   if (t_hit <= inv_ray.tmin) or (t_hit >= inv_ray.tmax):
     return false

@@ -103,7 +103,7 @@ method scatterRay(brdf_function : DiffuseBRDF, pcg : var PCG, incoming_dir : Vec
     phi = 2.0 * PI * pcg.random_float()
   result = newRay(origin = interaction_point,
                   dir = onb.e1 * cos(phi) * cos_theta + onb.e2 * sin(phi) * cos_theta + onb.e3 * sin_theta,
-                  tmin = 1.0e-3,
+                  tmin = 1.0e-5,
                   tmax = Inf,
                   depth = depth)
 
