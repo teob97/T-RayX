@@ -30,6 +30,6 @@ plane (ground_material, identity)
 
 #cylinder (cyl_material, translation([0, -2, 1.5]))
 
-aabox (cyl_material, rotation_z(0)*translation([0, 0, 0])*scaling([5,5,5]))
+aabox (cyl_material, rotation_z(-30)*translation([0, 0, 0])*scaling([2,2,2]))
 
-camera(perspective, translation([2, 0, 1]), 1.0, 1.5) 
+camera(perspective, translation([-2, 0, 1]), 1.0, 1.5) 
