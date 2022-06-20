@@ -69,12 +69,12 @@ Run:
 in order to create the following image:
 
 <p float="center">
-  <img src="output/pfm2png/lawn_a0.6-gamma1.45.png" width="600" />
+  <img src="examples/pfm2png/lawn_a0.6-gamma1.45.png" width="600" />
 </p>
 
 It is possible to tune the parameters alpha and gamma.
 
-![](output/pfm2png/lawn_a0.3-gamma1.45.png)  |  ![](output/pfm2png/lawn_a0.6-gamma1.45.png) | ![](output/pfm2png/lawn_a0.9-gamma1.45.png) 
+![](examples/pfm2png/lawn_a0.3-gamma1.45.png)  |  ![](examples/pfm2png/lawn_a0.6-gamma1.45.png) | ![](examples/pfm2png/lawn_a0.9-gamma1.45.png) 
 :--:|:--:|:--:|
 `alpha = 0.3` | `alpha = 0.6`  |  `alpha = 0.9`
 
@@ -87,10 +87,10 @@ Use the command:
 ./trayx demo
 ```
 
-to create the following animation.
+to create the following image.
 
 <p align="center"> 
-  <img src="output/demo/animation.gif" alt="demo" width="70%" height="70%">
+  <img src="examples/demo/demo.png" alt="demo" width="50%" height="50%">
 </p>
 
 

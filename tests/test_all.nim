@@ -546,10 +546,10 @@ suite "Test shapes.nim":
       areClose(intersection7p.get().surface_point, (newVec2d(0.25, 0.75)))
   test "Test AABox Hit":
     check:
-      areClose(inter1.get().normal, newNormal(0,0,0.1))
-      areClose(inter2.get().normal, newNormal(0.1,0,0))
-      areClose(inter3.get().normal, newNormal(-0.1,0,0))
-      areClose(inter4.get().normal, newNormal(0,0,-0.1))
+      areClose(inter1.get().normal, newNormal(0,0,1))
+      areClose(inter2.get().normal, newNormal(1,0,0))
+      areClose(inter3.get().normal, newNormal(-1,0,0))
+      areClose(inter4.get().normal, newNormal(0,0,-1))
       not intersection1a.isNone
       intersection2a.isNone
       areClose(intersection1a.get().world_point, (newPoint(1.0, 1.5, 1.5)))

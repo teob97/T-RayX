@@ -144,7 +144,7 @@ method fireRay*(cam : PerspectiveCamera; u,v : float): Ray =
   ##        +------------------------------+
   ##     (0, 0)                          (1, 0)
   result.origin = newPoint(-cam.distance, 0.0, 0.0)
-  result.dir = newVec(cam.distance, (1.0 - 2 * u) * cam.aspect_ratio, 2 * v - 1)
+  result.dir = newVec(cam.distance, (1.0 - 2 * u) * cam.aspect_ratio, 2.0 * v - 1.0)#.normalization()
   result.tmin = 1.0
   result.tmax = Inf
   result.depth = 0

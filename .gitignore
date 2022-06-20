@@ -7,7 +7,7 @@ src/csg.nim
 .vscode
 profile_result*
 callgrind*
-exampleInput.txt
+exampleInput*
 
 .DS_Store
 *~
