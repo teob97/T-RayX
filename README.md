@@ -20,21 +20,43 @@
 ---
 
 ## :t-rex:  Overview
-T-RayX is a Nim package aimed to generate a photorealistic image.
+T-RayX: a Nim library aimed to generate a photorealistic image.
+
+The project has been developed during the course [*Numerical techniques for photorealistic image generation*](https://www.unimi.it/en/education/degree-programme-courses/2022/numerical-tecniques-photorealistic-image-generation) held by Prof. [Maurizio Tomasi][1] at Università degli Studi di Milano (A.Y. 2021/2022)
+
+The main functionality of this library is to generate photorealistic images from input files that describe a scene. (See more details [here](#renderer)).
+With T-RayX you are also able to convert PFM files to PNG using the [pfm2png](#pfm2png) command.
 
 ## :desktop_computer:  System Requirements
 T-RayX works on Windows, Linux and MacOSX machine.
 
-Nim version required: 1.6.4
+For a proper use of the library you need:
+- [Nim](https://nim-lang.org/) version required: 1.6.4
+- [Nimble](https://github.com/nim-lang/nimble) package manager
+- [simplepng](https://github.com/jrenner/nim-simplepng): use ```nimble install simplepng``` to install it.
+- [ffmpeg](https://ffmpeg.org/) and [GNU parallel](https://www.gnu.org/software/parallel/) just for the animations.
 
 ## :rocket:  Usage
+Run the following commands in the outermost folder of the project.
+
 To generate the executable file, use:
 
 ```bash
 nimble run
 ```
 
-### pfm2png
+To run the tests and check that everything works well, use:
+```bash
+nimble test
+```
+
+Once you have the executable file you are ready to have fun with the following commands.
+
+> ## renderer
+
+Renderer functionality
+
+> ## pfm2png
 
 Convert pfm file in png image using:
 
@@ -44,7 +66,7 @@ Convert pfm file in png image using:
 
 It is necessary to set specific values for alpha and gamma parameters.
 
-### demo
+> ## demo
 
 To run the demo, use:
 
@@ -95,3 +117,4 @@ to create the following animation.
 
 
 
+[1]: https://github.com/ziotom78
