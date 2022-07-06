@@ -43,7 +43,8 @@ Options:
   --version                     Show version
 """
 
-let args = docopt(doc, version = "1.0.0") #find a way to automatize versioning
+const versionStr = (staticExec "git describe --tags HEAD").split('-')[0]
+let args = docopt(doc, version = versionStr)
 
 #*********************************** PFM2PNG ***********************************
 
@@ -93,9 +94,6 @@ proc demo*()=
 
 proc render*() =
   # Check is the variable `clock` has been defined through the CLI.
-
-  # FARE IN MODO COME FA TOMASI DI GENERARE UNA TABELLA GENERICA NEL CASO SI VOLESSERO DEFINIRE PIÙ PARAMETRI.
-
   var variables = initTable[string, float]()
   if args["--clock"]:
     variables["clock"] = parseFloat($args["--clock"]) 
@@ -139,7 +137,6 @@ proc render*() =
 
   if "clock" in img_scene.float_variables:
     img_scene.camera.get().transformation = rotation_z(img_scene.float_variables["clock"]) * img_scene.camera.get().transformation
-
   var tracer : ImageTracer = newImageTracer(newHdrImage(width, height), img_scene.camera.get())
   if args["--samplePerPixel"]:
     tracer.samples_per_side = parseInt($args["--samplePerPixel"])
