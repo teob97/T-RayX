@@ -32,13 +32,13 @@ Usage:
 
 Options:
   --renderer=<type>             Renderer's type: onoff, flat, pathtracing, pointlight. Default: pathtracing.
-  --clock=<angle-deg>           Angle in degree. Use it to rotate camera.
   --output=<output-file>        Output file.png
   --numberOfRays=<nRay>         Number of rays departing from each surface point (only applicable with pathtracing).
   --maxDepth=<depth>            Maximum allowed ray depth (only applicable with --algorithm=pathtracing).
   --initState=<seed>            Initial seed for the random number generator (positive number).
   --initSeq=<seq-seed>          Identifier of the sequence produced by the random number generator (positive number).
   --samplePerPixel=<n_sample>   Number of samples per pixel (must be a perfect square, e.g., 16).
+  --defineFloat=<var:value>     Used to declare a new float variable
   -h --help                     Show this screen
   --version                     Show version
 """
@@ -92,11 +92,22 @@ proc demo*()=
 
 #*************************************RENDER*************************************************
 
+proc build_variable_table(variable : string) : Table[string, float] =
+  ## Build a table (dictionary) with the variables defined throught the CLI,
+  ## This dictionary will be used to override the values in the parser.
+  quit "Da implementare e integrare nel main"
+
 proc render*() =
+  
+  
   # Check is the variable `clock` has been defined through the CLI.
+  #if args["--clock"]:
+  #  variables["clock"] = parseFloat($args["--clock"]) 
+  
   var variables = initTable[string, float]()
-  if args["--clock"]:
-    variables["clock"] = parseFloat($args["--clock"]) 
+  if args["--defineFloat"]:
+    variables = build_variable_table($args["--defineFloat"])
+  
   # Define all the basic components
   var 
     file_stream : FileStream = newFileStream($args["<SCENE_FILE.txt>"], fmRead)
@@ -135,8 +146,9 @@ proc render*() =
     width  : int = parseInt($args["<width>"])
     height : int = parseInt($args["<height>"])
 
-  if "clock" in img_scene.float_variables:
-    img_scene.camera.get().transformation = rotation_z(img_scene.float_variables["clock"]) * img_scene.camera.get().transformation
+  #if "clock" in img_scene.float_variables:
+  #  img_scene.camera.get().transformation = rotation_z(img_scene.float_variables["clock"]) * img_scene.camera.get().transformation
+  
   var tracer : ImageTracer = newImageTracer(newHdrImage(width, height), img_scene.camera.get())
   if args["--samplePerPixel"]:
     tracer.samples_per_side = parseInt($args["--samplePerPixel"])
