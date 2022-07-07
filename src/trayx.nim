@@ -17,7 +17,7 @@
 ]#
 
 import trayx/[basictypes, cameras, pfm, ldr,  imagetracer, shapes, transformation, geometry, materials, renderer, scenefiles]
-import std/[strutils, strformat, streams, times, options]
+import std/[strutils, strformat, streams, times, monotimes, options]
 import docopt
 when compileOption("profiler"):
   import nimprof
@@ -98,7 +98,9 @@ proc demo*()=
   let renderer : Renderer = newPathTracer(world)
   tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)
-  tracer.image.writeLdrImage("output/demo.png")
+  let path : string = "output/demo.png"
+  tracer.image.writeLdrImage(path)
+  echo("Image saved in "&path)
 
 #*************************************RENDER*************************************************
 
@@ -172,15 +174,21 @@ proc render*() =
 #*********************************** MAIN ***********************************
 
 when isMainModule:
+
   if args["pfm2png"]:
+    let t1 = getMonoTime()
     pfm2png()
+    let t2 = getMonoTime()
+    echo("Execution time: ", t2 - t1)  
+
   if args["demo"]:
-    #let t1 = cpuTime()
+    let t1 = getMonoTime()
     demo()
-    #let t2 = cpuTime()
-    #echo("Execution time: ", t2 - t1)
+    let t2 = getMonoTime()
+    echo("Execution time: ", t2 - t1)
+
   if args["render"]:
-    #let t1 = cpuTime()
+    let t1 = getMonoTime()
     render()
-    #let t2 = cpuTime()
-    #echo("Execution time: ", t2 - t1)
+    let t2 = getMonoTime()
+    echo("Execution time: ", t2 - t1)
