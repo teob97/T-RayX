@@ -32,7 +32,7 @@ Usage:
   ./trayx demo
 
 Options:
-  --renderer=<type>             Renderer's type: onoff, flat, pathtracing, pointlight. Default: pathtracing.
+  --renderer=<type>             Renderer's type: onoff, flat, pathtracing, pointlight. [default: pathtracing]
   --output=<output-file>        Output file.png
   --numberOfRays=<nRay>         Number of rays departing from each surface point (only applicable with pathtracing).
   --maxDepth=<depth>            Maximum allowed ray depth (only applicable with pathtracing).
@@ -40,6 +40,7 @@ Options:
   --initSeq=<seq-seed>          Identifier of the sequence produced by the random number generator (positive number).
   --samplePerPixel=<n_sample>   Number of samples per pixel (must be a perfect square, e.g. 2,4,16...).
   --defineFloat=<var:value>     Used to declare a new float variable. Use '/' to define multiple variables.
+Other:
   -h --help                     Show this screen.
   --version                     Show version.
 """
@@ -79,10 +80,10 @@ proc demo*()=
     height : int = 540
     ratio : float = width/height
   var 
-    translation : Transformation = translation(newVec(-1.0, 0.0, 1.0))
+    transf : Transformation = translation(newVec(-1.0, 0.0, 1.0))
     world : World
     strm : FileStream = newFileStream("output/demo.pfm", fmWrite)
-    tracer : ImageTracer = newImageTracer(newHdrImage(width, height), newPerspectiveCamera(1, ratio, translation))      
+    tracer : ImageTracer = newImageTracer(newHdrImage(width, height), newPerspectiveCamera(1, ratio, transf))      
   let
     sky_material: Material = newMaterial(brdf = newDiffuseBRDF(newUniformPigment(newColor(0, 0, 0))), emitted_radiance = newUniformPigment(newColor(1.0, 0.9, 0.5)))
     ground_material: Material = newMaterial(brdf = newDiffuseBRDF(pigment = newCheckeredPigment(color1 = newColor(0.3, 0.5, 0.1), color2 = newColor(0.1, 0.2, 0.5))))

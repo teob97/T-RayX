@@ -8,8 +8,7 @@ src/csg.nim
 profile_result*
 callgrind*
 exampleInput*
+scripts/demo.sh
 
-.DS_Store
 *~
-*.o
-build/
+
