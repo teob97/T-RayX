@@ -52,12 +52,12 @@ It is necessary to set specific values for alpha and gamma parameters.
 To run the demo, use:
 
 ```bash
-./trayx demo [--angle=<angle-deg>] [--output=<output-file>] [--orthogonal]
+./trayx demo
 ```
-where:
-- angle: angle of rotation around z axis. Default 0.
-- output: name of output file. Default demo.png.
-- orthogonal: flag to chenge camera type. Default perespective.
+This will produce the following 960x540 image:
+<p float="center">
+  <img src="examples/demo.png" width="500" />
+</p>
 
 ## 	:sunglasses: Examples
 
