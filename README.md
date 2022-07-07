@@ -20,34 +20,65 @@
 ---
 
 ## :t-rex:  Overview
-T-RayX is a Nim package aimed to generate a photorealistic image.
+T-RayX: a Nim library aimed to generate a photorealistic image.
+
+The project has been developed during the course [*Numerical techniques for photorealistic image generation*](https://www.unimi.it/en/education/degree-programme-courses/2022/numerical-tecniques-photorealistic-image-generation) held by Prof. [Maurizio Tomasi][1] at Università degli Studi di Milano (A.Y. 2021/2022)
+
+The main functionality of this library is to generate photorealistic images from input files that describe a scene. (See more details [here](#renderer)).
+With T-RayX you are also able to convert PFM files to PNG using the [pfm2png](#pfm2png) command.
 
 ## :desktop_computer:  System Requirements
 T-RayX works on Windows, Linux and MacOSX machine.
 
-Nim version required: 1.6.4
+For a proper use of the library you need:
+- [Nim](https://nim-lang.org/) version required: 1.6.4
+- [Nimble](https://github.com/nim-lang/nimble) package manager
+- [simplepng](https://github.com/jrenner/nim-simplepng): use ```nimble install simplepng``` to install it.
+- [docopt](https://github.com/docopt/docopt.nim): use ```nimble install docopt``` to install it.
+- [ffmpeg](https://ffmpeg.org/) and [GNU parallel](https://www.gnu.org/software/parallel/) just for the animations (see _scripts_ folder).
 
-## :rocket:  Usage
+## Download and build
+
+You can download the latest stable release [here](https://github.com/teob97/T-RayX/releases), and unpack it
+   ``` sh
+   $ tar -xvf /path/to/tar #or zip file -C /path/to/your/directory
+   ```
+or if you want, you can clone this repository
+   ``` sh
+   $ git clone https://github.com/teob97/T-RayX.git
+   ```
+
 To generate the executable file, use:
 ```bash
 nimble build -d:release
 ```
-Now you can run the following command to visualize through the CLI all the possible procedures:
+
+## :rocket:  Usage
+
+You can run the following command to visualize through the CLI all the possible procedures:
 ```bash
 ./trayx --help
 ```
 
-### pfm2png
+### :small_orange_diamond: render
+
+To run the render, use:
+
+```bash
+./trayx render <SCENE_FILE.txt> <width> <height> [options]
+```
+
+### :small_orange_diamond: pfm2png
 
 Convert pfm file in png image using:
 
 ```bash
-./trayx <file.pfm> <alpha> <gamma> <output.png>
+./trayx pfm2png <file.pfm> <alpha> <gamma> <output.png>
 ```
 
 It is necessary to set specific values for alpha and gamma parameters.
 
-### demo
+### :small_orange_diamond: demo
 
 To run the demo, use:
 
