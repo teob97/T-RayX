@@ -49,7 +49,8 @@ let args = docopt(doc, version = versionStr)
 #*********************************** PFM2PNG ***********************************
 
 proc pfm2png*() =
-  ## Main procedure to convert a .pfm file into a .png file
+  ## Procedure to convert a .pfm file into a .png file.
+  ## Use: ./trayx pfm2png <INPUT_FILE.pfm> <alpha> <gamma> <OUTPUT.png>
   var 
     impf = openFileStream($args["<INPUT_FILE.pfm>"])
     img : HdrImage = readPfmImage(impf)
@@ -65,6 +66,13 @@ proc pfm2png*() =
 #*********************************** DEMO ***********************************
 
 proc demo*()=
+  ## A demo procedure that generate an image output/demo.png using the pathtracing algoritm.
+  ## Use: ./trayx demo
+  ## Elements in the image: 
+  ## diffusive sphere, 
+  ## reflective sphere,
+  ## checkered plane as ground
+  ## and a luminous sphere as sky.
   let
     width  : int = 960
     height : int = 540
@@ -92,17 +100,20 @@ proc demo*()=
 
 #*************************************RENDER*************************************************
 
-proc build_variable_table(variable : string) : Table[string, float] =
+proc build_variable_table(cliInput : string) : Table[string, float] =
   ## Build a table (dictionary) with the variables defined throught the CLI,
   ## This dictionary will be used to override the values in the parser.
-  quit "Da implementare e integrare nel main"
+  for elements in cliInput.split('/'):
+    var nameAndValues = elements.split(':')
+    if nameAndValues.len() != 2:
+      raise newException(IOError, "Invalid number of parameters in --defineFloat. Use var1:value1/var2:value2")
+    var floatValue : float = nameAndValues[1].parseFloat()
+    result[nameAndValues[0]]=floatValue
 
 proc render*() =
-  
-  
-  # Check is the variable `clock` has been defined through the CLI.
-  #if args["--clock"]:
-  #  variables["clock"] = parseFloat($args["--clock"]) 
+  ## Main procedure to renderize an image using a specific alghoritm.
+  ## Use: ./trayx render <SCENE_FILE.txt> <width> <height> [options]
+  ## To see the aviable options use: ./trayx --helps 
   
   var variables = initTable[string, float]()
   if args["--defineFloat"]:
@@ -145,9 +156,6 @@ proc render*() =
   var
     width  : int = parseInt($args["<width>"])
     height : int = parseInt($args["<height>"])
-
-  #if "clock" in img_scene.float_variables:
-  #  img_scene.camera.get().transformation = rotation_z(img_scene.float_variables["clock"]) * img_scene.camera.get().transformation
   
   var tracer : ImageTracer = newImageTracer(newHdrImage(width, height), img_scene.camera.get())
   if args["--samplePerPixel"]:
@@ -165,12 +173,12 @@ when isMainModule:
   if args["pfm2png"]:
     pfm2png()
   if args["demo"]:
-    let t1 = cpuTime()
+    #let t1 = cpuTime()
     demo()
-    let t2 = cpuTime()
-    echo("Execution time: ", t2 - t1)
+    #let t2 = cpuTime()
+    #echo("Execution time: ", t2 - t1)
   if args["render"]:
-    let t1 = cpuTime()
+    #let t1 = cpuTime()
     render()
-    let t2 = cpuTime()
-    echo("Execution time: ", t2 - t1)
+    #let t2 = cpuTime()
+    #echo("Execution time: ", t2 - t1)
