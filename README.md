@@ -61,18 +61,18 @@ This will produce the following 960x540 image:
 
 ## 	:sunglasses: Examples
 
-### Example 1
+### Example 1 (pfm2png)
 
 Run:
 
 ```bash
-./trayx tests/img/lawn.pbm 0.6 1.45 lawn_a0.6-gamma1.45.png
+./trayx pfm2png examples/pfm2png/lawn.pbm 0.6 1.45 examples/pfm2png/lawn_a0.6-gamma1.45.png
 ```
 
 in order to create the following image:
 
 <p float="center">
-  <img src="examples/pfm2png/lawn_a0.6-gamma1.45.png" width="600" />
+  <img src="examples/pfm2png/lawn_a0.6-gamma1.45.png" width="300" />
 </p>
 
 It is possible to tune the parameters alpha and gamma.
@@ -80,21 +80,3 @@ It is possible to tune the parameters alpha and gamma.
 ![](examples/pfm2png/lawn_a0.3-gamma1.45.png)  |  ![](examples/pfm2png/lawn_a0.6-gamma1.45.png) | ![](examples/pfm2png/lawn_a0.9-gamma1.45.png) 
 :--:|:--:|:--:|
 `alpha = 0.3` | `alpha = 0.6`  |  `alpha = 0.9`
-
-
-### Example 2
-
-Use the command:
-
-```bash
-./trayx demo
-```
-
-to create the following image.
-
-<p align="center"> 
-  <img src="examples/demo/demo.png" alt="demo" width="50%" height="50%">
-</p>
-
-
-
