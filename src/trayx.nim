@@ -23,7 +23,8 @@ when compileOption("profiler"):
   import nimprof
 
 let doc = """
-T-RayX: a Nim Raytracing Library
+T-RayX: a Nim Raytracing Library. 
+https://github.com/teob97/T-RayX
 
 Usage:
   ./trayx render <SCENE_FILE.txt> <width> <height> [options]
@@ -34,13 +35,13 @@ Options:
   --renderer=<type>             Renderer's type: onoff, flat, pathtracing, pointlight. Default: pathtracing.
   --output=<output-file>        Output file.png
   --numberOfRays=<nRay>         Number of rays departing from each surface point (only applicable with pathtracing).
-  --maxDepth=<depth>            Maximum allowed ray depth (only applicable with --algorithm=pathtracing).
+  --maxDepth=<depth>            Maximum allowed ray depth (only applicable with pathtracing).
   --initState=<seed>            Initial seed for the random number generator (positive number).
   --initSeq=<seq-seed>          Identifier of the sequence produced by the random number generator (positive number).
-  --samplePerPixel=<n_sample>   Number of samples per pixel (must be a perfect square, e.g., 16).
-  --defineFloat=<var:value>     Used to declare a new float variable
-  -h --help                     Show this screen
-  --version                     Show version
+  --samplePerPixel=<n_sample>   Number of samples per pixel (must be a perfect square, e.g. 2,4,16...).
+  --defineFloat=<var:value>     Used to declare a new float variable. Use '/' to define multiple variables.
+  -h --help                     Show this screen.
+  --version                     Show version.
 """
 
 const versionStr = (staticExec "git describe --tags HEAD").split('-')[0]
