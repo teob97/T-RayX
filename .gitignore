@@ -2,6 +2,7 @@
 !**/
 !*.*
 
+logo/
 output/
 src/csg.nim
 .vscode
