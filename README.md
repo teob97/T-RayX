@@ -29,9 +29,12 @@ Nim version required: 1.6.4
 
 ## :rocket:  Usage
 To generate the executable file, use:
-
 ```bash
-nimble run
+nimble build -d:release
+```
+Now you can run the following command to visualize through the CLI all the possible procedures:
+```bash
+./trayx --help
 ```
 
 ### pfm2png
