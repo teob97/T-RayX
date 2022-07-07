@@ -2,14 +2,13 @@
 !**/
 !*.*
 
-output/demo/img*
-output/test*
+output/
 src/csg.nim
 .vscode
 profile_result*
 callgrind*
-
+exampleInput*
+scripts/demo.sh
 .DS_Store
 *~
-*.o
-build/
+

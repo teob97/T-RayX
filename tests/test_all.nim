@@ -1,15 +1,16 @@
-import ../src/basictypes
-import ../src/pfm
-import ../src/ldr
-import ../src/geometry
-import ../src/transformation
-import ../src/cameras
-import ../src/imagetracer
-import ../src/shapes
-import ../src/materials
-import ../src/pcg
-import ../src/renderer
-import std/[options, unittest, streams]
+import std/[unittest, options, streams, tables]
+import ../src/trayx/basictypes
+import ../src/trayx/pfm
+import ../src/trayx/ldr
+import ../src/trayx/geometry
+import ../src/trayx/transformation
+import ../src/trayx/cameras
+import ../src/trayx/imagetracer
+import ../src/trayx/shapes
+import ../src/trayx/materials
+import ../src/trayx/pcg
+import ../src/trayx/renderer
+import ../src/trayx/scenefiles
 
 #################
 #TEST BASICTYPES#
@@ -88,7 +89,7 @@ suite "Test pfm.nim":
   test "Test readPfmImage_le":
     var
       buffer = toString(le_ref_bytes)
-      stream = newStringStream(buffer)
+      stream = streams.newStringStream(buffer)
       img = readPfmImage(stream)
     check:
       img.width == 3
@@ -102,7 +103,7 @@ suite "Test pfm.nim":
   test "Test readPfmImage_be":
     var
       buffer = toString(be_ref_bytes)
-      stream = newStringStream(buffer)
+      stream = streams.newStringStream(buffer)
       img = readPfmImage(stream)
     check:
       img.width == 3
@@ -113,9 +114,10 @@ suite "Test pfm.nim":
       img.getPixel(0, 1).areClose(newColor(1.0e2, 2.0e2, 3.0e2))
       img.getPixel(1, 1).areClose(newColor(4.0e2, 5.0e2, 6.0e2))
       img.getPixel(2, 1).areClose(newColor(7.0e2, 8.0e2, 9.0e2))
+    stream.close()
   test "Test readPfmImage_execption":
     expect InvalidPfmFileFormat :
-      let buf = newStringStream("PokoF\n3 2\n-1.0\nstop")
+      let buf = streams.newStringStream("PokoF\n3 2\n-1.0\nstop")
       var img_2 = readPfmImage(buf)
   test "Test writePfmImage":
     img_test.setPixel(0, 0, newColor(1.0e1, 2.0e1, 3.0e1)) 
@@ -125,7 +127,7 @@ suite "Test pfm.nim":
     img_test.setPixel(1, 1, newColor(4.0e2, 5.0e2, 6.0e2))
     img_test.setPixel(2, 1, newColor(7.0e2, 8.0e2, 9.0e2))
     var
-      stream = newStringStream("")
+      stream = streams.newStringStream("")
       buffer = be_ref_bytes
     writePfmImage(img_test, stream, 1.0)
     stream.setPosition(0)
@@ -157,7 +159,7 @@ suite "Test ldr.nim":
   test "Test normalizeImage":
     setPixel(img, 0, 0, newColor(5.0, 10.0, 15.0))
     setPixel(img, 1, 0, newColor(500.0, 1000.0, 1500.0))
-    normalizeImage(img, factor=1000.0, luminosity=some(100.0))
+    normalizeImage(img, factor=1000.0, luminosity=options.some(100.0))
     check:
       areClose(getPixel(img, 0, 0), newColor(0.5e2, 1.0e2, 1.5e2))
       areClose(getPixel(img, 1, 0), newColor(0.5e4, 1.0e4, 1.5e4))
@@ -426,6 +428,7 @@ suite "Test shapes.nim":
       plane = newPlane()
       planeTrans = newPlane(transformation = rotation_y(angle_deg = 90.0))
       cube = newAABox(newPoint(1.0,1.0,1.0), newPoint(2.0,2.0,2.0))
+      cube2 = newAABox(transformation = scaling(newVec(10,10,10)) * translation(newVec(-0.5,-0.5,-0.5)) )
       cubeTrans = newAABox(newPoint(-1.0,-1.0,-1.0), newPoint(1.0,1.0,1.0), transformation = rotation_x(angle_deg = 45.0))
       ray1 = newRay(origin = newPoint(0, 0, 2), dir = -VEC_Z)
       ray2 = newRay(origin = newPoint(3, 0, 0), dir = -VEC_X)
@@ -464,6 +467,10 @@ suite "Test shapes.nim":
       intersection3a = cubeTrans.rayIntersection(ray3a)
       intersection4a = cubeTrans.rayIntersection(ray4a)
       intersection5a = cubeTrans.rayIntersection(ray5a)
+      inter1 = cube2.rayIntersection(ray1) #becca la faccia sotto
+      inter2 = cube2.rayIntersection(ray2) #dovrebbe beccare la faccia dietro
+      inter3 = cube2.rayIntersection(ray3) # becca la faccia x davanti
+      inter4 = cube2.rayIntersection(ray2p) # becca la faccia in alto
   test "Test Sphere Hit":
     check:
       not intersection1.isNone
@@ -539,11 +546,14 @@ suite "Test shapes.nim":
       areClose(intersection7p.get().surface_point, (newVec2d(0.25, 0.75)))
   test "Test AABox Hit":
     check:
+      areClose(inter1.get().normal, newNormal(0,0,1))
+      areClose(inter2.get().normal, newNormal(1,0,0))
+      areClose(inter3.get().normal, newNormal(-1,0,0))
+      areClose(inter4.get().normal, newNormal(0,0,-1))
       not intersection1a.isNone
       intersection2a.isNone
       areClose(intersection1a.get().world_point, (newPoint(1.0, 1.5, 1.5)))
   test "Test AABox Transformation":
-    #echo(intersection5a.get().normal)
     check:
       intersection3a.isNone
       not intersection4a.isNone
@@ -721,3 +731,196 @@ suite "Test PathTracer":
         abs(color.r - expected) < 1e-3
         abs(color.b - expected) < 1e-3
         abs(color.g - expected) < 1e-3
+
+##################
+#TEST SCENE FILES#
+##################
+
+#Some useful function
+
+proc assert_is_keyword(token : Token, keyword : KeywordEnum): bool =
+  return token.kind == KeywordToken and token.keyword == keyword 
+
+proc assert_is_identifier(token : Token, identifier : string): bool =
+  return token.kind == IdentifierToken and token.identifier == identifier
+
+proc assert_is_symbol(token : Token, symbol : string): bool =
+  return token.kind == SymbolToken and token.symbol == symbol
+
+proc assert_is_number(token : Token, number : float): bool =
+  return token.kind == LiteralNumberToken and token.value == number
+
+proc assert_is_string(token : Token, s : string): bool =
+  return token.kind == StringToken and token.s == s
+
+method get_paramiters_test(pig : Pigment): seq[Color] {.base.} =
+  quit "to override"
+
+method get_paramiters_test(pig : UniformPigment): seq[Color] =
+  result.add(pig.color)
+
+method get_paramiters_test(pig : CheckeredPigment): seq[Color] =
+  result.add(pig.color1)
+  result.add(pig.color2)
+
+method get_num_step_test(pig: Pigment): int {.base.}=
+  quit "to override"
+
+method get_num_step_test(pig: CheckeredPigment): int =
+  return pig.num_of_steps
+  
+method get_cam_distance_test(cam: cameras.Camera): float {.base.} =
+  quit "to override"
+
+method get_cam_distance_test(cam: PerspectiveCamera): float =
+  return cam.distance
+
+suite "Test scene file":
+  setup:
+    var 
+      buffer = newStringStream("abc   \nd\nef")
+      buffer1 = newStringStream("""
+        # This is a comment
+        # This is another comment
+        new material sky_material(
+            diffuse(image("my_file.pfm")),
+            <5.0, 500.0, 300.0>
+        ) # Comment at the end of the line
+        """)
+      buffer_parser = newStringStream(
+        """
+        float clock(150)
+    
+        material sky_material(
+            diffuse(uniform(<0, 0, 0>)),
+            uniform(<0.7, 0.5, 1>)
+        )
+    
+        # Here is a comment
+    
+        material ground_material(
+            diffuse(checkered(<0.3, 0.5, 0.1>,
+                              <0.1, 0.2, 0.5>, 4)),
+            uniform(<0, 0, 0>)
+        )
+    
+        material sphere_material(
+            specular(uniform(<0.5, 0.5, 0.5>)),
+            uniform(<0, 0, 0>)
+        )
+    
+        plane (sky_material, translation([0, 0, 100]) * rotation_y(clock))
+
+        plane (ground_material, identity)
+    
+        sphere(sphere_material, translation([0, 0, 1]))
+
+        aabox(sphere_material, identity)
+
+        cylinder(ground_material, identity)
+    
+        camera(perspective, rotation_z(30) * translation([-4, 0, 1]), 1.0, 2.0) 
+        """)
+    buffer.setPosition(0)
+    buffer1.setPosition(0)
+    buffer_parser.setPosition(0)
+    var 
+      stream = newInputStream(stream = buffer)
+      input_file = newInputStream(buffer1)
+      stream_parser = newInputStream(buffer_parser)
+      scene : Scene = parseScene(stream_parser)
+  test "Test input file":
+    check:
+      stream.location.line_num == 1
+      stream.location.col_num == 1
+      stream.readChar() == 'a'
+      stream.location.line_num == 1
+      stream.location.col_num == 2
+    stream.unreadChar('A')
+    check:
+      stream.location.line_num == 1
+      stream.location.col_num == 1
+      stream.readChar() == 'A'
+      stream.location.line_num == 1
+      stream.location.col_num == 2
+      stream.readChar() == 'b'
+      stream.location.line_num == 1
+      stream.location.col_num == 3
+      stream.readChar() == 'c'
+      stream.location.line_num == 1
+      stream.location.col_num == 4
+    stream.skipWhitespacesAndComments()
+    check:
+      stream.readChar() == 'd'
+      stream.location.line_num == 2
+      stream.location.col_num == 2
+      stream.readChar() == '\n'
+      stream.location.line_num == 3
+      stream.location.col_num == 1
+      stream.readChar() == 'e'
+      stream.location.line_num == 3
+      stream.location.col_num == 2
+      stream.readChar() == 'f'
+      stream.location.line_num == 3
+      stream.location.col_num == 3
+      stream.readChar() == '\0'
+  test "Test Lexer":
+    check:
+      assert_is_keyword(input_file.readToken(), KeywordEnum.NEW)
+      assert_is_keyword(input_file.readToken(), KeywordEnum.MATERIAL)
+      assert_is_identifier(input_file.readToken(), "sky_material")
+      assert_is_symbol(input_file.readToken(), "(")
+      assert_is_keyword(input_file.readToken(), KeywordEnum.DIFFUSE)
+      assert_is_symbol(input_file.readToken(), "(")
+      assert_is_keyword(input_file.readToken(), KeywordEnum.IMAGE)
+      assert_is_symbol(input_file.readToken(), "(")
+      assert_is_string(input_file.readToken(), "my_file.pfm")
+      assert_is_symbol(input_file.readToken(), ")")
+  test "Test Parser":
+    check:
+      # Check that the float variables are ok
+      len(scene.float_variables) == 1
+      scene.float_variables.hasKey("clock")
+      scene.float_variables["clock"] == 150.0
+      # Check that the materials are ok
+      len(scene.materials) == 3
+      scene.materials.hasKey("sphere_material")
+      scene.materials.hasKey("sky_material")
+      scene.materials.hasKey("ground_material")
+    let
+      sphere_material = scene.materials["sphere_material"]
+      sky_material = scene.materials["sky_material"]
+      ground_material = scene.materials["ground_material"]
+    check:
+      sky_material.brdf_function of DiffuseBRDF
+      sky_material.brdf_function.pigment of UniformPigment
+      areClose(sky_material.brdf_function.pigment.get_paramiters_test[0], newColor(0, 0, 0))
+      ground_material.brdf_function of DiffuseBRDF
+      ground_material.brdf_function.pigment of CheckeredPigment
+      ground_material.brdf_function.pigment.get_paramiters_test[0].areClose(newColor(0.3, 0.5, 0.1))
+      ground_material.brdf_function.pigment.get_paramiters_test[1].areClose(newColor(0.1, 0.2, 0.5))
+      ground_material.brdf_function.pigment.get_num_step_test == 4 # check the num_of_steps
+      sphere_material.brdf_function of SpecularBRDF
+      sphere_material.brdf_function.pigment of UniformPigment
+      sphere_material.brdf_function.pigment.getColor(newVec2d(0.5,0.5)).areClose(newColor(0.5, 0.5, 0.5))
+      sky_material.emitted_radiance of UniformPigment
+      sky_material.emitted_radiance.get_paramiters_test[0].areClose(newColor(0.7, 0.5, 1.0))
+      ground_material.emitted_radiance of UniformPigment
+      ground_material.emitted_radiance.get_paramiters_test[0].areClose(newColor(0, 0, 0))
+      sphere_material.emitted_radiance of UniformPigment
+      sphere_material.emitted_radiance.get_paramiters_test[0].areClose(newColor(0, 0, 0))
+      # Check that the shapes are ok
+      len(scene.world.shapes) == 5
+      scene.world.shapes[0] of shapes.Plane
+      scene.world.shapes[0].transformation.isClose(translation(newVec(0, 0, 100)) * rotation_y(150.0))
+      scene.world.shapes[1] of shapes.Plane
+      scene.world.shapes[1].transformation.isClose(newTransformation())
+      scene.world.shapes[2] of shapes.Sphere
+      scene.world.shapes[2].transformation.isClose(translation(newVec(0, 0, 1)))
+      scene.world.shapes[3] of shapes.AABox
+      scene.world.shapes[4] of shapes.Cylinder
+      # Check that the camera is ok
+      scene.camera.get() of PerspectiveCamera
+      scene.camera.get().transformation.isClose(rotation_z(30) * translation(newVec(-4, 0, 1)))
+      abs(scene.camera.get().aspect_ratio - 1.0) < 1e-8
+      abs(scene.camera.get().get_cam_distance_test() - 2.0) < 1e-8

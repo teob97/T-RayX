@@ -12,7 +12,7 @@ jobs:
           - windows-latest
           - macOS-latest
         nim-version:
-          - 1.6.4
+          - stable
     steps:
       - uses: actions/checkout@v2
       - name: Setup Nim environment

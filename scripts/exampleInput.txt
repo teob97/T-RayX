@@ -1,0 +1,38 @@
+float clock(0)
+
+material sky_material(
+    diffuse(uniform(<0, 0, 0>)),
+    uniform(<0.7, 0.5, 1>)
+)
+
+# Here is a comment
+
+material ground_material(
+    diffuse(checkered(<0.3, 0.5, 0.1>,
+                        <0.1, 0.2, 0.5>, 4)),
+    uniform(<0, 0, 0>)
+)
+
+material sphere_material(
+    diffuse(uniform(<0.5, 0.5, 0.5>)),
+    uniform(<0, 0, 0>)
+)
+
+material cyl_material(
+    diffuse(uniform(<0.5, 0.7, 0>)),
+    uniform(<0, 0, 0>)
+)
+
+light ([0,0,2.5], <1,1,1>, 0)
+
+plane (sky_material, translation([0, 0, 100]))
+
+plane (ground_material, identity)
+
+sphere (cyl_material, scaling([0.5,0.5,0.5])*translation([2,2,2]))
+
+#cylinder (cyl_material, translation([0.5, 1, 0])*scaling([1,1,2]))
+
+#aabox (cyl_material, scaling([6,6,6])*translation([-0.5, -0.5, -0.5]))
+
+camera(perspective, translation([-1, 0, 1])*rotation_z(clock), 1.0, 1.0) 

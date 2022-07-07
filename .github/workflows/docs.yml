@@ -1,0 +1,29 @@
+name: docs
+
+on: 
+  push:
+    branches:
+      - master
+
+env:
+  nim-version: stable
+  nim-src: src/trayx.nim
+  deploy-dir: .gh-pages
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jiro4989/setup-nim-action@v1.1.4
+        with:
+          nim-version: ${{ env.nim-version }}
+      - run: nimble test -Y
+      - run: nim doc --index:on --project --out:${{ env.deploy-dir }} ${{ env.nim-src }}
+      - run: mv ${{ env.deploy-dir }}/trayx.html ${{ env.deploy-dir }}/index.html
+      - run: find ${{ env.deploy-dir }} -type f -exec sed -i 's/trayx.html/index.html/g' {} \;
+      - name: Deploy documents
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ env.deploy-dir }}

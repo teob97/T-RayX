@@ -34,87 +34,80 @@ For a proper use of the library you need:
 - [Nim](https://nim-lang.org/) version required: 1.6.4
 - [Nimble](https://github.com/nim-lang/nimble) package manager
 - [simplepng](https://github.com/jrenner/nim-simplepng): use ```nimble install simplepng``` to install it.
-- [ffmpeg](https://ffmpeg.org/) and [GNU parallel](https://www.gnu.org/software/parallel/) just for the animations.
+- [docopt](https://github.com/docopt/docopt.nim): use ```nimble install docopt``` to install it.
+- [ffmpeg](https://ffmpeg.org/) and [GNU parallel](https://www.gnu.org/software/parallel/) just for the animations (see _scripts_ folder).
+
+## Download and build
+
+You can download the latest stable release [here](https://github.com/teob97/T-RayX/releases), and unpack it
+   ``` bash
+   $ tar -xvf /path/to/tar #or zip file -C /path/to/your/directory
+   ```
+or if you want, you can clone this repository
+   ``` bash
+   $ git clone https://github.com/teob97/T-RayX.git
+   ```
+   
+To generate the executable file, use:
+```bash
+nimble build -d:release
+```
 
 ## :rocket:  Usage
-Run the following commands in the outermost folder of the project.
 
-To generate the executable file, use:
-
+You can run the following command to visualize through the CLI all the possible procedures:
 ```bash
-nimble run
+./trayx --help
 ```
 
-To run the tests and check that everything works well, use:
+### :small_orange_diamond: render
+
+To run the render, use:
+
 ```bash
-nimble test
+./trayx render <SCENE_FILE.txt> <width> <height> [options]
 ```
 
-Once you have the executable file you are ready to have fun with the following commands.
-
-> ## renderer
-
-Renderer functionality
-
-> ## pfm2png
+### :small_orange_diamond: pfm2png
 
 Convert pfm file in png image using:
 
 ```bash
-./trayx <file.pfm> <alpha> <gamma> <output.png>
+./trayx pfm2png <file.pfm> <alpha> <gamma> <output.png>
 ```
 
 It is necessary to set specific values for alpha and gamma parameters.
 
-> ## demo
+### :small_orange_diamond: demo
 
 To run the demo, use:
 
 ```bash
-./trayx demo [--angle=<angle-deg>] [--output=<output-file>] [--orthogonal]
+./trayx demo
 ```
-where:
-- angle: angle of rotation around z axis. Default 0.
-- output: name of output file. Default demo.png.
-- orthogonal: flag to chenge camera type. Default perespective.
+This will produce the following 960x540 image:
+<p float="center">
+  <img src="examples/demo.png" width="500" />
+</p>
 
 ## 	:sunglasses: Examples
 
-### Example 1
+### Example 1 (pfm2png)
 
 Run:
 
 ```bash
-./trayx tests/img/lawn.pbm 0.6 1.45 lawn_a0.6-gamma1.45.png
+./trayx pfm2png examples/pfm2png/lawn.pbm 0.6 1.45 examples/pfm2png/lawn_a0.6-gamma1.45.png
 ```
 
 in order to create the following image:
 
 <p float="center">
-  <img src="output/lawn_a0.6-gamma1.45.png" width="600" />
+  <img src="examples/pfm2png/lawn_a0.6-gamma1.45.png" width="300" />
 </p>
 
 It is possible to tune the parameters alpha and gamma.
 
-![](output/lawn_a0.3-gamma1.45.png)  |  ![](output/lawn_a0.6-gamma1.45.png) | ![](output/lawn_a0.9-gamma1.45.png) 
+![](examples/pfm2png/lawn_a0.3-gamma1.45.png)  |  ![](examples/pfm2png/lawn_a0.6-gamma1.45.png) | ![](examples/pfm2png/lawn_a0.9-gamma1.45.png) 
 :--:|:--:|:--:|
 `alpha = 0.3` | `alpha = 0.6`  |  `alpha = 0.9`
-
-
-### Example 2
-
-Use the command:
-
-```bash
-./trayx demo
-```
-
-to create the following animation.
-
-<p align="center"> 
-  <img src="output/demo/animation.gif" alt="demo" width="70%" height="70%">
-</p>
-
-
-
-[1]: https://github.com/ziotom78
