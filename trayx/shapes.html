@@ -185,10 +185,10 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">newCylinder
       <li><a class="reference" href="#newCylinder%2CTransformation%2CMaterial%2Cfloat%2Cfloat%2Cfloat%2Cfloat"
     title="newCylinder(transformation: Transformation = newTransformation();
-            material: Material = newMaterial(); r, z_min, z_max: float;
-            phi_max: float = 2 * PI): Cylinder">newCylinder(transformation: Transformation = newTransformation();
-            material: Material = newMaterial(); r, z_min, z_max: float;
-            phi_max: float = 2 * PI): Cylinder</a></li>
+            material: Material = newMaterial(); r: float = 1; z_min: float = 0;
+            z_max: float = 1; phi_max: float = 2 * PI): Cylinder">newCylinder(transformation: Transformation = newTransformation();
+            material: Material = newMaterial(); r: float = 1; z_min: float = 0;
+            z_max: float = 1; phi_max: float = 2 * PI): Cylinder</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">newHitRecord
@@ -246,7 +246,11 @@ window.addEventListener('DOMContentLoaded', main);
   <a class="reference reference-toplevel" href="#14" id="64">Methods</a>
   <ul class="simple simple-toc-section">
       <ul class="simple nested-toc-section">quickRayIntersection
-      <li><a class="reference" href="#quickRayIntersection.e%2CPlane%2CRay"
+      <li><a class="reference" href="#quickRayIntersection.e%2CAABox%2CRay"
+    title="quickRayIntersection(box: AABox; ray: Ray): bool">quickRayIntersection(box: AABox; ray: Ray): bool</a></li>
+  <li><a class="reference" href="#quickRayIntersection.e%2CCylinder%2CRay"
+    title="quickRayIntersection(cylinder: Cylinder; ray: Ray): bool">quickRayIntersection(cylinder: Cylinder; ray: Ray): bool</a></li>
+  <li><a class="reference" href="#quickRayIntersection.e%2CPlane%2CRay"
     title="quickRayIntersection(plane: Plane; ray: Ray): bool">quickRayIntersection(plane: Plane; ray: Ray): bool</a></li>
   <li><a class="reference" href="#quickRayIntersection.e%2CShape%2CRay"
     title="quickRayIntersection(shape: Shape; ray: Ray): bool">quickRayIntersection(shape: Shape; ray: Ray): bool</a></li>
@@ -447,8 +451,9 @@ Constructor of an Axis Aligned Box with min vertex in pmin and max vertex in pma
 </div>
 <div id="newCylinder,Transformation,Material,float,float,float,float">
 <dt><pre><span class="Keyword">proc</span> <a href="#newCylinder%2CTransformation%2CMaterial%2Cfloat%2Cfloat%2Cfloat%2Cfloat"><span class="Identifier">newCylinder</span></a><span class="Other">(</span><span class="Identifier">transformation</span><span class="Other">:</span> <a href="transformation.html#Transformation"><span class="Identifier">Transformation</span></a> <span class="Other">=</span> <span class="Identifier">newTransformation</span><span class="Other">(</span><span class="Other">)</span><span class="Other">;</span>
-                 <span class="Identifier">material</span><span class="Other">:</span> <a href="materials.html#Material"><span class="Identifier">Material</span></a> <span class="Other">=</span> <span class="Identifier">newMaterial</span><span class="Other">(</span><span class="Other">)</span><span class="Other">;</span> <span class="Identifier">r</span><span class="Other">,</span> <span class="Identifier">z_min</span><span class="Other">,</span> <span class="Identifier">z_max</span><span class="Other">:</span> <span class="Identifier">float</span><span class="Other">;</span>
-                 <span class="Identifier">phi_max</span><span class="Other">:</span> <span class="Identifier">float</span> <span class="Other">=</span> <span class="DecNumber">2</span> <span class="Operator">*</span> <span class="Identifier">PI</span><span class="Other">)</span><span class="Other">:</span> <a href="shapes.html#Cylinder"><span class="Identifier">Cylinder</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+                 <span class="Identifier">material</span><span class="Other">:</span> <a href="materials.html#Material"><span class="Identifier">Material</span></a> <span class="Other">=</span> <span class="Identifier">newMaterial</span><span class="Other">(</span><span class="Other">)</span><span class="Other">;</span> <span class="Identifier">r</span><span class="Other">:</span> <span class="Identifier">float</span> <span class="Other">=</span> <span class="DecNumber">1</span><span class="Other">;</span>
+                 <span class="Identifier">z_min</span><span class="Other">:</span> <span class="Identifier">float</span> <span class="Other">=</span> <span class="DecNumber">0</span><span class="Other">;</span> <span class="Identifier">z_max</span><span class="Other">:</span> <span class="Identifier">float</span> <span class="Other">=</span> <span class="DecNumber">1</span><span class="Other">;</span> <span class="Identifier">phi_max</span><span class="Other">:</span> <span class="Identifier">float</span> <span class="Other">=</span> <span class="DecNumber">2</span> <span class="Operator">*</span> <span class="Identifier">PI</span><span class="Other">)</span><span class="Other">:</span> <a href="shapes.html#Cylinder"><span class="Identifier">Cylinder</span></a> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 Constructor for a cylinder's later surface.
@@ -533,6 +538,23 @@ Convert a 3D point on the surface of the unit sphere into a (u, v) 2D point.
 <div class="section" id="14">
 <h1><a class="toc-backref" href="#14">Methods</a></h1>
 <dl class="item">
+<div id="quickRayIntersection.e,AABox,Ray">
+<dt><pre><span class="Keyword">method</span> <a href="#quickRayIntersection.e%2CAABox%2CRay"><span class="Identifier">quickRayIntersection</span></a><span class="Other">(</span><span class="Identifier">box</span><span class="Other">:</span> <a href="shapes.html#AABox"><span class="Identifier">AABox</span></a><span class="Other">;</span> <span class="Identifier">ray</span><span class="Other">:</span> <a href="cameras.html#Ray"><span class="Identifier">Ray</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+Checks if a ray intersects the AAB (only used in PointLight Tracer) Return a true, or flase if no intersection was found.  
+
+</dd>
+</div>
+<div id="quickRayIntersection.e,Cylinder,Ray">
+<dt><pre><span class="Keyword">method</span> <a href="#quickRayIntersection.e%2CCylinder%2CRay"><span class="Identifier">quickRayIntersection</span></a><span class="Other">(</span><span class="Identifier">cylinder</span><span class="Other">:</span> <a href="shapes.html#Cylinder"><span class="Identifier">Cylinder</span></a><span class="Other">;</span> <span class="Identifier">ray</span><span class="Other">:</span> <a href="cameras.html#Ray"><span class="Identifier">Ray</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span>
+    <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+
+</dd>
+</div>
 <div id="quickRayIntersection.e,Plane,Ray">
 <dt><pre><span class="Keyword">method</span> <a href="#quickRayIntersection.e%2CPlane%2CRay"><span class="Identifier">quickRayIntersection</span></a><span class="Other">(</span><span class="Identifier">plane</span><span class="Other">:</span> <a href="shapes.html#Plane"><span class="Identifier">Plane</span></a><span class="Other">;</span> <span class="Identifier">ray</span><span class="Other">:</span> <a href="cameras.html#Ray"><span class="Identifier">Ray</span></a><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">bool</span> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
@@ -614,7 +636,7 @@ Checks if a ray intersects the sphere. Return a <tt class="docutils literal"><sp
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-06-10 15:05:14 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-07-07 15:25:04 UTC</small>
       </div>
     </div>
   </div>

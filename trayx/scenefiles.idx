@@ -23,6 +23,9 @@ CAMERA	trayx/scenefiles.html#CAMERA	KeywordEnum.CAMERA
 ORTHOGONAL	trayx/scenefiles.html#ORTHOGONAL	KeywordEnum.ORTHOGONAL	
 PERSPECTIVE	trayx/scenefiles.html#PERSPECTIVE	KeywordEnum.PERSPECTIVE	
 FLOAT	trayx/scenefiles.html#FLOAT	KeywordEnum.FLOAT	
+AABOX	trayx/scenefiles.html#AABOX	KeywordEnum.AABOX	
+CYLINDER	trayx/scenefiles.html#CYLINDER	KeywordEnum.CYLINDER	
+LIGHTSOURCE	trayx/scenefiles.html#LIGHTSOURCE	KeywordEnum.LIGHTSOURCE	
 KeywordEnum	trayx/scenefiles.html#KeywordEnum	scenefiles: KeywordEnum	
 KeywordToken	trayx/scenefiles.html#KeywordToken	TokenKind.KeywordToken	
 IdentifierToken	trayx/scenefiles.html#IdentifierToken	TokenKind.IdentifierToken	
@@ -51,12 +54,16 @@ expectNumber	trayx/scenefiles.html#expectNumber,InputStream,Scene	scenefiles: ex
 expectString	trayx/scenefiles.html#expectString,InputStream	scenefiles: expectString(input_file: var InputStream): string	
 expectIdentifier	trayx/scenefiles.html#expectIdentifier,InputStream	scenefiles: expectIdentifier(input_file: var InputStream): string	
 parseVector	trayx/scenefiles.html#parseVector,InputStream,Scene	scenefiles: parseVector(input_file: var InputStream; scene: Scene): Vec	
+parsePoint	trayx/scenefiles.html#parsePoint,InputStream,Scene	scenefiles: parsePoint(input_file: var InputStream; scene: Scene): Point	
 parseColor	trayx/scenefiles.html#parseColor,InputStream,Scene	scenefiles: parseColor(input_file: var InputStream; scene: Scene): Color	
 parsePigment	trayx/scenefiles.html#parsePigment,InputStream,Scene	scenefiles: parsePigment(input_file: var InputStream; scene: Scene): Pigment	
 parseBRDF	trayx/scenefiles.html#parseBRDF,InputStream,Scene	scenefiles: parseBRDF(input_file: var InputStream; scene: Scene): BRDF	
 parseMaterial	trayx/scenefiles.html#parseMaterial,InputStream,Scene	scenefiles: parseMaterial(input_file: var InputStream; scene: Scene): (string, Material)	
 parseTransformation	trayx/scenefiles.html#parseTransformation,InputStream,Scene	scenefiles: parseTransformation(input_file: var InputStream; scene: Scene): Transformation	
+parseCamera	trayx/scenefiles.html#parseCamera,InputStream,Scene	scenefiles: parseCamera(input_file: var InputStream; scene: Scene): Camera	
+parseLightSource	trayx/scenefiles.html#parseLightSource,InputStream,Scene	scenefiles: parseLightSource(input_file: var InputStream; scene: Scene): PointLight	
 parseSphere	trayx/scenefiles.html#parseSphere,InputStream,Scene	scenefiles: parseSphere(input_file: var InputStream; scene: Scene): Sphere	
 parsePlane	trayx/scenefiles.html#parsePlane,InputStream,Scene	scenefiles: parsePlane(input_file: var InputStream; scene: Scene): Plane	
-parseCamera	trayx/scenefiles.html#parseCamera,InputStream,Scene	scenefiles: parseCamera(input_file: var InputStream; scene: Scene): Camera	
+parseAABox	trayx/scenefiles.html#parseAABox,InputStream,Scene	scenefiles: parseAABox(input_file: var InputStream; scene: Scene): AABox	
+parseCylinder	trayx/scenefiles.html#parseCylinder,InputStream,Scene	scenefiles: parseCylinder(input_file: var InputStream; scene: Scene): Cylinder	
 parseScene	trayx/scenefiles.html#parseScene,InputStream,Table[string,float]	scenefiles: parseScene(input_file: var InputStream;\n           variables: Table[string, float] = initTable()): Scene	

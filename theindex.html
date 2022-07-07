@@ -149,6 +149,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="shapes: AABoundingBox" href="trayx/shapes.html#AABoundingBox">shapes: AABoundingBox</a></li>
           </ul></dd>
+<dt><a name="AABOX" href="#AABOX"><span>AABOX:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.AABOX" href="trayx/scenefiles.html#AABOX">KeywordEnum.AABOX</a></li>
+          </ul></dd>
 <dt><a name="AABox" href="#AABox"><span>AABox:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="shapes: AABox" href="trayx/shapes.html#AABox">shapes: AABox</a></li>
@@ -234,6 +238,10 @@ window.addEventListener('DOMContentLoaded', main);
           data-doc-search-tag="geometry: cross(arg1`gensym14: Vec; arg2`gensym14: Normal): Vec" href="trayx/geometry.html#cross%2CVec%2CNormal">geometry: cross(arg1`gensym14: Vec; arg2`gensym14: Normal): Vec</a></li>
           <li><a class="reference external"
           data-doc-search-tag="geometry: cross(arg1`gensym16: Vec; arg2`gensym16: Vec): Vec" href="trayx/geometry.html#cross%2CVec%2CVec">geometry: cross(arg1`gensym16: Vec; arg2`gensym16: Vec): Vec</a></li>
+          </ul></dd>
+<dt><a name="CYLINDER" href="#CYLINDER"><span>CYLINDER:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.CYLINDER" href="trayx/scenefiles.html#CYLINDER">KeywordEnum.CYLINDER</a></li>
           </ul></dd>
 <dt><a name="Cylinder" href="#Cylinder"><span>Cylinder:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -425,6 +433,10 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="TokenKind.KeywordToken" href="trayx/scenefiles.html#KeywordToken">TokenKind.KeywordToken</a></li>
           </ul></dd>
+<dt><a name="LIGHTSOURCE" href="#LIGHTSOURCE"><span>LIGHTSOURCE:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="KeywordEnum.LIGHTSOURCE" href="trayx/scenefiles.html#LIGHTSOURCE">KeywordEnum.LIGHTSOURCE</a></li>
+          </ul></dd>
 <dt><a name="LiteralNumberToken" href="#LiteralNumberToken"><span>LiteralNumberToken:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="TokenKind.LiteralNumberToken" href="trayx/scenefiles.html#LiteralNumberToken">TokenKind.LiteralNumberToken</a></li>
@@ -468,14 +480,14 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="newCylinder" href="#newCylinder"><span>newCylinder:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="shapes: newCylinder(transformation: Transformation = newTransformation();
-            material: Material = newMaterial(); r, z_min, z_max: float;
-            phi_max: float = 2 * PI): Cylinder" href="trayx/shapes.html#newCylinder%2CTransformation%2CMaterial%2Cfloat%2Cfloat%2Cfloat%2Cfloat">shapes: newCylinder(transformation: Transformation = newTransformation();
-            material: Material = newMaterial(); r, z_min, z_max: float;
-            phi_max: float = 2 * PI): Cylinder</a></li>
+            material: Material = newMaterial(); r: float = 1; z_min: float = 0;
+            z_max: float = 1; phi_max: float = 2 * PI): Cylinder" href="trayx/shapes.html#newCylinder%2CTransformation%2CMaterial%2Cfloat%2Cfloat%2Cfloat%2Cfloat">shapes: newCylinder(transformation: Transformation = newTransformation();
+            material: Material = newMaterial(); r: float = 1; z_min: float = 0;
+            z_max: float = 1; phi_max: float = 2 * PI): Cylinder</a></li>
           </ul></dd>
 <dt><a name="newDiffuseBRDF" href="#newDiffuseBRDF"><span>newDiffuseBRDF:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="materials: newDiffuseBRDF(pigment: Pigment = newUniformPigment()): DiffuseBRDF" href="trayx/materials.html#newDiffuseBRDF%2CPigment">materials: newDiffuseBRDF(pigment: Pigment = newUniformPigment()): DiffuseBRDF</a></li>
+          data-doc-search-tag="materials: newDiffuseBRDF(pigment: Pigment = newUniformPigment(); reflectance: float = 1.0): DiffuseBRDF" href="trayx/materials.html#newDiffuseBRDF%2CPigment%2Cfloat">materials: newDiffuseBRDF(pigment: Pigment = newUniformPigment(); reflectance: float = 1.0): DiffuseBRDF</a></li>
           </ul></dd>
 <dt><a name="newFlatRenderer" href="#newFlatRenderer"><span>newFlatRenderer:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -659,9 +671,9 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="cameras: OrthogonalCamera" href="trayx/cameras.html#OrthogonalCamera">cameras: OrthogonalCamera</a></li>
           </ul></dd>
-<dt><a name="Parameters" href="#Parameters"><span>Parameters:</span></a></dt><dd><ul class="simple">
+<dt><a name="parseAABox" href="#parseAABox"><span>parseAABox:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="trayx: Parameters" href="index.html#Parameters">trayx: Parameters</a></li>
+          data-doc-search-tag="scenefiles: parseAABox(input_file: var InputStream; scene: Scene): AABox" href="trayx/scenefiles.html#parseAABox%2CInputStream%2CScene">scenefiles: parseAABox(input_file: var InputStream; scene: Scene): AABox</a></li>
           </ul></dd>
 <dt><a name="parseBRDF" href="#parseBRDF"><span>parseBRDF:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -675,9 +687,9 @@ window.addEventListener('DOMContentLoaded', main);
 <li><a class="reference external"
           data-doc-search-tag="scenefiles: parseColor(input_file: var InputStream; scene: Scene): Color" href="trayx/scenefiles.html#parseColor%2CInputStream%2CScene">scenefiles: parseColor(input_file: var InputStream; scene: Scene): Color</a></li>
           </ul></dd>
-<dt><a name="parseCommandLine" href="#parseCommandLine"><span>parseCommandLine:</span></a></dt><dd><ul class="simple">
+<dt><a name="parseCylinder" href="#parseCylinder"><span>parseCylinder:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
-          data-doc-search-tag="trayx: parseCommandLine(param: var Parameters)" href="index.html#parseCommandLine%2CParameters">trayx: parseCommandLine(param: var Parameters)</a></li>
+          data-doc-search-tag="scenefiles: parseCylinder(input_file: var InputStream; scene: Scene): Cylinder" href="trayx/scenefiles.html#parseCylinder%2CInputStream%2CScene">scenefiles: parseCylinder(input_file: var InputStream; scene: Scene): Cylinder</a></li>
           </ul></dd>
 <dt><a name="parseEndianness" href="#parseEndianness"><span>parseEndianness:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -699,6 +711,10 @@ window.addEventListener('DOMContentLoaded', main);
                               token_location: SourceLocation): Token" href="trayx/scenefiles.html#parseKeywordOrIdentifierToken%2CInputStream%2Cstring%2CSourceLocation">scenefiles: parseKeywordOrIdentifierToken(strm: var InputStream; first_char: string;
                               token_location: SourceLocation): Token</a></li>
           </ul></dd>
+<dt><a name="parseLightSource" href="#parseLightSource"><span>parseLightSource:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: parseLightSource(input_file: var InputStream; scene: Scene): PointLight" href="trayx/scenefiles.html#parseLightSource%2CInputStream%2CScene">scenefiles: parseLightSource(input_file: var InputStream; scene: Scene): PointLight</a></li>
+          </ul></dd>
 <dt><a name="parseMaterial" href="#parseMaterial"><span>parseMaterial:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="scenefiles: parseMaterial(input_file: var InputStream; scene: Scene): (string, Material)" href="trayx/scenefiles.html#parseMaterial%2CInputStream%2CScene">scenefiles: parseMaterial(input_file: var InputStream; scene: Scene): (string, Material)</a></li>
@@ -710,6 +726,10 @@ window.addEventListener('DOMContentLoaded', main);
 <dt><a name="parsePlane" href="#parsePlane"><span>parsePlane:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
           data-doc-search-tag="scenefiles: parsePlane(input_file: var InputStream; scene: Scene): Plane" href="trayx/scenefiles.html#parsePlane%2CInputStream%2CScene">scenefiles: parsePlane(input_file: var InputStream; scene: Scene): Plane</a></li>
+          </ul></dd>
+<dt><a name="parsePoint" href="#parsePoint"><span>parsePoint:</span></a></dt><dd><ul class="simple">
+<li><a class="reference external"
+          data-doc-search-tag="scenefiles: parsePoint(input_file: var InputStream; scene: Scene): Point" href="trayx/scenefiles.html#parsePoint%2CInputStream%2CScene">scenefiles: parsePoint(input_file: var InputStream; scene: Scene): Point</a></li>
           </ul></dd>
 <dt><a name="parseScene" href="#parseScene"><span>parseScene:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
@@ -795,6 +815,10 @@ window.addEventListener('DOMContentLoaded', main);
           </ul></dd>
 <dt><a name="quickRayIntersection" href="#quickRayIntersection"><span>quickRayIntersection:</span></a></dt><dd><ul class="simple">
 <li><a class="reference external"
+          data-doc-search-tag="shapes: quickRayIntersection(box: AABox; ray: Ray): bool" href="trayx/shapes.html#quickRayIntersection.e%2CAABox%2CRay">shapes: quickRayIntersection(box: AABox; ray: Ray): bool</a></li>
+          <li><a class="reference external"
+          data-doc-search-tag="shapes: quickRayIntersection(cylinder: Cylinder; ray: Ray): bool" href="trayx/shapes.html#quickRayIntersection.e%2CCylinder%2CRay">shapes: quickRayIntersection(cylinder: Cylinder; ray: Ray): bool</a></li>
+          <li><a class="reference external"
           data-doc-search-tag="shapes: quickRayIntersection(plane: Plane; ray: Ray): bool" href="trayx/shapes.html#quickRayIntersection.e%2CPlane%2CRay">shapes: quickRayIntersection(plane: Plane; ray: Ray): bool</a></li>
           <li><a class="reference external"
           data-doc-search-tag="shapes: quickRayIntersection(shape: Shape; ray: Ray): bool" href="trayx/shapes.html#quickRayIntersection.e%2CShape%2CRay">shapes: quickRayIntersection(shape: Shape; ray: Ray): bool</a></li>
@@ -1082,7 +1106,7 @@ window.addEventListener('DOMContentLoaded', main);
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-06-10 15:05:15 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-07-07 15:25:05 UTC</small>
       </div>
     </div>
   </div>

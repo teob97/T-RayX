@@ -122,7 +122,8 @@ window.addEventListener('DOMContentLoaded', main);
   NEW = 1, MATERIAL = 2, PLANE = 3, SPHERE = 4, DIFFUSE = 5, SPECULAR = 6,
   UNIFORM = 7, CHECKERED = 8, IMAGE = 9, IDENTITY = 10, TRANSLATION = 11,
   ROTATION_X = 12, ROTATION_Y = 13, ROTATION_Z = 14, SCALING = 15, CAMERA = 16,
-  ORTHOGONAL = 17, PERSPECTIVE = 18, FLOAT = 19">KeywordEnum</a></li>
+  ORTHOGONAL = 17, PERSPECTIVE = 18, FLOAT = 19, AABOX = 20, CYLINDER = 21,
+  LIGHTSOURCE = 22">KeywordEnum</a></li>
   <li><a class="reference" href="#Scene"
     title="Scene = object
   world*: World
@@ -218,6 +219,11 @@ window.addEventListener('DOMContentLoaded', main);
     title="newSourceLocation(file_name: string = &quot;&quot;; line_num = 0; col_num = 0): SourceLocation">newSourceLocation(file_name: string = &quot;&quot;; line_num = 0; col_num = 0): SourceLocation</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">parseAABox
+      <li><a class="reference" href="#parseAABox%2CInputStream%2CScene"
+    title="parseAABox(input_file: var InputStream; scene: Scene): AABox">parseAABox(input_file: var InputStream; scene: Scene): AABox</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">parseBRDF
       <li><a class="reference" href="#parseBRDF%2CInputStream%2CScene"
     title="parseBRDF(input_file: var InputStream; scene: Scene): BRDF">parseBRDF(input_file: var InputStream; scene: Scene): BRDF</a></li>
@@ -231,6 +237,11 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">parseColor
       <li><a class="reference" href="#parseColor%2CInputStream%2CScene"
     title="parseColor(input_file: var InputStream; scene: Scene): Color">parseColor(input_file: var InputStream; scene: Scene): Color</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">parseCylinder
+      <li><a class="reference" href="#parseCylinder%2CInputStream%2CScene"
+    title="parseCylinder(input_file: var InputStream; scene: Scene): Cylinder">parseCylinder(input_file: var InputStream; scene: Scene): Cylinder</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">parseFloatToken
@@ -247,6 +258,11 @@ window.addEventListener('DOMContentLoaded', main);
                               token_location: SourceLocation): Token</a></li>
 
   </ul>
+  <ul class="simple nested-toc-section">parseLightSource
+      <li><a class="reference" href="#parseLightSource%2CInputStream%2CScene"
+    title="parseLightSource(input_file: var InputStream; scene: Scene): PointLight">parseLightSource(input_file: var InputStream; scene: Scene): PointLight</a></li>
+
+  </ul>
   <ul class="simple nested-toc-section">parseMaterial
       <li><a class="reference" href="#parseMaterial%2CInputStream%2CScene"
     title="parseMaterial(input_file: var InputStream; scene: Scene): (string, Material)">parseMaterial(input_file: var InputStream; scene: Scene): (string, Material)</a></li>
@@ -260,6 +276,11 @@ window.addEventListener('DOMContentLoaded', main);
   <ul class="simple nested-toc-section">parsePlane
       <li><a class="reference" href="#parsePlane%2CInputStream%2CScene"
     title="parsePlane(input_file: var InputStream; scene: Scene): Plane">parsePlane(input_file: var InputStream; scene: Scene): Plane</a></li>
+
+  </ul>
+  <ul class="simple nested-toc-section">parsePoint
+      <li><a class="reference" href="#parsePoint%2CInputStream%2CScene"
+    title="parsePoint(input_file: var InputStream; scene: Scene): Point">parsePoint(input_file: var InputStream; scene: Scene): Point</a></li>
 
   </ul>
   <ul class="simple nested-toc-section">parseScene
@@ -367,7 +388,8 @@ window.addEventListener('DOMContentLoaded', main);
   <span class="Identifier">NEW</span> <span class="Other">=</span> <span class="DecNumber">1</span><span class="Other">,</span> <span class="Identifier">MATERIAL</span> <span class="Other">=</span> <span class="DecNumber">2</span><span class="Other">,</span> <span class="Identifier">PLANE</span> <span class="Other">=</span> <span class="DecNumber">3</span><span class="Other">,</span> <span class="Identifier">SPHERE</span> <span class="Other">=</span> <span class="DecNumber">4</span><span class="Other">,</span> <span class="Identifier">DIFFUSE</span> <span class="Other">=</span> <span class="DecNumber">5</span><span class="Other">,</span> <span class="Identifier">SPECULAR</span> <span class="Other">=</span> <span class="DecNumber">6</span><span class="Other">,</span>
   <span class="Identifier">UNIFORM</span> <span class="Other">=</span> <span class="DecNumber">7</span><span class="Other">,</span> <span class="Identifier">CHECKERED</span> <span class="Other">=</span> <span class="DecNumber">8</span><span class="Other">,</span> <span class="Identifier">IMAGE</span> <span class="Other">=</span> <span class="DecNumber">9</span><span class="Other">,</span> <span class="Identifier">IDENTITY</span> <span class="Other">=</span> <span class="DecNumber">10</span><span class="Other">,</span> <span class="Identifier">TRANSLATION</span> <span class="Other">=</span> <span class="DecNumber">11</span><span class="Other">,</span>
   <span class="Identifier">ROTATION_X</span> <span class="Other">=</span> <span class="DecNumber">12</span><span class="Other">,</span> <span class="Identifier">ROTATION_Y</span> <span class="Other">=</span> <span class="DecNumber">13</span><span class="Other">,</span> <span class="Identifier">ROTATION_Z</span> <span class="Other">=</span> <span class="DecNumber">14</span><span class="Other">,</span> <span class="Identifier">SCALING</span> <span class="Other">=</span> <span class="DecNumber">15</span><span class="Other">,</span> <span class="Identifier">CAMERA</span> <span class="Other">=</span> <span class="DecNumber">16</span><span class="Other">,</span>
-  <span class="Identifier">ORTHOGONAL</span> <span class="Other">=</span> <span class="DecNumber">17</span><span class="Other">,</span> <span class="Identifier">PERSPECTIVE</span> <span class="Other">=</span> <span class="DecNumber">18</span><span class="Other">,</span> <span class="Identifier">FLOAT</span> <span class="Other">=</span> <span class="DecNumber">19</span></pre></dt>
+  <span class="Identifier">ORTHOGONAL</span> <span class="Other">=</span> <span class="DecNumber">17</span><span class="Other">,</span> <span class="Identifier">PERSPECTIVE</span> <span class="Other">=</span> <span class="DecNumber">18</span><span class="Other">,</span> <span class="Identifier">FLOAT</span> <span class="Other">=</span> <span class="DecNumber">19</span><span class="Other">,</span> <span class="Identifier">AABOX</span> <span class="Other">=</span> <span class="DecNumber">20</span><span class="Other">,</span> <span class="Identifier">CYLINDER</span> <span class="Other">=</span> <span class="DecNumber">21</span><span class="Other">,</span>
+  <span class="Identifier">LIGHTSOURCE</span> <span class="Other">=</span> <span class="DecNumber">22</span></pre></dt>
 <dd>
 
 
@@ -544,6 +566,15 @@ Read a token from <tt class="docutils literal"><span class="pre"><span class="Id
 
 </dd>
 </div>
+<div id="parseAABox,InputStream,Scene">
+<dt><pre><span class="Keyword">proc</span> <a href="#parseAABox%2CInputStream%2CScene"><span class="Identifier">parseAABox</span></a><span class="Other">(</span><span class="Identifier">input_file</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="scenefiles.html#InputStream"><span class="Identifier">InputStream</span></a><span class="Other">;</span> <span class="Identifier">scene</span><span class="Other">:</span> <a href="scenefiles.html#Scene"><span class="Identifier">Scene</span></a><span class="Other">)</span><span class="Other">:</span> <a href="shapes.html#AABox"><span class="Identifier">AABox</span></a> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">GrammarError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+
+</dd>
+</div>
 <div id="parseBRDF,InputStream,Scene">
 <dt><pre><span class="Keyword">proc</span> <a href="#parseBRDF%2CInputStream%2CScene"><span class="Identifier">parseBRDF</span></a><span class="Other">(</span><span class="Identifier">input_file</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="scenefiles.html#InputStream"><span class="Identifier">InputStream</span></a><span class="Other">;</span> <span class="Identifier">scene</span><span class="Other">:</span> <a href="scenefiles.html#Scene"><span class="Identifier">Scene</span></a><span class="Other">)</span><span class="Other">:</span> <a href="materials.html#BRDF"><span class="Identifier">BRDF</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span>
     <span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">GrammarError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">,</span> <span class="Identifier">InvalidPfmFileFormat</span><span class="Other">,</span> <span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
@@ -572,6 +603,15 @@ Read a token from <tt class="docutils literal"><span class="pre"><span class="Id
 
 </dd>
 </div>
+<div id="parseCylinder,InputStream,Scene">
+<dt><pre><span class="Keyword">proc</span> <a href="#parseCylinder%2CInputStream%2CScene"><span class="Identifier">parseCylinder</span></a><span class="Other">(</span><span class="Identifier">input_file</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="scenefiles.html#InputStream"><span class="Identifier">InputStream</span></a><span class="Other">;</span> <span class="Identifier">scene</span><span class="Other">:</span> <a href="scenefiles.html#Scene"><span class="Identifier">Scene</span></a><span class="Other">)</span><span class="Other">:</span> <a href="shapes.html#Cylinder"><span class="Identifier">Cylinder</span></a> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">GrammarError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+
+</dd>
+</div>
 <div id="parseFloatToken,InputStream,string,SourceLocation">
 <dt><pre><span class="Keyword">proc</span> <a href="#parseFloatToken%2CInputStream%2Cstring%2CSourceLocation"><span class="Identifier">parseFloatToken</span></a><span class="Other">(</span><span class="Identifier">strm</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="scenefiles.html#InputStream"><span class="Identifier">InputStream</span></a><span class="Other">;</span> <span class="Identifier">first_char</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span>
                      <span class="Identifier">token_location</span><span class="Other">:</span> <a href="scenefiles.html#SourceLocation"><span class="Identifier">SourceLocation</span></a><span class="Other">)</span><span class="Other">:</span> <a href="scenefiles.html#Token"><span class="Identifier">Token</span></a> {.
@@ -586,6 +626,15 @@ Read a token from <tt class="docutils literal"><span class="pre"><span class="Id
 <dt><pre><span class="Keyword">proc</span> <a href="#parseKeywordOrIdentifierToken%2CInputStream%2Cstring%2CSourceLocation"><span class="Identifier">parseKeywordOrIdentifierToken</span></a><span class="Other">(</span><span class="Identifier">strm</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="scenefiles.html#InputStream"><span class="Identifier">InputStream</span></a><span class="Other">;</span> <span class="Identifier">first_char</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span>
                                    <span class="Identifier">token_location</span><span class="Other">:</span> <a href="scenefiles.html#SourceLocation"><span class="Identifier">SourceLocation</span></a><span class="Other">)</span><span class="Other">:</span> <a href="scenefiles.html#Token"><span class="Identifier">Token</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+
+</dd>
+</div>
+<div id="parseLightSource,InputStream,Scene">
+<dt><pre><span class="Keyword">proc</span> <a href="#parseLightSource%2CInputStream%2CScene"><span class="Identifier">parseLightSource</span></a><span class="Other">(</span><span class="Identifier">input_file</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="scenefiles.html#InputStream"><span class="Identifier">InputStream</span></a><span class="Other">;</span> <span class="Identifier">scene</span><span class="Other">:</span> <a href="scenefiles.html#Scene"><span class="Identifier">Scene</span></a><span class="Other">)</span><span class="Other">:</span> <a href="shapes.html#PointLight"><span class="Identifier">PointLight</span></a> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">GrammarError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
 
@@ -614,6 +663,15 @@ Read a token from <tt class="docutils literal"><span class="pre"><span class="Id
 </div>
 <div id="parsePlane,InputStream,Scene">
 <dt><pre><span class="Keyword">proc</span> <a href="#parsePlane%2CInputStream%2CScene"><span class="Identifier">parsePlane</span></a><span class="Other">(</span><span class="Identifier">input_file</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="scenefiles.html#InputStream"><span class="Identifier">InputStream</span></a><span class="Other">;</span> <span class="Identifier">scene</span><span class="Other">:</span> <a href="scenefiles.html#Scene"><span class="Identifier">Scene</span></a><span class="Other">)</span><span class="Other">:</span> <a href="shapes.html#Plane"><span class="Identifier">Plane</span></a> {.
+    <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">GrammarError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
+<dd>
+
+
+
+</dd>
+</div>
+<div id="parsePoint,InputStream,Scene">
+<dt><pre><span class="Keyword">proc</span> <a href="#parsePoint%2CInputStream%2CScene"><span class="Identifier">parsePoint</span></a><span class="Other">(</span><span class="Identifier">input_file</span><span class="Other">:</span> <span class="Keyword">var</span> <a href="scenefiles.html#InputStream"><span class="Identifier">InputStream</span></a><span class="Other">;</span> <span class="Identifier">scene</span><span class="Other">:</span> <a href="scenefiles.html#Scene"><span class="Identifier">Scene</span></a><span class="Other">)</span><span class="Other">:</span> <a href="geometry.html#Point"><span class="Identifier">Point</span></a> {.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">GrammarError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">ReadIOEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
@@ -729,7 +787,7 @@ Make as if <tt class="docutils literal"><span class="pre"><span class="Identifie
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-06-10 15:05:15 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-07-07 15:25:04 UTC</small>
       </div>
     </div>
   </div>

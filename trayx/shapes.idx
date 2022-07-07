@@ -25,7 +25,9 @@ sphereNormal	trayx/shapes.html#sphereNormal,Point,Vec	shapes: sphereNormal(point
 rayIntersection	trayx/shapes.html#rayIntersection.e,Sphere,Ray	shapes: rayIntersection(sphere: Sphere; ray: Ray): Option[HitRecord]	
 newPlane	trayx/shapes.html#newPlane,Transformation,Material	shapes: newPlane(transformation: Transformation = newTransformation();\n         material: Material = newMaterial()): Plane	
 rayIntersection	trayx/shapes.html#rayIntersection.e,Plane,Ray	shapes: rayIntersection(plane: Plane; ray: Ray): Option[HitRecord]	
-newCylinder	trayx/shapes.html#newCylinder,Transformation,Material,float,float,float,float	shapes: newCylinder(transformation: Transformation = newTransformation();\n            material: Material = newMaterial(); r, z_min, z_max: float;\n            phi_max: float = 2 * PI): Cylinder	
+newCylinder	trayx/shapes.html#newCylinder,Transformation,Material,float,float,float,float	shapes: newCylinder(transformation: Transformation = newTransformation();\n            material: Material = newMaterial(); r: float = 1; z_min: float = 0;\n            z_max: float = 1; phi_max: float = 2 * PI): Cylinder	
 rayIntersection	trayx/shapes.html#rayIntersection.e,Cylinder,Ray	shapes: rayIntersection(cylinder: Cylinder; ray: Ray): Option[HitRecord]	
 quickRayIntersection	trayx/shapes.html#quickRayIntersection.e,Sphere,Ray	shapes: quickRayIntersection(sphere: Sphere; ray: Ray): bool	
 quickRayIntersection	trayx/shapes.html#quickRayIntersection.e,Plane,Ray	shapes: quickRayIntersection(plane: Plane; ray: Ray): bool	
+quickRayIntersection	trayx/shapes.html#quickRayIntersection.e,Cylinder,Ray	shapes: quickRayIntersection(cylinder: Cylinder; ray: Ray): bool	
+quickRayIntersection	trayx/shapes.html#quickRayIntersection.e,AABox,Ray	shapes: quickRayIntersection(box: AABox; ray: Ray): bool	

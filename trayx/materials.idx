@@ -13,7 +13,7 @@ getColor	trayx/materials.html#getColor.e,Pigment,Vec2d	materials: getColor(pig: 
 getColor	trayx/materials.html#getColor.e,UniformPigment,Vec2d	materials: getColor(pig: UniformPigment; uv: Vec2d): Color	
 getColor	trayx/materials.html#getColor.e,ImagePigment,Vec2d	materials: getColor(pig: ImagePigment; uv: Vec2d): Color	
 getColor	trayx/materials.html#getColor.e,CheckeredPigment,Vec2d	materials: getColor(pig: CheckeredPigment; uv: Vec2d): Color	
-newDiffuseBRDF	trayx/materials.html#newDiffuseBRDF,Pigment	materials: newDiffuseBRDF(pigment: Pigment = newUniformPigment()): DiffuseBRDF	
+newDiffuseBRDF	trayx/materials.html#newDiffuseBRDF,Pigment,float	materials: newDiffuseBRDF(pigment: Pigment = newUniformPigment(); reflectance: float = 1.0): DiffuseBRDF	
 newSpecularBRDF	trayx/materials.html#newSpecularBRDF,Pigment,float	materials: newSpecularBRDF(pigment: Pigment = newUniformPigment();\n                angle: float = PI / 1800.0): SpecularBRDF	
 eval	trayx/materials.html#eval.e,BRDF,Normal,Vec,Vec,Vec2d	materials: eval(brdf: BRDF; normal: Normal; in_dir, out_dir: Vec; uv: Vec2d): Color	
 eval	trayx/materials.html#eval.e,DiffuseBRDF,Normal,Vec,Vec,Vec2d	materials: eval(brdf: DiffuseBRDF; normal: Normal; in_dir, out_dir: Vec; uv: Vec2d): Color	
