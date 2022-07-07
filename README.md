@@ -40,14 +40,14 @@ For a proper use of the library you need:
 ## Download and build
 
 You can download the latest stable release [here](https://github.com/teob97/T-RayX/releases), and unpack it
-   ``` sh
+   ``` bash
    $ tar -xvf /path/to/tar #or zip file -C /path/to/your/directory
    ```
 or if you want, you can clone this repository
-   ``` sh
+   ``` bash
    $ git clone https://github.com/teob97/T-RayX.git
    ```
-
+   
 To generate the executable file, use:
 ```bash
 nimble build -d:release
