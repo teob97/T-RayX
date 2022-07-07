@@ -24,7 +24,7 @@ T-RayX: a Nim library aimed to generate a photorealistic image.
 
 The project has been developed during the course [*Numerical techniques for photorealistic image generation*](https://www.unimi.it/en/education/degree-programme-courses/2022/numerical-tecniques-photorealistic-image-generation) held by Prof. [Maurizio Tomasi][1] at Università degli Studi di Milano (A.Y. 2021/2022)
 
-The main functionality of this library is to generate photorealistic images from input files that describe a scene. (See more details [here](#renderer)).
+The main functionality of this library is to generate photorealistic images from input files that describe a scene. (See more details [here](#small_orange_diamond-render)).
 With T-RayX you are also able to convert PFM files to PNG using the [pfm2png](#pfm2png) command.
 
 ## :desktop_computer:  System Requirements
@@ -37,7 +37,7 @@ For a proper use of the library you need:
 - [docopt](https://github.com/docopt/docopt.nim): use ```nimble install docopt``` to install it.
 - [ffmpeg](https://ffmpeg.org/) and [GNU parallel](https://www.gnu.org/software/parallel/) just for the animations (see _scripts_ folder).
 
-## Download and build
+## :wrench: Download and build
 
 You can download the latest stable release [here](https://github.com/teob97/T-RayX/releases), and unpack it
    ``` bash
@@ -111,3 +111,6 @@ It is possible to tune the parameters alpha and gamma.
 ![](examples/pfm2png/lawn_a0.3-gamma1.45.png)  |  ![](examples/pfm2png/lawn_a0.6-gamma1.45.png) | ![](examples/pfm2png/lawn_a0.9-gamma1.45.png) 
 :--:|:--:|:--:|
 `alpha = 0.3` | `alpha = 0.6`  |  `alpha = 0.9`
+
+
+[1]: https://github.com/ziotom78
