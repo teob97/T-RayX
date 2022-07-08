@@ -81,7 +81,7 @@ Here all the possible options:
 |--samplePerPixel  |Number of samples per pixel (must be a perfect square, e.g. 2,4,16...). Used in the antialiasing. [default: 0]|
 |--defineFloat     |Used to declare a new float variable. Syntax: --defineFloat=pippo:42/pluto:55/... |
 
-The input file SCENE_FILE.txt must contain the detailed description of the scene that has to be rendered. 
+The input file SCENE_FILE.txt must contain the detailed description of the scene that has to be rendered. See [the next section](#page_facing_up-input-file-format)
 
 ### :small_orange_diamond: pfm2png
 
@@ -105,11 +105,13 @@ This will produce the following 960x540 image:
   <img src="examples/demo.png" width="500" />
 </p>
 
-## 	:book: Documentation
+## :page_facing_up: Input file format
+
+## :book: Documentation
 
 A complete documentation with all the procedures and the data structures is aviable at this [link](https://teob97.github.io/T-RayX/)
 
-## 	:sunglasses: Examples
+## :sunglasses: Examples
 
 ### Example 1 (pfm2png)
 
