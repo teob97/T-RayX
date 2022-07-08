@@ -28,6 +28,7 @@ The main functionality of this library is to generate photorealistic images from
 With T-RayX you are also able to convert PFM files to PNG using the [pfm2png](#pfm2png) command.
 
 ## :desktop_computer:  System Requirements
+
 T-RayX works on Windows, Linux and MacOSX machine.
 
 For a proper use of the library you need:
@@ -50,14 +51,14 @@ or if you want, you can clone this repository
    
 To generate the executable file, use:
 ```bash
-nimble build -d:release
+$ nimble build -d:release
 ```
 
 ## :rocket:  Usage
 
 You can run the following command to visualize through the CLI all the possible procedures:
 ```bash
-./trayx --help
+$ ./trayx --help
 ```
 
 ### :small_orange_diamond: render
@@ -65,15 +66,29 @@ You can run the following command to visualize through the CLI all the possible 
 To run the render, use:
 
 ```bash
-./trayx render <SCENE_FILE.txt> <width> <height> [options]
+$ ./trayx render <SCENE_FILE.txt> <width> <height> [options]
 ```
+Here all the possible options:
+
+|Options|Description|
+|-------|-----------|
+|--renderer        |Renderer's type: onoff, flat, pathtracing, pointlight. [default: pathtracing]|
+|--output          |Output file.png|
+|--numberOfRays    |Number of rays departing from each surface point (only applicable with pathtracing).|
+|--maxDepth        |Maximum allowed ray depth (only applicable with pathtracing).|
+|--initState       |Initial seed for the random number generator (positive number).|
+|--initSeq         |Identifier of the sequence produced by the random number generator (positive number).|
+|--samplePerPixel  |Number of samples per pixel (must be a perfect square, e.g. 2,4,16...). Used in the antialiasing. [default: 0]|
+|--defineFloat     |Used to declare a new float variable. Syntax: --defineFloat=pippo:42/pluto:55/... |
+
+The input file SCENE_FILE.txt must contain the detailed description of the scene that has to be rendered. 
 
 ### :small_orange_diamond: pfm2png
 
 Convert pfm file in png image using:
 
 ```bash
-./trayx pfm2png <file.pfm> <alpha> <gamma> <output.png>
+$ ./trayx pfm2png <file.pfm> <alpha> <gamma> <output.png>
 ```
 
 It is necessary to set specific values for alpha and gamma parameters.
@@ -83,12 +98,16 @@ It is necessary to set specific values for alpha and gamma parameters.
 To run the demo, use:
 
 ```bash
-./trayx demo
+$ ./trayx demo
 ```
 This will produce the following 960x540 image:
 <p float="center">
   <img src="examples/demo.png" width="500" />
 </p>
+
+## 	:book: Documentation
+
+A complete documentation with all the procedures and the data structures is aviable at this [link](https://teob97.github.io/T-RayX/)
 
 ## 	:sunglasses: Examples
 
@@ -97,7 +116,7 @@ This will produce the following 960x540 image:
 Run:
 
 ```bash
-./trayx pfm2png examples/pfm2png/lawn.pbm 0.6 1.45 examples/pfm2png/lawn_a0.6-gamma1.45.png
+$ ./trayx pfm2png examples/pfm2png/lawn.pbm 0.6 1.45 examples/pfm2png/lawn_a0.6-gamma1.45.png
 ```
 
 in order to create the following image:
