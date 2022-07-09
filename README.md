@@ -105,10 +105,28 @@ $ ./trayx demo
 ```
 This will produce the following 960x540 image:
 <p float="center">
-  <img src="examples/demo.png" width="500" />
+  <img src="examples/demo.png" width="400" />
 </p>
 
 ## :page_facing_up: Input file format
+
+To describe the scene that has to be rendered it is necessary to create a .txt file and use a specific syntax. Below are all the keywords that can be used within the input file:
+
+| **FIGURE**  | **BRDF** | **PIGMENT** | **TRANSFORMATION** | **CAMERA_TYPE** | **_Extras_** |
+|---------------|------------|---------------|----------------------|--------------|--------------|
+| plane         | diffuse    | uniform       | identity             | orthogonal      | new          |
+| sphere        | specular   | checkered     | translation          | perspective   | float        |
+| aabox         |            | image         | rotation_x           |              | light        |
+| cylinder      |            |               | rotation_y           |              | material     |
+|               |            |               | rotation_z           |              | camera       |
+|               |            |               | scaling              |              |              |
+
+First thing first it is necessary to define a camera, use the following syntax:
+
+```
+camera(CAMERA_TYPE, TRANSFORMATION, aspectRatio:float, distance:float)
+```
+where `aspectRatio` is a float representing the ration between the width and the height (expressed in # of pixel) of the image; `distance` is a float representing the distance of the camera from the screen.
 
 ## :book: Documentation
 
