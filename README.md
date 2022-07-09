@@ -53,6 +53,7 @@ To generate the executable file, use:
 ```bash
 $ nimble build -d:release
 ```
+In some cases it is necessary to create a folder named `output` (in the project directory) to make T-RayX work proprely.
 
 ## :rocket:  Usage
 
@@ -68,8 +69,9 @@ To run the render, use:
 ```bash
 $ ./trayx render <SCENE_FILE.txt> <width> <height> [options]
 ```
-Here all the possible options:
+To see all the possible options use `./trayx --help`.
 
+<!---
 |Options|Description|
 |-------|-----------|
 |--renderer        |Renderer's type: onoff, flat, pathtracing, pointlight. [default: pathtracing]|
@@ -80,6 +82,7 @@ Here all the possible options:
 |--initSeq         |Identifier of the sequence produced by the random number generator (positive number).|
 |--samplePerPixel  |Number of samples per pixel (must be a perfect square, e.g. 2,4,16...). Used in the antialiasing. [default: 0]|
 |--defineFloat     |Used to declare a new float variable. Syntax: --defineFloat=pippo:42/pluto:55/... |
+--->
 
 The input file SCENE_FILE.txt must contain the detailed description of the scene that has to be rendered. See [the next section](#page_facing_up-input-file-format)
 
