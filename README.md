@@ -156,6 +156,14 @@ To define a shape use this syntax:
 ```
 FIGURE (MATERIAL, TRANSFORMATION)
 ```
+In _pointlight_ render to define a light source use:
+```
+light ([x,y,z], <r,g,b>, radius:float)
+```
+It is also possible to define float variables:
+```
+float NAME(value:float)
+```
 You can find many examples in the `examples` folder!
 
 ## :book: Documentation
