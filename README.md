@@ -141,13 +141,22 @@ rotation_x(rotation_angle:float) # Define a rotation around the x axis
 rotation_y(rotation_angle:float) # Define a rotation around the y axis
 rotation_z(rotation_angle:float) # Define a rotation around the z axis
 ```
-
 To define a pigment use the RGB vectors:
 ```
 uniform(<r,g,b>)
 chekered(<r1,g1,b1>, <r2,g2,b2>, n_step:int)
 image(image_PATH:string)
 ```
+To define the material of the shapes that will be rendered it is necessary to use the correct BDRF:
+```
+material NAME(diffuse(PIGMENT), uniform(<r,g,b>)) # Diffuse brdf, the second pigment represent the emitted radiance.
+material NAME(specular(PIGMENT), uniform(<0,0,0>)) # Specural brdf
+```
+To define a shape use this syntax:
+```
+FIGURE (MATERIAL, TRANSFORMATION)
+```
+You can find many examples in the `examples` folder!
 
 ## :book: Documentation
 
