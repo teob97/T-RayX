@@ -128,6 +128,27 @@ camera(CAMERA_TYPE, TRANSFORMATION, aspectRatio:float, distance:float)
 ```
 where `aspectRatio` is a float representing the ration between the width and the height (expressed in # of pixel) of the image; `distance` is a float representing the distance of the camera from the screen.
 
+To define a space vector or a color it is necessary to specify three values:
+```
+[x:float, y:float, z:float] # This is a vector representing a 3D position or a direction
+<r:float, g:float, b:float> # This is a vector representing a RGB color
+```
+The first vectors are used to define translation. Here are the ways to define the various possible transformations:
+```
+identity # Use this if you don't want a transformation
+translation([x,y,z])
+rotation_x(rotation_angle:float) # Define a rotation around the x axis
+rotation_y(rotation_angle:float) # Define a rotation around the y axis
+rotation_z(rotation_angle:float) # Define a rotation around the z axis
+```
+
+To define a pigment use the RGB vectors:
+```
+uniform(<r,g,b>)
+chekered(<r1,g1,b1>, <r2,g2,b2>, n_step:int)
+image(image_PATH:string)
+```
+
 ## :book: Documentation
 
 A complete documentation with all the procedures and the data structures is aviable at this [link](https://teob97.github.io/T-RayX/)
