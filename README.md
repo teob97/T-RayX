@@ -140,6 +140,7 @@ translation([x,y,z])
 rotation_x(rotation_angle:float) # Define a rotation around the x axis
 rotation_y(rotation_angle:float) # Define a rotation around the y axis
 rotation_z(rotation_angle:float) # Define a rotation around the z axis
+scaling(factor:float)
 ```
 To define a pigment use the RGB vectors:
 ```
@@ -164,11 +165,15 @@ It is also possible to define float variables:
 ```
 float NAME(value:float)
 ```
-You can find many examples in the `examples` folder!
+You can find many examples in the [examples](./examples) folder!
 
 ## :book: Documentation
 
 A complete documentation with all the procedures and the data structures is aviable at this [link](https://teob97.github.io/T-RayX/)
+
+## :police_car: License
+
+The code is released under a GPL-3.0 license. See the file [LICENSE](./LICENSE)
 
 ## :sunglasses: Examples
 
