@@ -137,10 +137,10 @@ The first vectors are used to define translation. Here are the ways to define th
 ```
 identity # Use this if you don't want a transformation
 translation([x,y,z])
+scaling([x,y,z])
 rotation_x(rotation_angle:float) # Define a rotation around the x axis
 rotation_y(rotation_angle:float) # Define a rotation around the y axis
 rotation_z(rotation_angle:float) # Define a rotation around the z axis
-scaling(factor:float)
 ```
 To define a pigment use the RGB vectors:
 ```
