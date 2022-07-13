@@ -200,7 +200,7 @@ It is possible to tune the parameters alpha and gamma.
 ### Example 2 (render)
 
 ```bash
-./trayx render examples/render/example1.txt 400 400 --output=examples/render/example1.png --luminosity=0.4 --alpha=2 --numberOfRays=30
+./trayx render examples/render/example1.txt 400 400 --output=examples/render/example1.png --luminosity=0.4 --gamma=2 --numberOfRays=100
 ```
 
 
