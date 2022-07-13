@@ -37,6 +37,9 @@ Options:
   --numberOfRays=<nRay>         Number of rays departing from each surface point (pathtracing). [default: 10]
   --maxDepth=<depth>            Maximum allowed number of ray reflection (pathtracing). [default: 2]
   --russian=<limit>             Depth beyond which the Russian Roulette is triggered. [default: 3]
+  --luminosity=<lum>            Average luminosity of the image. [default: none(float)]
+  --alpha=<fatcor>              Normalization parameter used during tone mapping. [default: 1.0]
+  --gamma=<gamma>               Correction due to the monitor non-linear response. [default: 1.0]
   --initState=<seed>            Initial seed (positive int) for the random number generator. [default: 42]
   --initSeq=<seq-seed>          Identifier (positive int) of the sequence produced by the random number generator. [default: 97]
   --samplePerPixel=<n_sample>   Number of samples per pixel (must be a perfect square, e.g. 2,4,16...). [default: 0]
@@ -62,7 +65,7 @@ proc pfm2png*() =
   img.normalize_image(factor = parseFloat($args["<alpha>"]))
   img.clamp_image()
   var outf = newFileStream($args["<OUTPUT.png>"], fmWrite)
-  img.write_ldr_image(name = $args["<OUTPUT.png>"], gamma = parseFloat($args["<gamma>"]))
+  img.writeLdrImage(name = $args["<OUTPUT.png>"], gamma = parseFloat($args["<gamma>"]))
   outf.close()
   echo (fmt"File "&($args["<OUTPUT.png>"])&" has been written to disk.")
 
@@ -100,6 +103,8 @@ proc demo*()=
   tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)
   let path : string = "output/demo.png"
+  tracer.image.normalizeImage(factor = 1.0)
+  tracer.image.clampImage()
   tracer.image.writeLdrImage(path)
   echo("Image saved in "&path)
 
