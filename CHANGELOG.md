@@ -1,5 +1,6 @@
 # HEAD
 
+- Fixed main and CLI [#8](https://github.com/teob97/T-RayX/pull/8)
 - Added the possibility to override a variable (use --defineFloat in the CLI) previously defined in the input .txt file.
 - Now you can correctly render AABox and Cylinder using the PointLight tracer.
 - **Major changes:** now it is possible to use `render` command through the CLI. [#7](https://github.com/teob97/T-RayX/pull/7)
