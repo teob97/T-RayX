@@ -92,7 +92,7 @@ To run the demo, use:
 ```
 This will produce the following 960x540 image:
 <p float="center">
-  <img src="example/demo.png" width="300" />
+  <img src="examples/demo.png" width="300" />
 </p>
 
 ## :page_facing_up: Input file format
