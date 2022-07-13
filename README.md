@@ -22,7 +22,7 @@
 ## :t-rex:  Overview
 T-RayX: a Nim library aimed to generate a photorealistic image.
 
-The project has been developed during the course [*Numerical techniques for photorealistic image generation*](https://www.unimi.it/en/education/degree-programme-courses/2022/numerical-tecniques-photorealistic-image-generation) held by Prof. [Maurizio Tomasi][https://github.com/ziotom78] at Università degli Studi di Milano (A.Y. 2021/2022)
+The project has been developed during the course [*Numerical techniques for photorealistic image generation*](https://www.unimi.it/en/education/degree-programme-courses/2022/numerical-tecniques-photorealistic-image-generation) held by Prof. [Maurizio Tomasi](https://github.com/ziotom78) at Università degli Studi di Milano (A.Y. 2021/2022)
 
 The main functionality of this library is to generate photorealistic images from input files that describe a scene. (See more details [here](#small_orange_diamond-render)).
 With T-RayX you are also able to convert PFM files to PNG using the [pfm2png](#pfm2png) command.
