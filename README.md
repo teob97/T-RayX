@@ -29,7 +29,7 @@ With T-RayX you are also able to convert PFM files to PNG using the [pfm2png](#p
 
 ## :desktop_computer:  System Requirements
 
-T-RayX works on Windows, Linux and MacOSX machine.
+T-RayX works on Linux, MacOSX and Windows (not so sure) machine. 
 
 For a proper use of the library you need:
 - [Nim](https://nim-lang.org/) version required: 1.6.4
