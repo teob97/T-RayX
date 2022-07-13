@@ -42,16 +42,16 @@ For a proper use of the library you need:
 
 You can download the latest stable release [here](https://github.com/teob97/T-RayX/releases), and unpack it
    ``` bash
-   $ tar -xvf /path/to/tar #or zip file -C /path/to/your/directory
+   tar -xvf /path/to/tar #or zip file -C /path/to/your/directory
    ```
 or if you want, you can clone this repository
    ``` bash
-   $ git clone https://github.com/teob97/T-RayX.git
+   git clone https://github.com/teob97/T-RayX.git
    ```
    
 To generate the executable file, use:
 ```bash
-$ nimble build -d:release
+nimble build -d:release
 ```
 In some cases it is necessary to create a folder named `output` (in the project directory) to make T-RayX work proprely.
 
@@ -59,7 +59,7 @@ In some cases it is necessary to create a folder named `output` (in the project 
 
 You can run the following command to visualize through the CLI all the possible procedures:
 ```bash
-$ ./trayx --help
+./trayx --help
 ```
 
 ### :small_orange_diamond: render
@@ -67,7 +67,7 @@ $ ./trayx --help
 To run the render, use:
 
 ```bash
-$ ./trayx render <SCENE_FILE.txt> <width> <height> [options]
+./trayx render <SCENE_FILE.txt> <width> <height> [options]
 ```
 To see all the possible options use `./trayx --help`.
 
@@ -78,7 +78,7 @@ The input file SCENE_FILE.txt must contain the detailed description of the scene
 Convert pfm file in png image using:
 
 ```bash
-$ ./trayx pfm2png <file.pfm> <alpha> <gamma> <output.png>
+./trayx pfm2png <file.pfm> <alpha> <gamma> <output.png>
 ```
 
 It is necessary to set specific values for alpha and gamma parameters.
@@ -88,11 +88,11 @@ It is necessary to set specific values for alpha and gamma parameters.
 To run the demo, use:
 
 ```bash
-$ ./trayx demo
+./trayx demo
 ```
 This will produce the following 960x540 image:
 <p float="center">
-  <img src="examples/demo.png" width="300" />
+  <img src="example/demo.png" width="300" />
 </p>
 
 ## :page_facing_up: Input file format
