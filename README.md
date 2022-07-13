@@ -92,7 +92,7 @@ $ ./trayx demo
 ```
 This will produce the following 960x540 image:
 <p float="center">
-  <img src="examples/demo.png" width="400" />
+  <img src="examples/demo.png" width="300" />
 </p>
 
 ## :page_facing_up: Input file format
@@ -186,10 +186,12 @@ It is possible to tune the parameters alpha and gamma.
 
 ### Example 2 (render)
 
+Use the following command to produce the scene described [here](examples/render/example1.txt).
+
 ```bash
 ./trayx render examples/render/example1.txt 400 400 --output=examples/render/example1.png --luminosity=0.4 --gamma=2 --numberOfRays=100
 ```
 
-
-
-[1]: 
+<p float="center">
+  <img src="examples/render/example1.png" width="300" />
+</p>
