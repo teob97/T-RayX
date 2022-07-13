@@ -34,11 +34,12 @@ Usage:
 Options:
   --renderer=<type>             Renderer's type: onoff, flat, pathtracing, pointlight. [default: pathtracing]
   --output=<output-file>        Output file.png
-  --numberOfRays=<nRay>         Number of rays departing from each surface point (pathtracing).
-  --maxDepth=<depth>            Maximum allowed ray depth (only applicable with pathtracing).
-  --initState=<seed>            Initial seed for the random number generator (positive number).
-  --initSeq=<seq-seed>          Identifier of the sequence produced by the random number generator (positive number).
-  --samplePerPixel=<n_sample>   Number of samples per pixel (must be a perfect square, e.g. 2,4,16...).
+  --numberOfRays=<nRay>         Number of rays departing from each surface point (pathtracing). [default: 10]
+  --maxDepth=<depth>            Maximum allowed number of ray reflection (pathtracing). [default: 2]
+  --russian=<limit>             Depth beyond which the Russian Roulette is triggered. [default: 3]
+  --initState=<seed>            Initial seed (positive int) for the random number generator. [default: 42]
+  --initSeq=<seq-seed>          Identifier (positive int) of the sequence produced by the random number generator. [default: 97]
+  --samplePerPixel=<n_sample>   Number of samples per pixel (must be a perfect square, e.g. 2,4,16...). [default: 0]
   --defineFloat=<var:value>     Used to declare a new float variable. Use '/' to define multiple variables.
 Other:
   -h --help                     Show this screen.
