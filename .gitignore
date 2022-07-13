@@ -5,6 +5,7 @@
 logo/
 output/
 src/csg.nim
+src/trayx/triangle*
 .vscode
 profile_result*
 callgrind*

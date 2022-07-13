@@ -34,7 +34,7 @@ Usage:
 Options:
   --renderer=<type>             Renderer's type: onoff, flat, pathtracing, pointlight. [default: pathtracing]
   --output=<output-file>        Output file.png
-  --numberOfRays=<nRay>         Number of rays departing from each surface point (only applicable with pathtracing).
+  --numberOfRays=<nRay>         Number of rays departing from each surface point (pathtracing).
   --maxDepth=<depth>            Maximum allowed ray depth (only applicable with pathtracing).
   --initState=<seed>            Initial seed for the random number generator (positive number).
   --initSeq=<seq-seed>          Identifier of the sequence produced by the random number generator (positive number).
