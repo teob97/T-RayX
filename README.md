@@ -22,7 +22,7 @@
 ## :t-rex:  Overview
 T-RayX: a Nim library aimed to generate a photorealistic image.
 
-The project has been developed during the course [*Numerical techniques for photorealistic image generation*](https://www.unimi.it/en/education/degree-programme-courses/2022/numerical-tecniques-photorealistic-image-generation) held by Prof. [Maurizio Tomasi][1] at Università degli Studi di Milano (A.Y. 2021/2022)
+The project has been developed during the course [*Numerical techniques for photorealistic image generation*](https://www.unimi.it/en/education/degree-programme-courses/2022/numerical-tecniques-photorealistic-image-generation) held by Prof. [Maurizio Tomasi][https://github.com/ziotom78] at Università degli Studi di Milano (A.Y. 2021/2022)
 
 The main functionality of this library is to generate photorealistic images from input files that describe a scene. (See more details [here](#small_orange_diamond-render)).
 With T-RayX you are also able to convert PFM files to PNG using the [pfm2png](#pfm2png) command.
@@ -70,19 +70,6 @@ To run the render, use:
 $ ./trayx render <SCENE_FILE.txt> <width> <height> [options]
 ```
 To see all the possible options use `./trayx --help`.
-
-<!---
-|Options|Description|
-|-------|-----------|
-|--renderer        |Renderer's type: onoff, flat, pathtracing, pointlight. [default: pathtracing]|
-|--output          |Output file.png|
-|--numberOfRays    |Number of rays departing from each surface point (only applicable with pathtracing).|
-|--maxDepth        |Maximum allowed ray depth (only applicable with pathtracing).|
-|--initState       |Initial seed for the random number generator (positive number).|
-|--initSeq         |Identifier of the sequence produced by the random number generator (positive number).|
-|--samplePerPixel  |Number of samples per pixel (must be a perfect square, e.g. 2,4,16...). Used in the antialiasing. [default: 0]|
-|--defineFloat     |Used to declare a new float variable. Syntax: --defineFloat=pippo:42/pluto:55/... |
---->
 
 The input file SCENE_FILE.txt must contain the detailed description of the scene that has to be rendered. See [the next section](#page_facing_up-input-file-format)
 
@@ -197,5 +184,12 @@ It is possible to tune the parameters alpha and gamma.
 :--:|:--:|:--:|
 `alpha = 0.3` | `alpha = 0.6`  |  `alpha = 0.9`
 
+### Example 2 (render)
 
-[1]: https://github.com/ziotom78
+```bash
+./trayx render examples/render/example1.txt 400 400 --output=examples/render/example1.png --luminosity=0.4 --gamma=2 --numberOfRays=100
+```
+
+
+
+[1]: 

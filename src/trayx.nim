@@ -16,7 +16,7 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>. 
 ]#
 
-import trayx/[basictypes, cameras, pfm, ldr,  imagetracer, shapes, transformation, geometry, materials, renderer, scenefiles]
+import trayx/[basictypes, cameras, pfm, ldr,  imagetracer, shapes, transformation, geometry, materials, renderer, scenefiles, pcg]
 import std/[strutils, strformat, streams, times, monotimes, options]
 import docopt
 when compileOption("profiler"):
@@ -34,11 +34,15 @@ Usage:
 Options:
   --renderer=<type>             Renderer's type: onoff, flat, pathtracing, pointlight. [default: pathtracing]
   --output=<output-file>        Output file.png
-  --numberOfRays=<nRay>         Number of rays departing from each surface point (pathtracing).
-  --maxDepth=<depth>            Maximum allowed ray depth (only applicable with pathtracing).
-  --initState=<seed>            Initial seed for the random number generator (positive number).
-  --initSeq=<seq-seed>          Identifier of the sequence produced by the random number generator (positive number).
-  --samplePerPixel=<n_sample>   Number of samples per pixel (must be a perfect square, e.g. 2,4,16...).
+  --numberOfRays=<nRay>         Number of rays departing from each surface point (pathtracing). [default: 10]
+  --maxDepth=<depth>            Maximum allowed number of ray reflection (pathtracing). [default: 2]
+  --russian=<RussianLimit>      Depth beyond which the Russian Roulette is triggered. [default: 3]
+  --alpha=<alpha>               Normalization parameter used during tone mapping. [default: 1.0]
+  --gamma=<gamma>               Correction due to the monitor non-linear response. [default: 1.0]
+  --initState=<seed>            Initial seed (positive int) for the random number generator. [default: 42]
+  --initSeq=<seq-seed>          Identifier (positive int) of the sequence produced by the random number generator. [default: 97]
+  --samplePerPixel=<n_sample>   Number of samples per pixel (must be a perfect square, e.g. 2,4,16...). [default: 0]
+  --luminosity=<lum>            Average luminosity of the image (positive float).
   --defineFloat=<var:value>     Used to declare a new float variable. Use '/' to define multiple variables.
 Other:
   -h --help                     Show this screen.
@@ -61,7 +65,7 @@ proc pfm2png*() =
   img.normalize_image(factor = parseFloat($args["<alpha>"]))
   img.clamp_image()
   var outf = newFileStream($args["<OUTPUT.png>"], fmWrite)
-  img.write_ldr_image(name = $args["<OUTPUT.png>"], gamma = parseFloat($args["<gamma>"]))
+  img.writeLdrImage(name = $args["<OUTPUT.png>"], gamma = parseFloat($args["<gamma>"]))
   outf.close()
   echo (fmt"File "&($args["<OUTPUT.png>"])&" has been written to disk.")
 
@@ -99,6 +103,8 @@ proc demo*()=
   tracer.fireAllRays(renderer)
   tracer.image.writePfmImage(strm)
   let path : string = "output/demo.png"
+  tracer.image.normalizeImage(factor = 1.0)
+  tracer.image.clampImage()
   tracer.image.writeLdrImage(path)
   echo("Image saved in "&path)
 
@@ -123,14 +129,16 @@ proc render*() =
   if args["--defineFloat"]:
     variables = build_variable_table($args["--defineFloat"])
   
-  # Define all the basic components
+  # Define input stream and parse the scene
   var 
     file_stream : FileStream = newFileStream($args["<SCENE_FILE.txt>"], fmRead)
     input_stream : InputStream = newInputStream(file_stream)
     img_scene : Scene = parseScene(input_stream, variables)
-    renderer : Renderer
   file_stream.close()
-  # Check is the renderer's type has been defined through the CLI
+  
+  # Define renderer
+  var  
+    renderer : Renderer
   if args["--renderer"]:
     case $args["--renderer"]:
       of "onoff":
@@ -140,36 +148,49 @@ proc render*() =
       of "pointlight":
         renderer = newPointLightRenderer(img_scene.world)
       of "pathtracing":
-        renderer = newPathTracer(img_scene.world)
+        renderer = newPathTracer(world = img_scene.world,
+                                pcg = newPCG(init_state = parseUInt($args["--initState"]), init_seq = parseUInt($args["--initSeq"])),
+                                num_of_rays = parseInt($args["--numberOfRays"]),
+                                max_depth = parseInt($args["--maxDepth"]),
+                                russian_roulette_limit = parseInt($args["--russian"])
+                                )
       else:
         raise newException(IOError, "Invalid type of renderer.")
-  else: # Default type
-    renderer = newPathTracer(img_scene.world)
-  # Check if parameters are defined through the CLI
-  if args["--numberOfRays"] and (renderer of PathTracer):
-    renderer.setNumOfRays(parseInt($args["--numberOfRays"]))
-  if args["--maxDepth"] and (renderer of PathTracer):
-    renderer.setMaxDepth(parseInt($args["--maxDepth"]))
-  if args["--initState"] and (renderer of PathTracer):
-    renderer.setPCG(s1 = (parseUInt($args["--initState"])))
-  if args["--initSeq"] and (renderer of PathTracer):
-    renderer.setPCG(s2 = (parseUInt($args["--initSeq"])))
-  if args["--initState"] and args["--initSeq"] and (renderer of PathTracer):
-    renderer.setPCG(s1 = (parseUInt($args["--initState"])), s2 = (parseUInt($args["--initSeq"])))
 
-  var
+  # Define image parameters and image tracer
+  let
     width  : int = parseInt($args["<width>"])
     height : int = parseInt($args["<height>"])
   
-  var tracer : ImageTracer = newImageTracer(newHdrImage(width, height), img_scene.camera.get())
-  if args["--samplePerPixel"]:
-    tracer.samples_per_side = parseInt($args["--samplePerPixel"])
+  var 
+    tracer : ImageTracer = newImageTracer(image = newHdrImage(width, height), 
+                                            camera = img_scene.camera.get(),
+                                            samples_per_side = parseInt($args["--samplePerPixel"]),
+                                            pcg = newPCG()
+                                            )
 
+  # Fire all the rays and solve the render equation for every ray
   tracer.fireAllRays(renderer)
-  if args["--output"]:
-    tracer.image.writeLdrImage($args["--output"])
+  
+  # Save the final image
+  let
+    path_ldr : string = "output/img_"&(now().format("yyyy-MM-dd'T'HH:mm:ss"))&".png"
+    path_pfm : string = "output/img_"&(now().format("yyyy-MM-dd'T'HH:mm:ss"))&".pfm"
+    out_strm : FileStream = newFileStream(path_pfm, fmWrite)
+
+  tracer.image.writePfmImage(out_strm)
+
+  if args["--luminosity"]:
+    tracer.image.normalizeImage(factor = parseFloat($args["--alpha"]), luminosity = some(parseFloat($args["--luminosity"])))
   else:
-    tracer.image.writeLdrImage("output/img_"&(now().format("yyyy-MM-dd'T'HH:mm:ss"))&".png")
+    tracer.image.normalizeImage(factor = parseFloat($args["--alpha"]))
+  
+  tracer.image.clampImage()
+
+  if args["--output"]:
+    tracer.image.writeLdrImage($args["--output"], gamma = parseFloat($args["--gamma"]))
+  else:
+    tracer.image.writeLdrImage(path_ldr, gamma = parseFloat($args["--gamma"]))
 
 #*********************************** MAIN ***********************************
 
