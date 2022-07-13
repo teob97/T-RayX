@@ -197,5 +197,12 @@ It is possible to tune the parameters alpha and gamma.
 :--:|:--:|:--:|
 `alpha = 0.3` | `alpha = 0.6`  |  `alpha = 0.9`
 
+### Example 2 (render)
+
+```bash
+./trayx render examples/render/example1.txt 400 400 --output=examples/render/example1.png --luminosity=0.4 --alpha=2 --numberOfRays=30
+```
+
+
 
 [1]: https://github.com/ziotom78
