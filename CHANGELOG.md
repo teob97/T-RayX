@@ -1,4 +1,4 @@
-# HEAD
+# Version 1.0.0
 
 - Fixed main and CLI [#8](https://github.com/teob97/T-RayX/pull/8)
 - Added the possibility to override a variable (use --defineFloat in the CLI) previously defined in the input .txt file.
