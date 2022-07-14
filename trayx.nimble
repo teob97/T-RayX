@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.0"
+version       = "1.0.0"
 author        = "Baratto M. ; Gatti E."
 description   = "Ray tracing"
 license       = "GPL3"
