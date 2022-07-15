@@ -189,7 +189,8 @@ It is possible to tune the parameters alpha and gamma.
 Use the following command to produce the scene described [here](examples/render/example1.txt).
 
 ```bash
-./trayx render examples/render/example1.txt 400 400 --output=examples/render/example1.png --luminosity=0.4 --gamma=2 --numberOfRays=100
+./trayx render examples/render/example1.txt 400 400 --output=examples/render/example1.png --luminosity=0.4 --gamma=2 --samplePerPixel=9
+
 ```
 
 <p float="center">
