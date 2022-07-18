@@ -1,0 +1,33 @@
+camera(perspective, translation([-4,0,0]), 1.0, 1.0)
+
+material r_plane(diffuse(uniform(<1,0,0>)),
+	uniform(<0,0,0>)
+)
+
+material l_plane(diffuse(uniform(<0,1,0>)),
+	uniform(<0,0,0>)
+)
+
+material other(diffuse(uniform(<1,1,0.9>)),
+	uniform(<0,0,0>)
+)
+
+material boxes(diffuse(uniform(<0.8,0.8,0.8>)),
+	uniform(<0,0,0>)
+)
+
+material lamp(diffuse(uniform(<0,0,0>)),
+	uniform(<1,1,1>)
+)
+
+plane(r_plane, translation([0,-5,0])*rotation_x(90))
+plane(l_plane, translation([0,5,0])*rotation_x(90))
+plane(other, translation([5,0,0])*rotation_y(90))
+plane(other, translation([0,0,5]))
+plane(other, translation([0,0,-5]))
+
+aabox(boxes, translation([1,2,-3])*rotation_z(45)*scaling([1.5,1.5,4])*translation([-0.5,-0.5,-0.5]))
+aabox(boxes, translation([1,-2,-3])*rotation_z(45)*scaling([1.5,1.5,4])*translation([-0.5,-0.5,-0.5]))
+sphere(lamp, translation([0,0,5])*scaling([0.8,0.8,0.8]))
+
+#./trayx render input.txt 200 200 --output=prova.png --luminosity=0.2 --gamma=2 --maxDepth=3 --samplePerPixel=16
