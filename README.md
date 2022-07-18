@@ -199,6 +199,12 @@ Use the following command to produce the scene described [here](examples/render/
 ./trayx render examples/render/example2.txt 400 400 --output=examples/render/example2.png --luminosity=0.2 --gamma=2 --maxDepth=3 --samplePerPixel=9
 ```
 
+Use the following command to produce the scene described [here](examples/render/example3.txt):
+
+```bash
+./trayx render examples/render/example3.txt 400 400 --output=examples/render/example3.png --samplePerPixel=9
+```
+
 ![](examples/render/example1.png)  |  ![](examples/render/example2.png) | ![](examples/render/example3.png) 
 :--:|:--:|:--:|
 `example 1` | `example 2`  |  `example 3`
