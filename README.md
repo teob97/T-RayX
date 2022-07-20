@@ -92,7 +92,7 @@ To run the demo, use:
 ```
 This will produce the following 960x540 image:
 <p float="center">
-  <img src="examples/demo.png" width="300" />
+  <img src="examples/demo.png" width="600" />
 </p>
 
 ## :page_facing_up: Input file format
@@ -209,4 +209,9 @@ Use the following command to produce the scene described [here](examples/render/
 :--:|:--:|:--:|
 `example 1` | `example 2`  |  `example 3`
 
+You can also try to generate more artistic images. For the following image, we took inspiration from an artistic work by [Jeff Koons](http://www.jeffkoons.com/artwork/celebration/balloon-dog-0).
+
+<p float="center">
+  <img src="examples/render/example4.png" width="600" />
+</p>
 
