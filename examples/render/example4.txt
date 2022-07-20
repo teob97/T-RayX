@@ -1,0 +1,52 @@
+float clock(90)
+camera(perspective, rotation_z(clock)*translation([-28,0,5]), 1.0, 1.0)
+
+#############
+# MATERIALS #
+#############
+
+material balloon(
+	specular(uniform(<0.8,0.0,0.8>)), 
+	uniform(<0,0,0>)
+	)
+
+material sky(
+	diffuse(image("/Users/eleonoragatti/Documents/UNI/Magistrale/Calcolo Numerico/texture/carina_nebula.pfm")), 
+	uniform(<0.05,0.05,0.05>)
+	)
+
+###############
+# BALLOON DOG #
+###############
+
+# body
+sphere (balloon, scaling([4.0,8.0,4.0]))
+
+# legs
+sphere (balloon, translation([-2.0,-11.0,-9.0])*rotation_x(70)*scaling([4.0,10.0,4.0]))
+sphere (balloon, translation([2.0,-11.0,-9.0])*rotation_x(70)*scaling([4.0,10.0,4.0]))
+sphere (balloon, translation([-2.0,11.0,-9.0])*rotation_x(-70)*scaling([4.0,10.0,4.0]))
+sphere (balloon, translation([2.0,11.0,-9.0])*rotation_x(-70)*scaling([4.0,10.0,4.0]))
+
+# tail
+sphere (balloon, translation([0.0,9.0,7.0])*rotation_x(75)*scaling([3.0,7.0,3.0]))
+sphere (balloon, translation([0.0,12.2,16.2])*rotation_x(75)*scaling([0.7,4.0,0.7]))
+
+# neck
+sphere (balloon, translation([0.0,-9.0,7.0])*rotation_x(-75)*scaling([3.0,7.0,3.0]))
+
+# head
+sphere (balloon, translation([0.0,-17.0,15.0])*scaling([3.0,6.0,3.0]))
+
+# ears
+sphere (balloon, translation([2.0,-10.0,20.0])*rotation_x(85)*scaling([3.0,7.0,3.0]))
+sphere (balloon, translation([-2.0,-10.0,20.0])*rotation_x(85)*scaling([3.0,7.0,3.0]))
+
+###############
+# ENVIRONMENT #
+###############
+
+sphere (sky, rotation_z(180)*scaling([50,50,50]))
+#cylinder (sky, translation([0.0, 0.0, 75.0])*rotation_y(180)*scaling([30,30,150]))
+#plane (ground, translation([0.0, 0.0, -15.0]))
+

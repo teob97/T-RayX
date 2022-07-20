@@ -30,4 +30,4 @@ aabox(boxes, translation([1,2,-3])*rotation_z(45)*scaling([1.5,1.5,4])*translati
 aabox(boxes, translation([1,-2,-3])*rotation_z(45)*scaling([1.5,1.5,4])*translation([-0.5,-0.5,-0.5]))
 sphere(lamp, translation([0,0,5])*scaling([0.8,0.8,0.8]))
 
-#./trayx render input.txt 200 200 --output=prova.png --luminosity=0.2 --gamma=2 --maxDepth=3 --samplePerPixel=16
+#./trayx render examples/render/example2.txt 100 100 --output=prova.png --luminosity=0.4 --gamma=2 --maxDepth=3 --samplePerPixel=16
