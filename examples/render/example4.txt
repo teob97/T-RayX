@@ -11,7 +11,7 @@ material balloon(
 	)
 
 material sky(
-	diffuse(image("/Users/eleonoragatti/Documents/UNI/Magistrale/Calcolo Numerico/texture/carina_nebula.pfm")), 
+	diffuse(image("../texture/carina_nebula.pfm")), 
 	uniform(<0.05,0.05,0.05>)
 	)
 
