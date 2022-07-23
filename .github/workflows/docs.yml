@@ -19,7 +19,7 @@ jobs:
         with:
           nim-version: ${{ env.nim-version }}
       - run: nimble test -Y
-      - run: nim doc --index:on --project --out:${{ env.deploy-dir }} ${{ env.nim-src }}
+      - run: nim doc --index:on --project --git.url:https://github.com/teob97/T-RayX --git.commit:${{ github.event.release.tag_name }} --out:${{ env.deploy-dir }} ${{ env.nim-src }}
       - run: mv ${{ env.deploy-dir }}/trayx.html ${{ env.deploy-dir }}/index.html
       - run: find ${{ env.deploy-dir }} -type f -exec sed -i 's/trayx.html/index.html/g' {} \;
       - name: Deploy documents
