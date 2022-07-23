@@ -190,7 +190,11 @@ window.addEventListener('DOMContentLoaded', main);
 </ul>
 
   </div>
-  
+  &nbsp;&nbsp;<a
+href="https://github.com/teob97/T-RayX/tree/master/src/trayx/cameras.nim#L1"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/teob97/T-RayX/edit/devel/src/trayx/cameras.nim#L1" class="link-seesrc" target="_blank" >Edit</a>
+
   <div class="nine columns" id="content">
   <div id="tocRoot"></div>
   
@@ -211,6 +215,10 @@ window.addEventListener('DOMContentLoaded', main);
 <dd>
 
 An abstract class representing an observer Concrete subclasses are <tt class="docutils literal"><span class="pre"><span class="Identifier">OrthogographicCamera</span></span></tt> and <tt class="docutils literal"><span class="pre"><span class="Identifier">PerspectiveCamera</span></span></tt>.
+&nbsp;&nbsp;<a
+href="https://github.com/teob97/T-RayX/tree/master/src/trayx/cameras.nim#L33"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/teob97/T-RayX/edit/devel/src/trayx/cameras.nim#L33" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -220,6 +228,10 @@ An abstract class representing an observer Concrete subclasses are <tt class="do
 <dd>
 
 A camera implementing an orthogonal 3D → 2D projection This class implements an observer seeing the world through an orthogonal projection.
+&nbsp;&nbsp;<a
+href="https://github.com/teob97/T-RayX/tree/master/src/trayx/cameras.nim#L38"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/teob97/T-RayX/edit/devel/src/trayx/cameras.nim#L38" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -230,6 +242,10 @@ A camera implementing an orthogonal 3D → 2D projection This class implements a
 <dd>
 
 A camera implementing a perespective 3D → 2D projection This class implements an observer seeing the world through an perespective projection.
+&nbsp;&nbsp;<a
+href="https://github.com/teob97/T-RayX/tree/master/src/trayx/cameras.nim#L41"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/teob97/T-RayX/edit/devel/src/trayx/cameras.nim#L41" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -250,6 +266,10 @@ A ray of light propagating in space The class contains the following members:<ul
 <li><tt class="docutils literal"><span class="pre"><span class="Identifier">depth</span></span></tt> (int): number of times this ray was reflected/refracted</li>
 </ul>
 
+&nbsp;&nbsp;<a
+href="https://github.com/teob97/T-RayX/tree/master/src/trayx/cameras.nim#L20"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/teob97/T-RayX/edit/devel/src/trayx/cameras.nim#L20" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -263,6 +283,10 @@ A ray of light propagating in space The class contains the following members:<ul
 <dd>
 
 Overload the operator * to transform a Ray object using a Transformation
+&nbsp;&nbsp;<a
+href="https://github.com/teob97/T-RayX/tree/master/src/trayx/cameras.nim#L75"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/teob97/T-RayX/edit/devel/src/trayx/cameras.nim#L75" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -271,6 +295,10 @@ Overload the operator * to transform a Ray object using a Transformation
 <dd>
 
 Check if two rays are similar enough to be considered equal
+&nbsp;&nbsp;<a
+href="https://github.com/teob97/T-RayX/tree/master/src/trayx/cameras.nim#L56"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/teob97/T-RayX/edit/devel/src/trayx/cameras.nim#L56" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -279,6 +307,10 @@ Check if two rays are similar enough to be considered equal
 <dd>
 
 Compute the point along the ray's path at some distance from the origin. Return a <tt class="docutils literal"><span class="pre">Point</span></tt> object representing the point in 3D space whose distance from the ray's origin is equal to <tt class="docutils literal"><span class="pre"><span class="Identifier">t</span></span></tt>, measured in units of the length of <tt class="docutils literal"><span class="pre"><span class="Identifier">Vec</span><span class="Operator">.</span><span class="Identifier">dir</span></span></tt>.
+&nbsp;&nbsp;<a
+href="https://github.com/teob97/T-RayX/tree/master/src/trayx/cameras.nim#L60"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/teob97/T-RayX/edit/devel/src/trayx/cameras.nim#L60" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -289,6 +321,10 @@ Compute the point along the ray's path at some distance from the origin. Return 
 <dd>
 
 Create a new orthographic camera. The parameter <tt class="docutils literal"><span class="pre"><span class="Identifier">aspect_ratio</span></span></tt> defines how larger than the height is the image. For fullscreen images, you should probably set <tt class="docutils literal"><span class="pre"><span class="Identifier">aspect_ratio</span></span></tt> to 16/9, as this is the most used aspect ratio used in modern monitors. The <tt class="docutils literal"><span class="pre"><span class="Identifier">transformation</span></span></tt> parameter is a <tt class="docutils literal"><span class="pre"><span class="Identifier">Transformation</span></span></tt> object.
+&nbsp;&nbsp;<a
+href="https://github.com/teob97/T-RayX/tree/master/src/trayx/cameras.nim#L85"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/teob97/T-RayX/edit/devel/src/trayx/cameras.nim#L85" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -299,6 +335,10 @@ Create a new orthographic camera. The parameter <tt class="docutils literal"><sp
 <dd>
 
 Create a new perespective camera. The parameter <tt class="docutils literal"><span class="pre"><span class="Identifier">screen_distance</span></span></tt> tells how much far from the eye of the observer is the screen, and it influences the so-called «aperture» (the field-of-view angle along the horizontal direction). The parameter <tt class="docutils literal"><span class="pre"><span class="Identifier">aspect_ratio</span></span></tt> defines how larger than the height is the image. For fullscreen images, you should probably set <tt class="docutils literal"><span class="pre"><span class="Identifier">aspect_ratio</span></span></tt> to 16/9, as this is the most used aspect ratio used in modern monitors. The <tt class="docutils literal"><span class="pre"><span class="Identifier">transformation</span></span></tt> parameter is a <tt class="docutils literal"><span class="pre"><span class="Identifier">Transformation</span></span></tt> object.
+&nbsp;&nbsp;<a
+href="https://github.com/teob97/T-RayX/tree/master/src/trayx/cameras.nim#L95"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/teob97/T-RayX/edit/devel/src/trayx/cameras.nim#L95" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -308,6 +348,10 @@ Create a new perespective camera. The parameter <tt class="docutils literal"><sp
 <dd>
 
 Constructor of <tt class="docutils literal"><span class="pre"><span class="Identifier">Ray</span></span></tt>.
+&nbsp;&nbsp;<a
+href="https://github.com/teob97/T-RayX/tree/master/src/trayx/cameras.nim#L48"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/teob97/T-RayX/edit/devel/src/trayx/cameras.nim#L48" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -316,6 +360,10 @@ Constructor of <tt class="docutils literal"><span class="pre"><span class="Ident
 <dd>
 
 Transform a ray. This method returns a new ray whose origin and direction are the transformation of the original ray.
+&nbsp;&nbsp;<a
+href="https://github.com/teob97/T-RayX/tree/master/src/trayx/cameras.nim#L66"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/teob97/T-RayX/edit/devel/src/trayx/cameras.nim#L66" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -329,6 +377,10 @@ Transform a ray. This method returns a new ray whose origin and direction are th
 <dd>
 
 Fire a ray through the camera. This is an abstract method. You should redefine it in derived objects. Fire a ray that goes through the screen at the position (u, v). The exact meaning of these coordinates depend on the projection used by the camera.
+&nbsp;&nbsp;<a
+href="https://github.com/teob97/T-RayX/tree/master/src/trayx/cameras.nim#L108"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/teob97/T-RayX/edit/devel/src/trayx/cameras.nim#L108" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -344,6 +396,10 @@ Shoot a ray through the camera's screen. The coordinates (u, v) specify the poin
 </dd>
 </dl>
 
+&nbsp;&nbsp;<a
+href="https://github.com/teob97/T-RayX/tree/master/src/trayx/cameras.nim#L115"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/teob97/T-RayX/edit/devel/src/trayx/cameras.nim#L115" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -359,6 +415,10 @@ Shoot a ray through the camera's screen. The coordinates (u, v) specify the poin
 </dd>
 </dl>
 
+&nbsp;&nbsp;<a
+href="https://github.com/teob97/T-RayX/tree/master/src/trayx/cameras.nim#L134"
+class="link-seesrc" target="_blank">Source</a>
+&nbsp;&nbsp;<a href="https://github.com/teob97/T-RayX/edit/devel/src/trayx/cameras.nim#L134" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 </div>
@@ -372,7 +432,7 @@ Shoot a ray through the camera's screen. The coordinates (u, v) specify the poin
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-07-20 16:33:46 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-07-23 13:22:22 UTC</small>
       </div>
     </div>
   </div>
