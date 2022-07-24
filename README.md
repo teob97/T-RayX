@@ -15,6 +15,9 @@
   <a href='https://github.com/teob97/T-RayX/blob/main/LICENSE'>
   <img src='https://img.shields.io/github/license/teob97/T-RayX?style=for-the-badge'>
   </a>
+  <a href="https://www.paypal.me/EGatti619">
+  <img src='https://img.shields.io/badge/Donate-PayPal-DE00A5.svg?style=for-the-badge'>
+  </a>
 </p>
 
 ---
