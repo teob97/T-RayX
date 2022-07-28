@@ -17,7 +17,7 @@
 ]#
 
 import trayx/[basictypes, cameras, pfm, ldr,  imagetracer, shapes, transformation, geometry, materials, renderer, scenefiles, pcg]
-import std/[strutils, strformat, streams, times, monotimes, options]
+import std/[strutils, strformat, streams, times, monotimes, options, os]
 import docopt
 when compileOption("profiler"):
   import nimprof
@@ -195,6 +195,9 @@ proc render*() =
 #*********************************** MAIN ***********************************
 
 when isMainModule:
+
+  if not dirExists("output"):
+    createDir("output")
 
   if args["pfm2png"]:
     let t1 = getMonoTime()

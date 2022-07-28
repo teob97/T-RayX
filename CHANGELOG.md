@@ -1,3 +1,7 @@
+# HEAD
+
+- Fixed output bug [#9](https://github.com/teob97/T-RayX/pull/10)
+
 # Version 1.0.0
 
 - Fixed main and CLI [#8](https://github.com/teob97/T-RayX/pull/8)
