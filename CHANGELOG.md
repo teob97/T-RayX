@@ -1,6 +1,7 @@
-# HEAD
+# Version 1.0.1
 
 - Fixed output bug [#9](https://github.com/teob97/T-RayX/pull/10)
+- Now it is possible to install T-RayX using nimble package manager.
 
 # Version 1.0.0
 

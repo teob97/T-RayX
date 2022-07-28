@@ -56,7 +56,12 @@ To generate the executable file, use:
 ```bash
 nimble build -d:release
 ```
-In some cases it is necessary to create a folder named `output` (in the project directory) to make T-RayX work proprely.
+It is also possible to install T-RayX using nimble package menager:
+
+```bash
+nimble intall trayx
+```
+In this case the program is automaticaly compiled and it is possible to use it via terminal simply with `trayx` without `./`
 
 ## :rocket:  Usage
 
